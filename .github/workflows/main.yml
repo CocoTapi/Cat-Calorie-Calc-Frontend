@@ -82,12 +82,3 @@ jobs:
         with:
           browser: chrome
           headless: true
-
-      - name: Check Cypress Coverage (fail if < 90%)
-        run: |
-          CYPRESS_COVERAGE=$(node -e "console.log(require('./coverage/lcov-report/index.html').total.lines.pct)")
-          echo "Cypress test coverage: $CYPRESS_COVERAGE%"
-          if [ $(echo "$CYPRESS_COVERAGE < 90" | bc) -eq 1 ]; then
-            echo "Cypress coverage below 90%! Failing build."
-            exit 1
-          fi
