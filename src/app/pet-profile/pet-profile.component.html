@@ -1,54 +1,66 @@
-<h1 class="profile-title">{{ pet().name}}</h1>
-<div class="profile-group-a">
-    <img [src]="imagePath()" [alt]="pet().name">
-    <div class="profile-group">
-        <p class="profile-label">Age :</p>
-        <p class="profile-content">{{ age() }}</p>
-        
-        <p class="profile-label">Weight :</p>
-        <p class="profile-content">
-            {{ pet().weight }} 
-            <span>{{ pet().weight_unit }}</span>
-        </p>
-       
-        <p class="profile-label">Goal :</p>
-        <p class="profile-content">
-            {{ pet().goal }}
-            <span>weight</span>
-        </p>
-    </div>
-</div>
-<!-- TODO: make a line graph -->
-<app-card [title]="graphTitle()"></app-card>
-<div class="profile-group-b">
-    <h2 class="profile-label">Daily Calories :</h2>
-    <p class="profile-content">
-        360
-        <span>kcal</span>
-    </p>
-    
-    <h2 class="profile-label">Medications :</h2>
-    @if(pet().medications){
-        <ul class="profile-meds">
-            @for(item of pet().medications; track item.meds_id){
-                <li class="profile-meds">
-                    {{ item.meds_name }}
-                    <span>{{ item.directions }}</span>
-                </li>
-            }
-        </ul> 
-    } @else {
-        <p class="profile-content">None</p>
-    }
-   
-    <h2 class="profile-label">Food Allergy :</h2>
-    <p class="profile-content">{{ pet().allergies }}</p>
+<div class="pets">
+    <h1 class="heading-1">{{ pet().name}}</h1>
+    <div class="pet">
+        <img [src]="imagePath()" [alt]="pet().name" class="pet__img">
+        <div class="pet__summary">
+            <p>Age :</p>
+            <p>
+                {{ age() }}
+                <span>years</span>
+            </p>
 
-    @if (pet().notes){
-        <h2 class="profile-label">Personality Notes :</h2>
-        <p class="profile-content">{{ pet().notes }}</p>
-    }
-    
+            <p>Weight :</p>
+            <p>
+                {{ pet().weight }} 
+                <span>{{ pet().weight_unit }}</span>
+            </p>
+        
+            <p>Goal :</p>
+            <p>
+                {{ pet().goal }}
+                <span>weight</span>
+            </p>
+        </div>
+    </div>
+    <!-- TODO: make a line graph -->
+    <app-card [title]="graphTitle()"></app-card>
+    <div class="feed">
+        <div class="feed__calories">
+            <h2 class="heading-2">Daily Calories :</h2>
+            <p>
+                360
+                <span>kcal</span>
+            </p>
+        </div>
+       
+        <div class="feed__medications">
+            <h2 class="heading-2">Medications :</h2>
+            @if(pet().medications){
+                <ul>
+                    @for(item of pet().medications; track item.meds_id){
+                        <li>
+                            {{ item.meds_name }}
+                            <span>{{ item.directions }}</span>
+                        </li>
+                    }
+                </ul> 
+            } @else {
+                <p>None</p>
+            }
+        </div>
+       
+        <div class="feed__allergies">
+            <h2 class="heading-2">Food Allergy :</h2>
+            <p>{{ pet().allergies }}</p>
+        </div>
+        
+        @if (pet().notes){
+            <div class="feed__notes">
+                <h2 class="heading-2">Personality Notes :</h2>
+                <p>{{ pet().notes }}</p>
+            </div>
+        }
+    </div>
 </div>
 
 
