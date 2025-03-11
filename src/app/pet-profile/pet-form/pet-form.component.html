@@ -1,9 +1,110 @@
 <app-card [title]="title()">
-    <form>
+    <form (ngSubmit)="onSubmit()">
         <div>
             <button>Cat</button>
             <button>Dog</button>
         </div>
-        
+
+        <div>
+            <label for="name">Name :</label>
+            <input 
+                type="text" 
+                id="name"
+                name="name"
+            />
+        </div>
+
+        <div>
+            <label for="birthday">Due Date :</label>
+            <input
+              type="date"
+              id="birthday"
+              name="birthday"
+            />
+        </div>
+
+        <div>
+            <label for="weight">Weight :</label>
+            <div>
+                <input
+                type="text"
+                id="weight"
+                name="weight"
+                />
+                <div>
+                    <button>lb</button>
+                    <button>kg</button>
+                </div>
+            </div>
+           
+        </div>
+
+        <div>
+            <label for="allergies">Allergies :</label>
+            <input
+              type="text"
+              id="allergies"
+              name="allergies"
+            />
+        </div>
+
+        <div>
+            <label for="medications">Medications :</label>
+            <input
+              type="text"
+              id="medications"
+              name="medications"
+            />
+        </div>
+
+        <div>
+            <label for="goal">Goal :</label>
+            <div>
+                <select name="goa;" id="goal">
+                    <option value="Maintain">Maintain</option>
+                    <option value="Reduce">Reduce</option>
+                    <option value="Gain">Gain</option>
+                </select>
+                <p>weight</p>
+            </div>
+            <div>
+                <label for="target">Target Weight :</label>
+                <div>
+                    <input
+                    type="text"
+                    id="target"
+                    name="target"
+                    />
+                    <div>
+                        <button>lb</button>
+                        <button>kg</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <p>Daily Calories :</p>
+            <p>
+                We use Resting Energy Requirement (RER)
+                <a>i</a>
+            </p>
+            <label for="factor">Factor based on your goal :</label>
+            <input 
+                type="text" 
+                name="factor" 
+                id="factor"
+            />
+            <label for="Calories">Calories :</label>
+            <div>
+                <input 
+                    type="text"
+                    name="calories"
+                    id="calories"
+                />
+                <p>kcal / day</p>
+            </div>
+        </div>
+
+        <button>Submit</button>
     </form>
 </app-card>
