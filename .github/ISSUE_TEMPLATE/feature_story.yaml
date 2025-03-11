@@ -1,37 +1,87 @@
----
 name: Feature Story
+description: Use this template to describe a new feature for the project.
 title: "[Feature]: "
-labels: 
+labels:
   - implementation
 assignees: []
----
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Overview
+        _Provide a high-level summary of the feature._
 
-## Feature Overview
-_Provide a high-level summary of the feature._
+  - type: textarea
+    id: user-story
+    attributes:
+      label: "User Story"
+      description: "Describe the feature from a user’s perspective."
+      placeholder: "As a [user], I want to [goal] so that [reason]."
+    validations:
+      required: true
 
-**General Acceptance Criteria:**  
-- [ ] Code follows the DRY (Don't Repeat Yourself) principle  
-- [ ] Applicable components are reusable across the project  
-- [ ] Each class and function includes proper JSDoc (`/** */`) documentation  
-- [ ] All edge cases have been tested using Jasmine unit tests  
-- [ ] Cypress E2E tests cover every scenario in the app  
+  - type: checkboxes
+    id: general-acceptance-criteria
+    attributes:
+      label: "General Acceptance Criteria"
+      description: "These must be met for any feature."
+      options:
+        - label: "Code follows the DRY (Don't Repeat Yourself) principle"
+        - label: "Applicable components are reusable across the project"
+        - label: "Each class and function includes proper JSDoc (`/** */`) documentation"
+        - label: "All edge cases have been tested using Jasmine unit tests"
+        - label: "Cypress E2E tests cover every scenario in the app"
 
-**Specific Acceptance Criteria:**  
-- [ ] Criteria 1  
-- [ ] Criteria 2  
-- [ ] Criteria 3  
+  - type: checkboxes
+    id: specific-acceptance-criteria
+    attributes:
+      label: "Specific Acceptance Criteria"
+      description: "Define the feature-specific acceptance criteria."
+      options:
+        - label: "Criteria 1"
+        - label: "Criteria 2"
+        - label: "Criteria 3"
 
-**Dependencies:**  
-- _List any other features, stories, or tasks that this feature depends on._
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "Dependencies"
+      description: "List any other features, stories, or tasks that this feature depends on."
+      placeholder: "Feature A must be completed before this story."
+    validations:
+      required: false
 
-**Related Issues:**  
-- _List any related issues or pull requests._
+  - type: textarea
+    id: related-issues
+    attributes:
+      label: "Related Issues"
+      description: "List any related issues or pull requests."
+      placeholder: "e.g., #123, #456"
+    validations:
+      required: false
 
-**Technical Notes:**  
-- _List any technical constraints, dependencies, or additional details._
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: "Technical Notes"
+      description: "List any technical constraints, dependencies, or additional details."
+      placeholder: "This feature requires a backend API update."
+    validations:
+      required: false
 
-**Mockups or References:**  
-- _Attach relevant designs, Figma links, or references._
+  - type: textarea
+    id: mockups
+    attributes:
+      label: "Mockups or References"
+      description: "Attach relevant designs, Figma links, or references."
+      placeholder: "Paste Figma or other design links here."
+    validations:
+      required: false
 
-**Additional Context:**  
-- _Any extra details that might help developers understand the scope._
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional Context"
+      description: "Any extra details that might help developers understand the scope."
+    validations:
+      required: false
