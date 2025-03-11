@@ -15,11 +15,19 @@ body:
     id: user-story
     attributes:
       label: "User Story"
-      description: "Describe the feature from a user’s perspective."
-      placeholder: "As a [user], I want to [goal] so that [reason]."
+      description: "Briefly describe the feature from a user’s perspective."
+      placeholder: "The [user] will use this feature to achieve [goal]."
     validations:
       required: true
-
+      
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional Context"
+      description: "Any extra details that might help developers understand the scope."
+    validations:
+      required: true
+      
   - type: checkboxes
     id: general-acceptance-criteria
     attributes:
@@ -32,31 +40,12 @@ body:
         - label: "All edge cases have been tested using Jasmine unit tests"
         - label: "Cypress E2E tests cover every scenario in the app"
 
-  - type: checkboxes
-    id: specific-acceptance-criteria
-    attributes:
-      label: "Specific Acceptance Criteria"
-      description: "Define the feature-specific acceptance criteria."
-      options:
-        - label: "Criteria 1"
-        - label: "Criteria 2"
-        - label: "Criteria 3"
-
   - type: textarea
-    id: dependencies
+    id: mockups
     attributes:
-      label: "Dependencies"
-      description: "List any other features, stories, or tasks that this feature depends on."
-      placeholder: "Feature A must be completed before this story."
-    validations:
-      required: false
-
-  - type: textarea
-    id: related-issues
-    attributes:
-      label: "Related Issues"
-      description: "List any related issues or pull requests."
-      placeholder: "e.g., #123, #456"
+      label: "Mockups or References"
+      description: "Attach relevant designs, Figma links, or references."
+      placeholder: "Paste Figma or other design links here."
     validations:
       required: false
 
@@ -68,20 +57,13 @@ body:
       placeholder: "This feature requires a backend API update."
     validations:
       required: false
-
+      
   - type: textarea
-    id: mockups
+    id: dependencies
     attributes:
-      label: "Mockups or References"
-      description: "Attach relevant designs, Figma links, or references."
-      placeholder: "Paste Figma or other design links here."
+      label: "Dependencies"
+      description: "List any other features, stories, or tasks that this feature depends on."
+      placeholder: "Feature A must be completed before this story."
     validations:
       required: false
 
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: "Additional Context"
-      description: "Any extra details that might help developers understand the scope."
-    validations:
-      required: false
