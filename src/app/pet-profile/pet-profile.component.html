@@ -1,5 +1,54 @@
-<div>
-    <h2>Dodger Avino</h2>
-    <div>
+<h1 class="profile-title">{{ pet().name}}</h1>
+<div class="profile-group-a">
+    <img [src]="imagePath()" [alt]="pet().name">
+    <div class="profile-group">
+        <p class="profile-label">Age :</p>
+        <p class="profile-content">{{ age() }}</p>
+        
+        <p class="profile-label">Weight :</p>
+        <p class="profile-content">
+            {{ pet().weight }} 
+            <span>{{ pet().weight_unit }}</span>
+        </p>
+       
+        <p class="profile-label">Goal :</p>
+        <p class="profile-content">
+            {{ pet().goal }}
+            <span>weight</span>
+        </p>
     </div>
 </div>
+<!-- TODO: make a line graph -->
+<app-card [title]="graphTitle()"></app-card>
+<div class="profile-group-b">
+    <h2 class="profile-label">Daily Calories :</h2>
+    <p class="profile-content">
+        360
+        <span>kcal</span>
+    </p>
+    
+    <h2 class="profile-label">Medications :</h2>
+    @if(pet().medications){
+        <ul class="profile-meds">
+            @for(item of pet().medications; track item.meds_id){
+                <li class="profile-meds">
+                    {{ item.meds_name }}
+                    <span>{{ item.directions }}</span>
+                </li>
+            }
+        </ul> 
+    } @else {
+        <p class="profile-content">None</p>
+    }
+   
+    <h2 class="profile-label">Food Allergy :</h2>
+    <p class="profile-content">{{ pet().allergies }}</p>
+
+    @if (pet().notes){
+        <h2 class="profile-label">Personality Notes :</h2>
+        <p class="profile-content">{{ pet().notes }}</p>
+    }
+    
+</div>
+
+

@@ -2,7 +2,7 @@ import { Pet_Profile } from "../../src/app/pet-profile/models/pet-profile.model"
 
 export const PETS_TEST_DATA: Pet_Profile[] = [
     {
-        id: 1,
+        id: 0,
         name: 'Dodger Avino',
         icon: 'dodger.png',
         birthday: new Date('2014-03-14'),
@@ -11,11 +11,12 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
         allergies: "none",
         medications: [
             {
+                meds_id: 0,
                 meds_name: 'Atopica',
                 directions: '1 pill / day'
             }
         ],
-        goal: 'maintain',
+        goal: 'Reduce',
         target_weight: 16,
         factor: 0.8,
         daily_calories: 360,

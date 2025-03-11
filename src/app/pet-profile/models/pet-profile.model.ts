@@ -5,10 +5,10 @@ export interface Pet_Profile {
     birthday: Date,
     weight: number,
     weight_unit: 'lb' | 'kg',
-    allergies: string,
-    medications: Medication[],
-    goal: 'maintain' | 'gain' | 'reduce',
-    target_weight: number,
+    allergies: string | null,
+    medications: Medication[] | null,
+    goal: 'Maintain' | 'Gain' | 'Reduce',
+    target_weight: number | null,
     factor: number,
     daily_calories: number,
     notes: string,
@@ -16,6 +16,7 @@ export interface Pet_Profile {
 }
 
 interface Medication {
+    meds_id: number,
     meds_name: string,
     directions: string
 }
