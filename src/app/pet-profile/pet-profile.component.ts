@@ -1,15 +1,18 @@
-import { Component, computed, signal } from '@angular/core';
-import { PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CardComponent } from "../ui/card/card.component";
+import { PetProfileService } from '../services/pet-profile.service';
+import { PetFormComponent } from "./pet-form/pet-form.component";
 
 @Component({
   selector: 'app-pet-profile',
-  imports: [CardComponent],
+  imports: [CardComponent, PetFormComponent],
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })
 export class PetProfileComponent {
-  pet = signal(PETS_TEST_DATA[0]);
+  private petProfileService = inject(PetProfileService);
+  showEditPage = signal(false);
+  pet = this.petProfileService.pet;
   imagePath = computed(() => 'pets/' + this.pet().icon);
   age = computed(() => {
     const birthday = new Date(this.pet().birthday);
@@ -34,5 +37,9 @@ export class PetProfileComponent {
 
     return title;
   });
+
+  onEdit() {
+    this.showEditPage.set(!this.showEditPage());
+  }
   
 }

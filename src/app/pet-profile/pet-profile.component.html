@@ -1,5 +1,10 @@
 <div class="pets">
     <h1 class="heading-1">{{ pet().name}}</h1>
+    <button (click)="onEdit()">Edit</button>
+
+    @if (showEditPage()){
+        <app-pet-form />
+    }
     <div class="pet">
         <img [src]="imagePath()" [alt]="pet().name" class="pet__img">
         <div class="pet__summary">
