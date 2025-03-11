@@ -1,9 +1,9 @@
 ---
 name: Feature Story
-about: Describe a new feature to be developed for the initial release
 title: "[Feature]: "
-labels: implementation
-assignees: ''
+labels: 
+  - implementation
+assignees: []
 ---
 
 ## Feature Overview
@@ -12,19 +12,19 @@ _Provide a high-level summary of the feature._
 **General Acceptance Criteria:**  
 - [ ] Code follows the DRY (Don't Repeat Yourself) principle  
 - [ ] Applicable components are reusable across the project  
-- [ ] Each class and function includes proper JSDoc (/* */) documentation  
-- [ ] All edge cases have been tested using Jasmine unit tests
+- [ ] Each class and function includes proper JSDoc (`/** */`) documentation  
+- [ ] All edge cases have been tested using Jasmine unit tests  
 - [ ] Cypress E2E tests cover every scenario in the app  
 
-**Specific  Acceptance Criteria:**
-- [ ] Criteria 1
-- [ ] Criteria 2
-- [ ] Criteria 3
+**Specific Acceptance Criteria:**  
+- [ ] Criteria 1  
+- [ ] Criteria 2  
+- [ ] Criteria 3  
 
-**Dependencies:**
+**Dependencies:**  
 - _List any other features, stories, or tasks that this feature depends on._
 
-**Related Issues:**
+**Related Issues:**  
 - _List any related issues or pull requests._
 
 **Technical Notes:**  
