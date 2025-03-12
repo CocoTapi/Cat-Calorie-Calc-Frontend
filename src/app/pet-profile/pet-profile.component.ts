@@ -2,10 +2,11 @@ import { Component, computed, inject, signal, input } from '@angular/core';
 import { CardComponent } from "../ui/card/card.component";
 import { PetProfileService } from '../services/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-pet-profile',
-  imports: [CardComponent, PetFormComponent],
+  imports: [CardComponent, PetFormComponent, MatIconModule],
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })

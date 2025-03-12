@@ -1,13 +1,13 @@
 <div class="pets">
-    <h1 class="heading-1 mb-md">{{ pet().name}}</h1>
-    <button (click)="onEdit()">Edit</button>
+    <h1 class="heading-1">{{ pet().name}}</h1>
+    <button (click)="onEdit()" class="responsive-icon"><mat-icon>settings</mat-icon></button>
 
     @if (showEditPage()){
         <app-pet-form />
     }
-    <div class="pet">
-        <img [src]="imagePath()" [alt]="pet().name" class="pet__img">
-        <div class="pet__summary">
+    <div class="pet-profile-1">
+        <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
+        <div class="pet-profile-1__summary">
             <p>Age :</p>
             <p>
                 {{ age() }}
@@ -28,9 +28,11 @@
         </div>
     </div>
     <!-- TODO: make a line graph -->
-    <app-card [title]="graphTitle()" class="mb-md"></app-card>
-    <div class="feed">
-        <div class="feed__calories">
+    <app-card [title]="graphTitle()" class="graph-component">
+        <div class="line-graph"></div>
+    </app-card>
+    <div class="pet-profile-2">
+        <div class="pet-profile-2__calories">
             <h2 class="heading-2">Daily Calories :</h2>
             <p>
                 360
@@ -38,8 +40,8 @@
             </p>
         </div>
        
-        <div class="feed__medications">
-            <h2 class="heading-2">Medications :</h2>
+        <div class="pet-profile-2__medications">
+            <h2 class="heading-2 mb-sm">Medications :</h2>
             @if(pet().medications){
                 <ul>
                     @for(item of pet().medications; track item.meds_id){
@@ -54,15 +56,15 @@
             }
         </div>
        
-        <div class="feed__allergies">
-            <h2 class="heading-2">Food Allergy :</h2>
+        <div class="pet-profile-2__allergies">
+            <h2 class="heading-2 mb-sm">Food Allergy :</h2>
             <p>{{ pet().allergies }}</p>
         </div>
         
         @if (pet().notes){
-            <div class="feed__notes">
-                <h2 class="heading-2">Personality Notes :</h2>
-                <p>{{ pet().notes }}</p>
+            <div class="pet-profile-2__notes">
+                <h2 class="heading-2 mb-sm">Personality Notes :</h2>
+                <p class="pet-profile-2__notes__content">{{ pet().notes }}</p>
             </div>
         }
     </div>
