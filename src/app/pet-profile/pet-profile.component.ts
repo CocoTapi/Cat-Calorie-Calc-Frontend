@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, input } from '@angular/core';
 import { CardComponent } from "../ui/card/card.component";
 import { PetProfileService } from '../services/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
@@ -10,10 +10,15 @@ import { PetFormComponent } from "./pet-form/pet-form.component";
   styleUrl: './pet-profile.component.scss'
 })
 export class PetProfileComponent {
+  id = input<number>(0);
+
   private petProfileService = inject(PetProfileService);
+
   showEditPage = signal(false);
-  pet = this.petProfileService.pet;
+  pet = signal(this.petProfileService.getPetById(this.id()));
+
   imagePath = computed(() => 'pets/' + this.pet().icon);
+
   age = computed(() => {
     const birthday = new Date(this.pet().birthday);
     const today = new Date();
@@ -28,6 +33,7 @@ export class PetProfileComponent {
 
     return age;
   });
+
   graphTitle = computed(() => {
     let title = `Goal: ${this.pet().goal} weight`;
 

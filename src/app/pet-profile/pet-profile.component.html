@@ -1,5 +1,5 @@
 <div class="pets">
-    <h1 class="heading-1">{{ pet().name}}</h1>
+    <h1 class="heading-1 mb-md">{{ pet().name}}</h1>
     <button (click)="onEdit()">Edit</button>
 
     @if (showEditPage()){
@@ -28,7 +28,7 @@
         </div>
     </div>
     <!-- TODO: make a line graph -->
-    <app-card [title]="graphTitle()"></app-card>
+    <app-card [title]="graphTitle()" class="mb-md"></app-card>
     <div class="feed">
         <div class="feed__calories">
             <h2 class="heading-2">Daily Calories :</h2>
