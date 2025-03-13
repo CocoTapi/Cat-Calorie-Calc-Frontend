@@ -17,7 +17,23 @@ export interface Pet_Profile {
 }
 
 interface Medication {
-    meds_id: number,
-    meds_name: string,
+    med_id: number,
+    med_name: string,
+    directions: string
+}
+
+export interface Pet_Form_DATA {
+    id: number | null,
+    type: 'cat' | 'dog' | null,
+    name: string,
+    birthday: Date | null,
+    medications: PET_FORM_Medication[],
+    goal: 'Maintain' | 'Gain' | 'Reduce',
+    factor: number,
+} 
+
+interface PET_FORM_Medication {
+    med_id: number | null,
+    med_name: string,
     directions: string
 }

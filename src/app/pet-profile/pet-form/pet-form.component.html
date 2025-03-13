@@ -1,23 +1,57 @@
 <app-card [title]="title()">
     <form [formGroup]="petProfileForm" (ngSubmit)="onSubmit()" class="form">
+
+        <!-- Type Selection -->
         <section>
-            <mat-button-toggle-group aria-label="petType" formControlName="petType">
+            <mat-button-toggle-group aria-label="type" formControlName="type">
                 <mat-button-toggle value="cat">Cat</mat-button-toggle>
                 <mat-button-toggle value="dog">dog</mat-button-toggle>
             </mat-button-toggle-group>
         </section>
 
-        <!-- <div>
+        <!-- Name Input -->
+        <div>
             <label for="name">Name :</label>
             <input type="text" id="name" name="name" formControlName="name" />
         </div>
 
+        <!-- Birthday Input -->
         <div>
-            <label for="birthday">Due Date :</label>
-            <input type="date" id="birthday" name="birthday" formControlName="birthday" />
+            <label for="birthday">Birthday :</label>
+            <mat-form-field>
+                <mat-label>Choose a date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="birthday">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
         </div>
 
+        <!-- Food allergies -->
+         
+
+        <!-- Medication Input -->
         <div>
+            <p>Medications :</p>
+            <div formArrayName="medications">
+                @for (med of medications.controls; track med;  let idx = $index){
+                    <div [formGroupName]="idx">
+                        <label for="meds_name">Name :</label>
+                        <input type="text" id="med_name" name="med_name" formControlName="med_name" />
+            
+                        <label for="directions">Directions :</label>
+                        <input type="text" id="directions" name="directions" formControlName="directions" />
+                        <button type="button" (click)="removeMedication(idx)">Remove</button>
+                    </div>
+                }
+            </div>
+
+           
+            
+        </div>
+
+        <!-- <div>
             <label for="weight">Weight :</label>
             <div>
                 <input type="text" id="weight" name="weight" formControlName="weight" />
@@ -35,17 +69,11 @@
             <label for="allergies">Allergies :</label>
             <input type="text" id="allergies" name="allergies" formControlName="allergies" />
         </div>
+ -->
 
-        <div formGroupName="medications">
-            <p>Medications :</p>
 
-            <label for="meds_name">Name :</label>
-            <input type="text" id="meds_name" name="meds_name" formControlName="meds_name" />
 
-            <label for="directions">Directions :</label>
-            <input type="text" id="directions" name="directions" formControlName="directions" />
-        </div>
-
+        <!-- Goal Selection -->
         <div>
             <label for="goal">Goal :</label>
             <div>
@@ -56,10 +84,14 @@
                 </select>
                 <p>weight</p>
             </div>
-            <div>
+
+            <!-- Target Weight Input -->
+            <!-- <div>
                 <label for="target_weight">Target Weight :</label>
                 <div>
                     <input type="text" id="target_weight" name="target_weight" formArrayName="target_weight"/>
+                    
+                    Unit Selection
                     <section>
                         <mat-button-toggle-group aria-label="unit">
                             <mat-button-toggle value="lb">lb</mat-button-toggle>
@@ -67,24 +99,27 @@
                         </mat-button-toggle-group>
                     </section>
                 </div>
-            </div>
+            </div>  -->
         </div>
+
         <div>
             <p>Daily Calories :</p>
             <p>
                 We use Resting Energy Requirement (RER)
-                <a>i</a>
+                <a><mat-icon>info</mat-icon></a>
             </p>
 
+            <!-- Factor Input -->
             <label for="factor">Factor based on your goal :</label>
             <input type="text" name="factor" id="factor" formControlName="factor" />
 
+            <!-- Calories Input
             <label for="daily_calories">Calories :</label>
             <div>
                 <input type="text" name="daily_calories" id="daily_calories" formControlName="daily_calories" />
                 <p>kcal / day</p>
-            </div>
-        </div> -->
+            </div> -->
+        </div>
 
         <button>Submit</button>
     </form>

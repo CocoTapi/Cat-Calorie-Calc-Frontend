@@ -3,7 +3,7 @@
     <button (click)="onEdit()" class="responsive-icon"><mat-icon>settings</mat-icon></button>
 
     @if (showEditPage()){
-        <app-pet-form />
+        <app-pet-form [pet]="pet()" />
     }
     <div class="pet-profile-1">
         <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
@@ -44,9 +44,9 @@
             <h2 class="heading-2 mb-sm">Medications :</h2>
             @if(pet().medications){
                 <ul>
-                    @for(item of pet().medications; track item.meds_id){
+                    @for(item of pet().medications; track item.med_id){
                         <li>
-                            {{ item.meds_name }}
+                            {{ item.med_name }}
                             <span>{{ item.directions }}</span>
                         </li>
                     }

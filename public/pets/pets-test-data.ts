@@ -6,14 +6,14 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
         type: 'cat',
         name: 'Dodger',
         icon: 'dodger.png',
-        birthday: new Date('2014-03-14'),
+        birthday: new Date(2014, 2, 14),
         weight: 17.5,
         weight_unit: 'lb',
         allergies: "none",
         medications: [
             {
-                meds_id: 0,
-                meds_name: 'Atopica',
+                med_id: 0,
+                med_name: 'Atopica',
                 directions: '1 pill / day'
             }
         ],
