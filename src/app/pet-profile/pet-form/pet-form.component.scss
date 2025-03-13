@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+
+.form {
+    @include mat.button-toggle-overrides((
+        legacy-focus-state-layer-opacity: 0.3, // Change focus opacity
+        legacy-text-color: red, // Change text color
+      ));
+}

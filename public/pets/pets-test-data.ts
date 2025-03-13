@@ -3,6 +3,7 @@ import { Pet_Profile } from "../../src/app/pet-profile/models/pet-profile.model"
 export const PETS_TEST_DATA: Pet_Profile[] = [
     {
         id: 0,
+        type: 'cat',
         name: 'Dodger',
         icon: 'dodger.png',
         birthday: new Date('2014-03-14'),

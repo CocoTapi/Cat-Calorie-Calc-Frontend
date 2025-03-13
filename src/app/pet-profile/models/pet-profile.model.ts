@@ -1,5 +1,6 @@
 export interface Pet_Profile {
     id: number,
+    type: 'cat' | 'dog',
     name: string,
     icon: string,
     birthday: Date,
