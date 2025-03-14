@@ -17,7 +17,7 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
                 directions: '1 pill / day'
             }
         ],
-        goal: 'Reduce',
+        goal: 'Lose',
         target_weight: 16,
         factor: 0.8,
         daily_calories: 360,

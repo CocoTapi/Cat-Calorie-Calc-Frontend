@@ -21,14 +21,14 @@ export class PetProfileComponent {
   imagePath = computed(() => 'pets/' + this.pet().icon);
 
   age = computed(() => {
-    const birthday = new Date(this.pet().birthday);
+    const birthday = this.pet().birthday;
     const today = new Date();
     
-    let age = today.getFullYear() - birthday.getFullYear();
-    const monthDiff = today.getMonth() - birthday.getMonth();
+    let age = today.getFullYear() - birthday!.getFullYear();
+    const monthDiff = today.getMonth() - birthday!.getMonth();
 
     // Adjust age if birthday hasn't occurred this year yet
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday!.getDate())) {
       age--; 
     }
 
