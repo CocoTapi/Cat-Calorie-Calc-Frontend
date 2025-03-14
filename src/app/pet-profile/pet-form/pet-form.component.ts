@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { medicationValidator } from './pet-form-validators';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
   ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
@@ -50,7 +51,13 @@ export class PetFormComponent implements OnInit {
       name: new FormControl(initialPetProfile.name, Validators.required),
       birthday: new FormControl(initialPetProfile.birthday, Validators.required),
 
-      medications: new FormArray([]),
+      medications: new FormArray(
+        initialPetProfile.medications.map(med => new FormGroup({
+          med_id: new FormControl(med.med_id),
+          med_name: new FormControl(med.med_name),
+          directions: new FormControl(med.directions)
+        }))
+      ),
 
       goal: new FormControl(initialPetProfile.goal, Validators.required),
       factor: new FormControl(initialPetProfile.factor, Validators.required)
@@ -87,9 +94,10 @@ export class PetFormComponent implements OnInit {
   // Add a new medication
   addMedication() {
     this.medications.push(new FormGroup({
-      name: new FormControl('', Validators.required),
-      directions: new FormControl('', Validators.required)
-    }));
+      med_id: new FormControl(this.medications.length),
+      med_name: new FormControl(''),
+      directions: new FormControl('')
+    }, medicationValidator));
   }
 
   // Remove a medication by index
@@ -111,38 +119,3 @@ export class PetFormComponent implements OnInit {
     console.log("form", formData)
   }
 }
-
-// weight: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-// unit: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-// allergies: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-
-// medications: new FormGroup({
-//   meds_name: new FormControl('', {
-//     validators: [Validators.required]
-//   }),
-//   directions: new FormControl('', {
-//     validators: [Validators.required]
-//   }),
-// }),
-
-// goal: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-// target_weight: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-
-// factor: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-// daily_calories: new FormControl('', {
-//   validators: [Validators.required]
-// }),
-
-// notes: new FormControl(''),
