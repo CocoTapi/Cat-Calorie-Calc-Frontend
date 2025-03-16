@@ -1,8 +1,44 @@
 @use '@angular/material' as mat;
 
 .form {
-    @include mat.button-toggle-overrides((
-        legacy-focus-state-layer-opacity: 0.3, // Change focus opacity
-        legacy-text-color: red, // Change text color
-      ));
+  display: grid;
+
+      &__type {
+        margin: 0 auto;
+      }
+
+      &__name{
+
+      }
+
+      &__birthday {
+
+      }
+
+      &___weight {
+        display: flex;
+      }
+
+      &__allergies {
+
+      }
+
+      &__medications {
+
+      }
+
+      &__goal {
+        &__target {
+
+        }
+
+        &__weight {
+
+        }
+      }
+
+      &__calories {
+
+      }
+    
 }
