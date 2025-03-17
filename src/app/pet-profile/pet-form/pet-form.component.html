@@ -4,7 +4,7 @@
     <form [formGroup]="petProfileForm" (ngSubmit)="onSubmit()" class="form">
         <!-- Type Selection -->
         <section class="form__species">
-            <mat-button-toggle-group aria-label="species" formControlName="species">
+            <mat-button-toggle-group aria-label="species" formControlName="species" class="toggle-btn">
                 <mat-button-toggle value="cat">Cat</mat-button-toggle>
                 <mat-button-toggle value="dog">dog</mat-button-toggle>
             </mat-button-toggle-group>
@@ -92,79 +92,78 @@
             </ul>
             <button type="button" (click)="addMedication()" class="btn form__medications__btn">
                 <mat-icon>add_circle</mat-icon>
-                <span>Add</span>
+                <span>Add Medicine</span>
             </button>
         </section>
 
         <!-- Goal Selection -->
         <section class="form__goal">
             <label for="goal" class="form__goal__title">Goal :</label>
-            <div class="form__section__goal__target">
-                <select name="goal" id="goal" formControlName="goal">
-                    <option value="Maintain">Maintain</option>
-                    <option value="Lose">Lose</option>
-                    <option value="Gain">Gain</option>
-                </select>
-                <p>weight</p>
+            <div class="form__goal__content">
+                <div class="form__goal__content__target">
+                    <select name="goal" id="goal" formControlName="goal">
+                        <option value="Maintain">Maintain</option>
+                        <option value="Lose">Lose</option>
+                        <option value="Gain">Gain</option>
+                    </select>
+                    <p>weight</p>
+                </div>
+    
+                <!-- Target Weight Input -->
+                <div class="form__goal__content__weight">
+                    <app-custom-input 
+                        label="Target Weight"
+                        formFieldName="target_weight"
+                        type="text"
+                        [customFormControl]="getFormControl('target_weight')"
+                        placeholder="Ex. milk, wheat"
+                    />
+                    <p>{{ getFormControl('weight_unit').value }}</p>
+                </div>
             </div>
-
-            <!-- Target Weight Input -->
-            <div class="form__section__goal__weight">
-                <app-custom-input 
-                    label="Target Weight"
-                    formFieldName="target_weight"
-                    type="text"
-                    [customFormControl]="getFormControl('target_weight')"
-                    placeholder="Ex. milk, wheat"
-                />
-                <p>{{ getFormControl('weight_unit').value }}</p>
-
-                <!-- <label for="target_weight" class="form__section__title">Target Weight :</label>
-                <div>
-                    <input type="text" id="target_weight" name="target_weight" formControlName="target_weight" />
-                    <p>{{ unitControl.value }}</p>
-                </div> -->
-            </div>
+            
         </section>
 
         <!-- Dairy Calories Setting -->
         <section class="form__calories">
             <p class="form__calories__title">Daily Calories :</p>
-            <div class="form__calories__info">
-                <p>
-                    We use Resting Energy Requirement (RER)
-                </p>
-                <a
-                    href="https://vmc.vet.osu.edu/services/companion-animal-nutrition-support-service"><mat-icon>info</mat-icon></a>
-            </div>
-
-            <!-- Factor Input -->
-            <div class="form__calories__factor">
-                <p>
-                    suggested factor for 
-                    <span>{{ getFormControl('goal').value }} weight</span> : 
-                    <span>{{ getFormControl('factor').value }}</span>
-                </p>
-                <app-custom-input 
-                    label="Factor based on your goal"
-                    formFieldName="factor"
-                    type="text"
-                    [customFormControl]="getFormControl('factor')"
-                    placeholder="Ex. milk, wheat"
-                />
-            </div>
-
-            <!-- Calories Input -->
-            <div class="form__calories__daily">
-                <p>Displayed calories are automatically calculated based on the factor.</p>
-                <app-custom-input 
-                    label="Daily Calories"
-                    formFieldName="daily_calories"
-                    type="text"
-                    [customFormControl]="getFormControl('daily_calories')"
-                    placeholder="Ex. 200"
-                />
-                <p>kcal / day</p>
+            <div class="form__calories__content">
+                <div class="form__calories__contents__info">
+                    <p>
+                        We use Resting Energy Requirement (RER)
+                    </p>
+                    <a
+                        href="https://vmc.vet.osu.edu/services/companion-animal-nutrition-support-service"><mat-icon>info</mat-icon></a>
+                </div>
+    
+                <!-- Factor Input -->
+                <div class="form__calories__content__factor">
+                    <p>
+                        suggested factor for 
+                        <span>{{ getFormControl('goal').value }} weight</span> : 
+                        <span>{{ getFormControl('factor').value }}</span>
+                    </p>
+                    <app-custom-input 
+                        label="Factor based on your goal"
+                        formFieldName="factor"
+                        type="text"
+                        [customFormControl]="getFormControl('factor')"
+                        placeholder="Ex. milk, wheat"
+                    />
+                </div>
+    
+                <!-- Calories Input -->
+                <div class="form__calories__contents__daily">
+                    <p>Displayed calories are automatically calculated based on the factor.</p>
+                    <app-custom-input 
+                        label="Daily Calories"
+                        formFieldName="daily_calories"
+                        type="text"
+                        [customFormControl]="getFormControl('daily_calories')"
+                        placeholder="Ex. 200"
+                    />
+                    <p>kcal / day</p>
+                </div>
             </div>
         </section>
 

@@ -4,23 +4,33 @@
   position: fixed;
   z-index: 1000;
   box-sizing: border-box;
-  height: 90vh; /* Ensures modal takes a limited height */
+  height: 97vh; /* Ensures modal takes a limited height */
+  width: 100%;
   overflow-y: auto; /* Enables scrolling inside modal */
 }
 
 .form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
   flex: 1; /* Allows form to take available space */
   overflow-y: auto; /* Enables scrolling */
+  box-sizing: border-box;
+  width: 100%;
+  align-items: stretch;
 
-  &__type {
-    margin: 1rem auto;
-    // TODO: button design
+  & > * {
+    display: flex;
   }
 
-  &__name{
-    
+  &__species {
+    margin: 0 auto;
+    justify-content: center;
+  }
+
+  &__name {
+    width: 100%;
+    flex-direction: column;
   }
 
   &__birthday {
@@ -28,14 +38,9 @@
   }
 
   &__weight {
-    display: flex;
-    // grid-template-columns: 10rem 1fr 1fr; 
-
-    // &__unit {
-    //     display: flex;
-    //     justify-content: flex-end;
-    //     align-items: center;
-    // }
+    justify-content: space-between;
+    align-items: center;
+    
   }
 
   &__allergies, &__medications, &__goal {
@@ -43,55 +48,30 @@
   }
 
   &__allergies {
-    input[name='allergies'] {
-      width: 100%;
-      margin-left: 3rem;
-      
-    }
+    flex-direction: column;
   }
 
   &__medications {
+    flex-direction: column;
 
     &__content {
-      margin-left: 3rem;
+      display: flex;
+      flex-direction: column;
       list-style: circle;
 
       &__item {
-        background-color: rgb(173, 173, 173);
-        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(192, 192, 192);
+        padding: 2rem;
+        margin-left: 4rem;
         margin-bottom: 1rem;
         border-radius: 5px;
-        display: grid;
-        grid-template-columns: 10rem 1fr auto; // Two columns + button space
-        grid-template-areas: 
-            "label1 input1 button"
-            "label2 input2 button";
-        gap: 1rem;
-        align-items: center;
-        width: 100%;
-        position: relative; 
-
-        label[for="med_name"] {
-            grid-area: label1;
-        }
-
-        input[name="med_name"] {
-            grid-area: input1;
-        }
-
-        label[for="directions"] {
-            grid-area: label2;
-        }
-
-        input[name="directions"] {
-            grid-area: input2;
-        }
 
         button {
-            grid-area: button;
-            justify-self: end;
-            background-color: transparent;
-            border-color: transparent;
+          justify-content: end;
+          background-color: transparent;
+          border-color: transparent;
         }
       }
     }
@@ -104,17 +84,45 @@
   }
 
   &__goal {
-    &__target {
+    display: flex;
+    flex-direction: column;
 
-    }
+    &__content {
+      display: flex;
+      flex-direction: column;
+      margin-left: 4rem;
+      gap: 2rem;
 
-    &__weight {
 
-    }
+      &__target {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+  
+      &__weight {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+    } 
   }
 
   &__calories {
+    display: flex;
+    flex-direction: column;
 
+    &__content {
+      display: flex;
+      flex-direction: column;
+      margin-left: 4rem;
+      gap: 1rem;
+
+      &__factor {
+        display: flex;
+      }
+    }
   }
+   
     
 }
