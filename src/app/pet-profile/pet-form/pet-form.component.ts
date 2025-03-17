@@ -23,7 +23,7 @@ import { CustomInputComponent } from "../../ui/custom-input/custom-input.compone
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    CustomInputComponent
+    CustomInputComponent,
 ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
