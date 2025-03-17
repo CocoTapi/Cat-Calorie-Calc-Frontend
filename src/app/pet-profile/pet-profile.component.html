@@ -1,10 +1,10 @@
+@if (showEditPage()){
+    <app-pet-form [pet]="pet()" />
+}
+
 <div class="pets">
     <h1 class="heading-1">{{ pet().name}}</h1>
     <button (click)="onEdit()" class="responsive-icon"><mat-icon>settings</mat-icon></button>
-
-    @if (showEditPage()){
-        <app-pet-form [pet]="pet()" />
-    }
     <div class="pet-profile-1">
         <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
         <div class="pet-profile-1__summary">

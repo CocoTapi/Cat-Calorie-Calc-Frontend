@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal, OnInit, Input, DestroyRef, inject } from '@angular/core';
 import { CardComponent } from "../../ui/card/card.component";
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Pet_Form_DATA, Pet_Profile } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,12 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { medicationValidator } from './pet-form-validators';
-
+import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
 
 @Component({
   selector: 'app-pet-form',
   imports: [
     CardComponent,
+    FormsModule,
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatIconModule,
@@ -22,7 +23,8 @@ import { medicationValidator } from './pet-form-validators';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-  ],
+    CustomInputComponent
+],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,12 +35,13 @@ export class PetFormComponent implements OnInit {
   title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
   petProfileForm!: FormGroup;
+ 
 
   ngOnInit(): void {
     // Setup initial form values
     const initialPetProfile: Pet_Form_DATA = {
       id: this.pet?.id ?? null,
-      type: this.pet?.type ?? 'cat',
+      species: this.pet?.species ?? 'cat',
       name: this.pet?.name ?? '',
       birthday: this.pet?.birthday ?? null,
 
@@ -59,8 +62,10 @@ export class PetFormComponent implements OnInit {
 
     // Setup reactive form group
     this.petProfileForm = new FormGroup({
-      type: new FormControl(initialPetProfile.type, Validators.required),
-      name: new FormControl(initialPetProfile.name, Validators.required),
+      species: new FormControl(initialPetProfile.species,Validators.required),
+      name: new FormControl(initialPetProfile.name, {
+        validators:[ Validators.required]
+      }),
       birthday: new FormControl(initialPetProfile.birthday, Validators.required),
 
       weight: new FormControl(initialPetProfile.weight, Validators.required),
@@ -70,8 +75,8 @@ export class PetFormComponent implements OnInit {
       medications: new FormArray(
         initialPetProfile.medications.map(med => new FormGroup({
           med_id: new FormControl(med.med_id),
-          med_name: new FormControl(med.med_name),
-          directions: new FormControl(med.directions)
+          med_name: new FormControl(med.med_name, Validators.required),
+          directions: new FormControl(med.directions, Validators.required)
         }))
       ),
 
@@ -134,25 +139,33 @@ export class PetFormComponent implements OnInit {
     })
 
     this.destroyRef.onDestroy(() => subscriptionForFactor?.unsubscribe());
-
   }
 
-  // Getter for weight_unit
-  get unit() {
-    return this.petProfileForm.get('weight_unit')?.value;
+  // Getter for Form Controls to use validations
+  getFormControl(fieldName: string): FormControl {
+  if (!this.petProfileForm) throw Error(`petProfileForm is not exist.`);
+
+    return this.petProfileForm.get(fieldName) as FormControl
   }
 
   // Getter for medications' FormArray
   get medications() {
+    if (!this.petProfileForm) throw Error(`petProfileForm is not exist.`);
+
     return this.petProfileForm.get('medications') as FormArray;
+  }
+
+  // Getter for each medication name and direction
+  getMedItemControl(index: number, medItem: 'med_name' | 'directions' ): FormControl {
+    return this.medications.at(index).get(medItem) as FormControl;
   }
 
   // Add a new medication
   addMedication() {
     this.medications.push(new FormGroup({
       med_id: new FormControl(this.medications.length),
-      med_name: new FormControl(''),
-      directions: new FormControl('')
+      med_name: new FormControl('', Validators.required),
+      directions: new FormControl('', Validators.required)
     }, medicationValidator));
   }
 

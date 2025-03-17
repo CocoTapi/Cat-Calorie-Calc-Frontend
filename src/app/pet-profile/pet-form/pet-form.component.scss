@@ -1,32 +1,23 @@
 @use '@angular/material' as mat;
 
+.edit-modal {
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  height: 90vh; /* Ensures modal takes a limited height */
+  overflow-y: auto; /* Enables scrolling inside modal */
+}
+
 .form {
   display: grid;
   gap: 2rem;
-
-  // everything inside form
-  & > * {
-    font-size: 2rem;
-    display: grid;
-    align-items: center;
-
-    input {
-      width: 100%; // Makes sure input stretches within its grid cell
-      padding: 0.5rem;
-      border-radius: 5px;
-      border-color: transparent;
-  }
-  }
+  flex: 1; /* Allows form to take available space */
+  overflow-y: auto; /* Enables scrolling */
 
   &__type {
     margin: 1rem auto;
     // TODO: button design
   }
-
-  &__name, &__birthday {
-    grid-template-columns: 10rem 1fr; 
-  }
-
 
   &__name{
     
@@ -37,15 +28,14 @@
   }
 
   &__weight {
-    grid-template-columns: 10rem 1fr 1fr; 
+    display: flex;
+    // grid-template-columns: 10rem 1fr 1fr; 
 
-    
-
-    &__unit {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
+    // &__unit {
+    //     display: flex;
+    //     justify-content: flex-end;
+    //     align-items: center;
+    // }
   }
 
   &__allergies, &__medications, &__goal {

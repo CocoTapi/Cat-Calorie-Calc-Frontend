@@ -1,6 +1,6 @@
 export interface Pet_Form_DATA {
     id: number | null,
-    type: 'cat' | 'dog' | null,
+    species: 'cat' | 'dog' | null,
     name: string,
     birthday: Date | null,
 
