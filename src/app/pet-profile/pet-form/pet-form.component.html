@@ -33,7 +33,7 @@
             <input type="text" id="weight" name="weight" formControlName="weight" />
 
             <!-- Unit Selection -->
-            <div>
+            <div class="form__weight__unit">
                 <mat-button-toggle-group aria-label="weight_unit" formControlName="weight_unit">
                     <mat-button-toggle value="lb">lb</mat-button-toggle>
                     <mat-button-toggle value="kg">kg</mat-button-toggle>
@@ -43,26 +43,32 @@
 
         <!-- Food Allergies Input-->
         <section class="form__allergies">
-            <label for="name" class="form__allergies__title">Food Allergies :</label>
-            <input type="text" id="name" name="name" formControlName="name" />
+            <label for="allergies" class="form__allergies__title">Food Allergies :</label>
+            <input type="text" id="allergies" name="allergies" formControlName="allergies" />
         </section>
 
         <!-- Medication Input -->
         <section class="form__medications">
             <p class="form__medications__title">Medications :</p>
-            <ul formArrayName="medications">
+            <ul formArrayName="medications" class="form__medications__content">
                 @for (med of medications.controls; track med; let idx = $index){
-                    <li [formGroupName]="idx" class="form__medications__item">
+                    <li [formGroupName]="idx" class="form__medications__content__item">
                         <label for="med_name">Name :</label>
                         <input type="text" id="med_name" name="med_name" formControlName="med_name" />
     
                         <label for="directions">Directions :</label>
                         <input type="text" id="directions" name="directions" formControlName="directions" />
-                        <button type="button" (click)="removeMedication(idx)">Remove</button>
+
+                        <button type="button" (click)="removeMedication(idx)" class="btn">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
                     </li>
                     }
             </ul>
-                <button type="button" (click)="addMedication()" class="btn form__medications__btn">Add</button>
+            <button type="button" (click)="addMedication()" class="btn form__medications__btn">
+                <mat-icon>add_circle</mat-icon>
+                <span>Add</span>
+            </button>
         </section>
 
         <!-- Goal Selection -->

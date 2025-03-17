@@ -53,27 +53,18 @@ $bp-small: 37.5em; //600px
   &--dark {color: $color-grey-dark-1;}
 }
 
-.heading-3 {
-  @extend %heading;
-  font-size: 1.6rem;
-  color: $color-primary;
-  text-transform: uppercase
-
-}
-
-.heading-4 {
- @extend %heading;
- font-size: 1.9rem;
-
- &--light {color: $color-grey-light-1;}
- &--dark {color: $color-grey-dark-1;}
-}
-
 // MARGIN BOTTOM
 .mb-sm { margin-bottom: 1rem; }
 .mb-md { margin-bottom: 2rem; }
 .mb-lg { margin-bottom: 3rem; }
 .mb-hg { margin-bottom: 4rem; }
+
+// Button Base
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 
 *,

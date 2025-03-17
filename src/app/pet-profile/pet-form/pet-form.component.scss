@@ -2,43 +2,129 @@
 
 .form {
   display: grid;
+  gap: 2rem;
 
-      &__type {
-        margin: 0 auto;
-      }
+  // everything inside form
+  & > * {
+    font-size: 2rem;
+    display: grid;
+    align-items: center;
 
-      &__name{
+    input {
+      width: 100%; // Makes sure input stretches within its grid cell
+      padding: 0.5rem;
+      border-radius: 5px;
+      border-color: transparent;
+  }
+  }
 
-      }
+  &__type {
+    margin: 1rem auto;
+    // TODO: button design
+  }
 
-      &__birthday {
+  &__name, &__birthday {
+    grid-template-columns: 10rem 1fr; 
+  }
 
-      }
 
-      &___weight {
+  &__name{
+    
+  }
+
+  &__birthday {
+    // TODO: mat-form-field design
+  }
+
+  &__weight {
+    grid-template-columns: 10rem 1fr 1fr; 
+
+    
+
+    &__unit {
         display: flex;
-      }
+        justify-content: flex-end;
+        align-items: center;
+    }
+  }
 
-      &__allergies {
+  &__allergies, &__medications, &__goal {
+    gap: 1.2rem;
+  }
 
-      }
+  &__allergies {
+    input[name='allergies'] {
+      width: 100%;
+      margin-left: 3rem;
+      
+    }
+  }
 
-      &__medications {
+  &__medications {
 
-      }
+    &__content {
+      margin-left: 3rem;
+      list-style: circle;
 
-      &__goal {
-        &__target {
+      &__item {
+        background-color: rgb(173, 173, 173);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        display: grid;
+        grid-template-columns: 10rem 1fr auto; // Two columns + button space
+        grid-template-areas: 
+            "label1 input1 button"
+            "label2 input2 button";
+        gap: 1rem;
+        align-items: center;
+        width: 100%;
+        position: relative; 
 
+        label[for="med_name"] {
+            grid-area: label1;
         }
 
-        &__weight {
+        input[name="med_name"] {
+            grid-area: input1;
+        }
 
+        label[for="directions"] {
+            grid-area: label2;
+        }
+
+        input[name="directions"] {
+            grid-area: input2;
+        }
+
+        button {
+            grid-area: button;
+            justify-self: end;
+            background-color: transparent;
+            border-color: transparent;
         }
       }
+    }
 
-      &__calories {
+    &__btn {
+      margin: 0 auto;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+  }
 
-      }
+  &__goal {
+    &__target {
+
+    }
+
+    &__weight {
+
+    }
+  }
+
+  &__calories {
+
+  }
     
 }
