@@ -1,27 +1,27 @@
 .pets {
     display: grid;
     width: 90vw;
-    margin: 2rem auto;
+    margin: 1rem auto;
 }
 
 .responsive-icon {
     background-color: transparent;
     border-color: transparent;
-    width: 4rem;
+    width: 1rem;
     margin-left: auto;
 }
 
 .pet-profile-1, .graph-component{
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
 }
 
 .pet-profile-1 {
     display: flex;
-    gap: 5rem;
+    gap: 1rem;
     
     &__img {
-        width: 13rem;
-        height: 13rem;
+        width: 7rem;
+        height: 7rem;
         object-fit: fill;
         border-radius: 50%;
         box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
@@ -38,17 +38,16 @@
 
 .line-graph {
     width: 100%;
-    height: 25rem;
+    height: 10rem;
 }
 
 .pet-profile-2 {
     display: grid;
-    grid-row-gap: 3rem;
+    grid-row-gap: 1rem;
     
     &__calories, &__medications, &__allergies {
         display: grid;
-        grid-template-columns: 15rem 1fr; 
-        grid-column-gap: 4rem;
+        grid-template-columns: 11rem 1fr; 
         align-items: start;
     }
 
@@ -56,7 +55,7 @@
         list-style: none;
     } 
 
-     &__notes {
+    &__notes {
         display: grid;
 
         &__content {
