@@ -73,14 +73,15 @@
 
             <!-- Goal Selection -->
             <section class="form__goal">
-                <label for="goal" class="form__goal__title">Goal :</label>
+                <label for="goal" class="form__goal__title">Weight Management :</label>
                 <div class="form__goal__content">
                     <div class="form__goal__content__target">
-                        <select name="goal" id="goal" formControlName="goal">
-                            <option value="Maintain">Maintain</option>
-                            <option value="Lose">Lose</option>
-                            <option value="Gain">Gain</option>
-                        </select>
+                        <app-custom-selection 
+                            label="Goal"
+                            formFieldName="goal"
+                            [selectedValue]="getFormControl('goal').value"
+                            [selectionArr]="goalSelection"
+                        />
                         <p>weight</p>
                     </div>
 

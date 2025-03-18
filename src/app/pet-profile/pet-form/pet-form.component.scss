@@ -61,6 +61,7 @@
   &__medications {
     flex-direction: column;
     gap: 0;
+    margin-bottom: 1rem;
 
     &__content {
       display: flex;
@@ -98,13 +99,11 @@
     &__content {
       display: flex;
       flex-direction: column;
-      margin-left: 2rem;
-      gap: 2rem;
-
+      margin-left: 1rem;
 
       &__target {
         display: flex;
-        gap: 2rem;
+        gap: 1rem;
         align-items: center;
       }
   

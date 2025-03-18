@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { medicationValidator } from './pet-form-validators';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
+import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/custom-selection.component';
 
 @Component({
   selector: 'app-pet-form',
@@ -24,6 +25,7 @@ import { CustomInputComponent } from "../../ui/custom-input/custom-input.compone
     MatDatepickerModule,
     MatNativeDateModule,
     CustomInputComponent,
+    CustomSelectionComponent
 ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
@@ -35,6 +37,12 @@ export class PetFormComponent implements OnInit {
   title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
   petProfileForm!: FormGroup;
+
+  goalSelection : SELECTION[] = [
+    { value: 'Maintain' },
+    { value: 'Lose' },
+    { value: 'Gain' },
+  ]
  
 
   ngOnInit(): void {

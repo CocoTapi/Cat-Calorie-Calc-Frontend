@@ -20,7 +20,7 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
         goal: 'Lose',
         target_weight: 16,
         factor: 0.8,
-        daily_calories: 360,
+        daily_calories: 264.8,
         notes: 'He is shy first but once he knows people, he loves hanging out and snuggle with them.'
     }
 ]
