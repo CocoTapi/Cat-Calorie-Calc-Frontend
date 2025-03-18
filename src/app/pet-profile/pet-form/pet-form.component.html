@@ -65,7 +65,12 @@
                     </li>
                     }
                 </ul>
-                <button type="button" (click)="addMedication()" class="btn form__medications__btn">
+                <button 
+                    type="button" 
+                    (click)="addMedication()" 
+                    class="btn form__medications__btn"
+                    [disabled]="isAddDisabled()"
+                >
                     <mat-icon>add_circle</mat-icon>
                     <span>Add Medicine</span>
                 </button>

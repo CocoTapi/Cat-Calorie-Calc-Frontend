@@ -168,6 +168,16 @@ export class PetFormComponent implements OnInit {
     return this.medications.at(index).get(medItem) as FormControl;
   }
 
+  // if the last medication item is empty, disable add button;
+  isAddDisabled(): boolean {
+    if (this.medications.length === 0) {
+      return false; // Allow adding first medication
+    }
+  
+    const lastIdx = this.medications.length - 1;
+    return !this.getMedItemControl(lastIdx, 'directions').value?.trim(); // Disable if empty or only spaces
+  }
+
   // Add a new medication
   addMedication() {
     this.medications.push(new FormGroup({
