@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
-import { Pet_Profile } from '../pet-profile/models/pet-profile.model';
+import { PETS_TEST_DATA } from '../../../../public/pets/pets-test-data';
+import { Pet_Profile } from '../../pet-profile/models/pet-profile.model';
 
 @Injectable({
   providedIn: 'root'

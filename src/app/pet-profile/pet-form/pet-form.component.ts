@@ -146,6 +146,8 @@ export class PetFormComponent implements OnInit {
       dailyCaloriesControl?.setValue(dailyCalories);
     })
 
+    // TODO: Listen for changes in 'daily_calories' and update 'factor' 
+
     this.destroyRef.onDestroy(() => subscriptionForFactor?.unsubscribe());
   }
 

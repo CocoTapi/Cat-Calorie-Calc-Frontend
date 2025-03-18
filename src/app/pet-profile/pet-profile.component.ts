@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal, input } from '@angular/core';
 import { CardComponent } from "../ui/card/card.component";
-import { PetProfileService } from '../services/pet-profile.service';
+import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
 import { MatIconModule } from '@angular/material/icon';
 

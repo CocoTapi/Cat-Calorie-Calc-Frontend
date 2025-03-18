@@ -1,0 +1,22 @@
+<div class="panel" 
+     #panel 
+     (touchstart)="onTouchStart($event)" 
+     (touchmove)="onTouchMove($event)" 
+     (touchend)="onTouchEnd($event)"
+     (mousedown)="onTouchStart($event)"
+>
+
+  <!-- Sticky Header -->
+  <div class="header">
+    <div class="drag-handle"></div>
+    @if (title()){
+      <h2 class="heading-2">{{ title() }}</h2>
+    }
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="content">
+    <ng-content />
+  </div>
+</div>
+      
