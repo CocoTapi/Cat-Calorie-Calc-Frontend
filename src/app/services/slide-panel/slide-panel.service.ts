@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
-import { SlidePanelComponent } from '../../ui/slide-panel/slide-panel.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SlidePanelService {
-  private panelInstance: SlidePanelComponent | null = null;
-  private closeCallback: (() => void) | null = null;
+  private slidePanel!: { openPanel: () => void; closePanel: () => void } | null;
+  private onCloseCallback?: () => void;
 
-  register(panel: SlidePanelComponent | null) {
-    this.panelInstance = panel;
+  register(panel: { openPanel: () => void; closePanel: () => void } | null) {
+    this.slidePanel = panel;
   }
 
   // For button to open the slide panel
   open() {
-    this.panelInstance?.openPanel();
+    this.slidePanel?.openPanel();
   }
 
   // Use this to close panel
   close() {
-    this.panelInstance?.closePanel();
+    this.slidePanel?.closePanel();
   }
 
   // Use this To detect when the panel has closed and execute a function (like submitting a form)
   onClose(callback: () => void) {
-    this.closeCallback = callback; // Keep the latest callback
+    this.onCloseCallback = callback; // Keep the latest callback
   }
 
 
@@ -32,8 +31,6 @@ export class SlidePanelService {
   // This is only for SlidePanelComponent 
   // Called when the panel has completely closed
   notifyClose() {
-    if (this.closeCallback) {
-      this.closeCallback();
-    }
+    this.onCloseCallback?.(); // Execute the callback every time the panel closes
   }
 }

@@ -67,8 +67,18 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   private checkUserInteraction(event: TouchEvent | MouseEvent) {
     const target = event.target as HTMLElement;
 
+    console.log("event", event);
+
     // Allow text inputs to receive focus
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+    if (
+      target.tagName === 'INPUT' || 
+      target.tagName === 'TEXTAREA' ||  
+      target.tagName === 'SPAN' ||
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'MAT-ICON'||
+      target.tagName === 'DIV'||
+      target.tagName === 'path'
+    ) {
       return;
     }
 
@@ -134,7 +144,7 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     if (finalPosition > this.thresholdPercent) {
       this.closePanel();
     } else {
-      this.lastPosition = finalPosition;
+      // this.lastPosition = finalPosition;
       this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${this.lastPosition}%)`);
     }
     

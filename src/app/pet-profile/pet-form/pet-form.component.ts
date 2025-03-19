@@ -64,17 +64,17 @@ export class PetFormComponent implements OnInit {
       name: this.pet?.name ?? '',
       birthday: this.pet?.birthday ?? null,
 
-      weight: this.pet?.weight ?? null,
+      weight: this.pet?.weight ?? 0,
       weight_unit: this.pet?.weight_unit ?? CommonConstants.LB,
 
       allergies: this.pet?.allergies ?? '',
       medications: this.pet?.medications ?? [],
 
       goal: this.pet?.goal ?? CommonConstants.MAINTAIN,
-      target_weight: this.pet?.target_weight ?? null,
+      target_weight: this.pet?.target_weight ?? 0,
 
-      factor: this.pet?.factor ?? '1.0',
-      daily_calories: this.pet?.daily_calories ?? null,
+      factor: this.pet?.factor ?? 1,
+      daily_calories: this.pet?.daily_calories ?? 0,
 
       notes: this.pet?.notes ?? '',
     };

@@ -4,7 +4,7 @@ export interface Pet_Form_Data {
     id: number,
     species: 'cat' | 'dog',
     name: string,
-    birthday: Date | null,
+    birthday: Date,
 
     weight: number,
     weight_unit: 'lb' | 'kg',
@@ -13,10 +13,10 @@ export interface Pet_Form_Data {
     medications: Pet_Form_Medication[],
 
     goal: 'Maintain' | 'Gain' | 'Lose',
-    target_weight: number | null,
+    target_weight: number,
 
     factor: number,
-    daily_calories: number | null,
+    daily_calories: number,
 
     notes: string,
 } 
