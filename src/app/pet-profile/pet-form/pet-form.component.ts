@@ -164,9 +164,10 @@ export class PetFormComponent implements OnInit {
 
   // Getter for Form Controls to use validations
   getFormControl(fieldName: string): FormControl {
-  if (!this.petProfileForm) throw new Error(`petProfileForm is not exist.`);
-
-    return this.petProfileForm.get(fieldName) as FormControl
+    const fieldControl = this.petProfileForm.get(fieldName) as FormControl;
+    if (!fieldControl) throw new Error(`${fieldName} is missing in petProfileForm. Result: ${fieldControl}`);
+  
+    return fieldControl;
   }
 
   // Getter for medications' FormArray
@@ -179,7 +180,10 @@ export class PetFormComponent implements OnInit {
 
   // Getter for each medication name and direction
   getMedItemControl(index: number, medItem: MedItemType): FormControl {
-    return this.medications.at(index).get(medItem) as FormControl;
+    const medItemControl = this.medications.at(index).get(medItem) as FormControl;
+    if (!medItemControl) throw new Error(`${medItem} is missing in petProfileForm. Result: ${medItemControl}`);
+    
+    return medItemControl;
   }
 
   // if the last medication item is empty, disable add button;
