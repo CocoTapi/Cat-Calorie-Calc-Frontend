@@ -18,7 +18,7 @@ export class AppComponent implements OnInit{
   pet = { name: 'Dodger'}
 
   ngOnInit(): void {
-    const initialProfile = { name: this.pet.name }
+const initialProfile = { name: this.pet.name }
 
     this.myForm = new FormGroup({
       name: new FormControl(initialProfile.name),

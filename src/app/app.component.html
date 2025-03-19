@@ -1,9 +1,13 @@
-<!-- <app-pet-profile /> -->
+<app-pet-profile />
 
 <button (click)="openPanel()">Open</button>
+
 <app-slide-panel title="Pet">
+  <div panel-content>
     <form [formGroup]="myForm">
-        <label for="name">Name:</label>
-        <input formControlName="name" type="text" />
-  </form>
+      <label for="name">Name:</label>
+      <input formControlName="name" type="text" />
+    </form>
+  </div>
+    
 </app-slide-panel>

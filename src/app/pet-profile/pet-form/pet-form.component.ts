@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal, OnInit, Input, DestroyRef, inject } from '@angular/core';
-import { CardComponent } from "../../ui/card/card.component";
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { Pet_Form_DATA, Pet_Profile } from '../models/pet-profile.model';
+import { MedItemType, Pet_Form_Data, Pet_Profile } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,11 +10,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { medicationValidator } from './pet-form-validators';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
 import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/custom-selection.component';
+import { CommonConstants } from '../../app.constants';
 
 @Component({
   selector: 'app-pet-form',
   imports: [
-    CardComponent,
     FormsModule,
     ReactiveFormsModule,
     MatButtonToggleModule,
@@ -36,30 +35,42 @@ export class PetFormComponent implements OnInit {
 
   title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
-  petProfileForm!: FormGroup;
+  // petProfileForm!: FormGroup;
+
+  private _petProfileForm!: FormGroup;
+
+  get petProfileForm():FormGroup {
+    if(!this._petProfileForm) throw new Error('property _petProfileForm does not exist!');
+    return this._petProfileForm;
+  }
+  set petProfileForm(value: FormGroup) {
+    this._petProfileForm = value;
+  }
 
   goalSelection : SELECTION[] = [
-    { value: 'Maintain' },
-    { value: 'Lose' },
-    { value: 'Gain' },
+    { value: CommonConstants.MAINTAIN },
+    { value: CommonConstants.LOSE },
+    { value: CommonConstants.GAIN },
   ]
- 
+
+  // TODO: get user's pet amount 
+  newId: number = Math.random();
 
   ngOnInit(): void {
     // Setup initial form values
-    const initialPetProfile: Pet_Form_DATA = {
-      id: this.pet?.id ?? null,
-      species: this.pet?.species ?? 'cat',
+    const initialPetProfile: Pet_Form_Data = {
+      id: this.pet?.id ?? this.newId,
+      species: this.pet?.species ?? CommonConstants.CAT,
       name: this.pet?.name ?? '',
       birthday: this.pet?.birthday ?? null,
 
       weight: this.pet?.weight ?? null,
-      weight_unit: this.pet?.weight_unit ?? 'lb',
+      weight_unit: this.pet?.weight_unit ?? CommonConstants.LB,
 
       allergies: this.pet?.allergies ?? '',
       medications: this.pet?.medications ?? [],
 
-      goal: this.pet?.goal ?? 'Maintain',
+      goal: this.pet?.goal ?? CommonConstants.MAINTAIN,
       target_weight: this.pet?.target_weight ?? null,
 
       factor: this.pet?.factor ?? '1.0',
@@ -96,31 +107,31 @@ export class PetFormComponent implements OnInit {
     });
 
     // Listen for changes in 'goal' and update 'factor'
-    const subscriptionForGoal = this.petProfileForm.get('goal')?.valueChanges.subscribe(goal => {
-      const factorControl = this.petProfileForm.get('factor');
+    const subscriptionForGoal = this.petProfileForm.get(CommonConstants.GOAL)?.valueChanges.subscribe(goal => {
+      const factorControl = this.petProfileForm.get(CommonConstants.FACTOR);
 
       switch (goal) {
-        case 'Maintain':
+        case CommonConstants.MAINTAIN:
           factorControl?.setValue(1.2);
           break;
-        case 'Lose':
+        case CommonConstants.LOSE:
           factorControl?.setValue(0.8);
           break;
-        case 'Gain':
+        case CommonConstants.GAIN:
           factorControl?.setValue(1.1);
           break;
         default:
-          factorControl?.setValue('');
+          factorControl?.setValue(1.0);
       }
     });
     
     this.destroyRef.onDestroy(() => subscriptionForGoal?.unsubscribe());
 
     // Listen for changes in 'factor' and update 'daily_calories'
-    const subscriptionForFactor = this.petProfileForm.get('factor')?.valueChanges.subscribe(factor => {
-      const dailyCaloriesControl = this.petProfileForm.get('daily_calories');
-      const weightControl = this.petProfileForm.get('weight');
-      const weightUnitControl = this.petProfileForm.get('weight_unit');
+    const subscriptionForFactor = this.petProfileForm.get(CommonConstants.FACTOR)?.valueChanges.subscribe(factor => {
+      const dailyCaloriesControl = this.petProfileForm.get(CommonConstants.DAILY_CALORIES);
+      const weightControl = this.petProfileForm.get(CommonConstants.WEIGHT);
+      const weightUnitControl = this.petProfileForm.get(CommonConstants.WEIGHT_UNIT);
 
       // Ensure controls exist before proceeding
       if (!weightControl || !weightUnitControl || !dailyCaloriesControl) {
@@ -130,7 +141,7 @@ export class PetFormComponent implements OnInit {
       let currentWeightInKg = weightControl.value;
 
       // Convert lb to kg
-      if (weightUnitControl.value === 'lb') {
+      if (weightUnitControl.value === CommonConstants.LB) {
         currentWeightInKg = currentWeightInKg / 2.2046;
       }
 
@@ -153,31 +164,35 @@ export class PetFormComponent implements OnInit {
 
   // Getter for Form Controls to use validations
   getFormControl(fieldName: string): FormControl {
-  if (!this.petProfileForm) throw Error(`petProfileForm is not exist.`);
+  if (!this.petProfileForm) throw new Error(`petProfileForm is not exist.`);
 
     return this.petProfileForm.get(fieldName) as FormControl
   }
 
   // Getter for medications' FormArray
-  get medications() {
-    if (!this.petProfileForm) throw Error(`petProfileForm is not exist.`);
+  get medications(): FormArray {
+    const medications = this.petProfileForm.get(CommonConstants.MEDICATIONS) as FormArray;
+    if (!medications) throw new Error(`property medications does not exist within petProfileForm!`);
 
-    return this.petProfileForm.get('medications') as FormArray;
+    return medications;
   }
 
   // Getter for each medication name and direction
-  getMedItemControl(index: number, medItem: 'med_name' | 'directions' ): FormControl {
+  getMedItemControl(index: number, medItem: MedItemType): FormControl {
     return this.medications.at(index).get(medItem) as FormControl;
   }
 
   // if the last medication item is empty, disable add button;
-  isAddDisabled(): boolean {
+  isAddDisabled(): boolean { 
     if (this.medications.length === 0) {
       return false; // Allow adding first medication
     }
   
     const lastIdx = this.medications.length - 1;
-    return !this.getMedItemControl(lastIdx, 'directions').value?.trim(); // Disable if empty or only spaces
+    let lastItemDirections = this.getMedItemControl(lastIdx, CommonConstants.DIRECTIONS);
+    lastItemDirections = lastItemDirections?.value.trim();
+
+    return !lastItemDirections // Disable if empty or only spaces
   }
 
   // Add a new medication
@@ -200,7 +215,7 @@ export class PetFormComponent implements OnInit {
       return;
     }
 
-    const formData: Pet_Form_DATA = {
+    const formData: Pet_Form_Data = {
       id: this.pet?.id ?? null,
       ...this.petProfileForm.value
     }

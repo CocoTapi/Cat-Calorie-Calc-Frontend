@@ -46,8 +46,13 @@
 
     <!-- Food Allergies Input-->
     <section class="form__allergies">
-        <app-custom-input label="Allergies" formFieldName="allergies" type="text"
-            [customFormControl]="getFormControl('allergies')" placeholder="Ex. milk, wheat" />
+        <app-custom-input 
+            label="Allergies" 
+            formFieldName="allergies" 
+            type="text"
+            [customFormControl]="getFormControl('allergies')" 
+            placeholder="Ex. milk, wheat" 
+        />
     </section>
 
     <!-- Medication Input -->
@@ -56,10 +61,20 @@
         <ul formArrayName="medications" class="form__medications__content">
             @for (med of medications.controls; track med; let idx = $index){
             <li [formGroupName]="idx" class="form__medications__content__item">
-                <app-custom-input label="Medicine Name" formFieldName="med_name" type="text"
-                    [customFormControl]="getMedItemControl(idx, 'med_name')" placeholder="Ex. Atopica" />
-                <app-custom-input label="Directions" formFieldName="directions" type="text"
-                    [customFormControl]="getMedItemControl(idx, 'directions')" placeholder="Ex. 1 pill / day" />
+                <app-custom-input 
+                    label="Medicine Name" 
+                    formFieldName="med_name" 
+                    type="text"
+                    [customFormControl]="getMedItemControl(idx, 'med_name')" 
+                    placeholder="Ex. Atopica" 
+                />
+                <app-custom-input 
+                    label="Directions" 
+                    formFieldName="directions" 
+                    type="text"
+                    [customFormControl]="getMedItemControl(idx, 'directions')" 
+                    placeholder="Ex. 1 pill / day" 
+                />
 
                 <button type="button" (click)="removeMedication(idx)" class="btn">
                     <mat-icon>cancel</mat-icon>
@@ -94,8 +109,13 @@
 
             <!-- Target Weight Input -->
             <div class="form__goal__content__weight">
-                <app-custom-input label="Target Weight" formFieldName="target_weight" type="text"
-                    [customFormControl]="getFormControl('target_weight')" placeholder="Ex. 5" />
+                <app-custom-input 
+                    label="Target Weight" 
+                    formFieldName="target_weight" 
+                    type="text"
+                    [customFormControl]="getFormControl('target_weight')" 
+                    placeholder="Ex. 5" 
+                />
                 <p>{{ getFormControl('weight_unit').value }}</p>
             </div>
         </div>
@@ -131,8 +151,13 @@
             <!-- Calories Input -->
             <div class="form__calories__content__daily">
                 <!-- <p>Displayed calories are automatically calculated based on the factor.</p> -->
-                <app-custom-input label="Target Daily Calories" formFieldName="daily_calories" type="text"
-                    [customFormControl]="getFormControl('daily_calories')" placeholder="Ex. 200" />
+                <app-custom-input 
+                    label="Target Daily Calories" 
+                    formFieldName="daily_calories" 
+                    type="text"
+                    [customFormControl]="getFormControl('daily_calories')" 
+                    placeholder="Ex. 200" 
+                />
                 <p>kcal / day</p>
             </div>
         </div>
