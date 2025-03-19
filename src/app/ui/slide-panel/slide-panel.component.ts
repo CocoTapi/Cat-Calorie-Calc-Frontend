@@ -63,7 +63,23 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
+  // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
+  private checkUserInteraction(event: TouchEvent | MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    // Allow text inputs to receive focus
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      return;
+    }
+
+    // Otherwise, continue panel interaction
+    event.preventDefault(); 
+  }
+
+
   onTouchStart(event: TouchEvent | MouseEvent) {
+    this.checkUserInteraction(event);
+
     // Get the Difference of start position
     if ('touches' in event) {
       this.startY = event.touches[0].clientY;
@@ -80,7 +96,7 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     this.renderer.setStyle(this.panel.nativeElement, 'transition', 'none');
   }
 
-  // Calculate moved Difference and get the current position
+  // Calculate moved area and get the current position
   private getPositionFromDifference(): number {
     const diff = this.currentY - this.startY;
     let position = this.lastPosition + (diff / window.innerHeight) * 100;
@@ -90,6 +106,8 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   }
   
   onTouchMove(event: TouchEvent | MouseEvent) {
+    this.checkUserInteraction(event);
+
     if (!this.isDragging) return;
     if ('touches' in event) {
       this.currentY = event.touches[0].clientY;
@@ -104,7 +122,8 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   }
   
   onTouchEnd(event: TouchEvent | MouseEvent) {
-    event.preventDefault();
+    this.checkUserInteraction(event);
+
     if (!this.isDragging) return;
   
     // Add transition for the dropping animation

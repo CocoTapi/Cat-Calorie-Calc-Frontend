@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { SlidePanelComponent } from './ui/slide-panel/slide-panel.component';
 import { SlidePanelService } from './services/slide-panel/slide-panel.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PetProfileComponent } from './pet-profile/pet-profile.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [SlidePanelComponent, ReactiveFormsModule, PetProfileComponent],
+  imports: [SlidePanelComponent, PetProfileComponent, ReactiveFormsModule ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit{
   title = 'cat-calorie-calc-frontend';
   constructor(private slidePanelService: SlidePanelService) {}
   myForm!: FormGroup;
