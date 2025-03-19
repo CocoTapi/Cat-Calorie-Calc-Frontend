@@ -1,10 +1,16 @@
-@if (showEditPage()){
+<app-slide-panel title="Pet Profile">
     <app-pet-form [pet]="pet()" />
-}
+</app-slide-panel>
 
 <div class="pets">
     <h1 class="heading-1">{{ pet().name}}</h1>
-    <button (click)="onEdit()" class="responsive-icon"><mat-icon>settings</mat-icon></button>
+
+    <!-- Edit button -->
+    <button (click)="onEdit()" class="responsive-icon">
+        <mat-icon>settings</mat-icon>
+    </button>
+    
+    <!-- Main profile -->
     <div class="pet-profile-1">
         <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
         <div class="pet-profile-1__summary">
@@ -27,6 +33,7 @@
             </p>
         </div>
     </div>
+    
     <!-- TODO: make a line graph -->
     <app-card [title]="graphTitle()" class="graph-component">
         <div class="line-graph"></div>

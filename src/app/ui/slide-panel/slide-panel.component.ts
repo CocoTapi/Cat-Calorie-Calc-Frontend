@@ -1,11 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild, input } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { NgFor } from '@angular/common';
 import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
 
 @Component({
-  selector: 'app-control-panel',
-  imports: [NgFor],
+  selector: 'app-slide-panel',
+  imports: [],
   templateUrl: './slide-panel.component.html',
   styleUrl: './slide-panel.component.scss',
   animations: [
@@ -25,6 +24,7 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   @ViewChild('panel', { static: false }) panel!: ElementRef;
 
   // When the panel size becomes 30% or less of user's screen size, close the screen.
+  // Change this when you want to change closing timing
   private thresholdPercent = 70;
 
   private startY = 0;

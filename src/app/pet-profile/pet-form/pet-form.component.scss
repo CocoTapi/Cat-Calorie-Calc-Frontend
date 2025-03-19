@@ -1,23 +1,17 @@
-@use '@angular/material' as mat;
-
-.edit-modal {
-  position: fixed;
-  z-index: 1000;
-  box-sizing: border-box;
-  height: 97vh; /* Ensures modal takes a limited height */
-  width: 100%;
-  overflow-y: auto; /* Enables scrolling inside modal */
-}
+$right-space: 2rem;
+$number-input-width: 50%;
 
 .form {
+  background-color: grey;
   display: flex;
   flex-direction: column;
   gap: .7rem;
-  flex: 1; /* Allows form to take available space */
-  overflow-y: auto; /* Enables scrolling */
+  // flex: 1; /* Allows form to take available space */
+  // overflow-y: auto; /* Enables scrolling */
   box-sizing: border-box;
   width: 100%;
   align-items: stretch;
+  padding: 1.5rem;
 
   & > * {
     display: flex;
@@ -43,7 +37,7 @@
     align-items: center;
 
     app-custom-input {
-      width: 50%;
+      width: $number-input-width;
     }
     
   }
@@ -52,7 +46,7 @@
     flex-direction: column;
   }
 
- &__medications, &__goal, &__calories {
+  &__medications, &__goal, &__calories {
     &__title {
       margin-bottom: .7rem;
     }
@@ -73,7 +67,7 @@
         flex-direction: column;
         background-color: rgb(192, 192, 192);
         padding: 1rem;
-        margin-left: 2rem;
+        margin-left: $right-space;
         margin-bottom: 1rem;
         border-radius: 5px;
 
@@ -99,7 +93,7 @@
     &__content {
       display: flex;
       flex-direction: column;
-      margin-left: 1rem;
+      margin-left: $right-space;
 
       &__target {
         display: flex;
@@ -113,7 +107,7 @@
         align-items: center;
 
         app-custom-input {
-          width: 50%;
+          width: $number-input-width;
         }
       }
     } 
@@ -126,11 +120,11 @@
     &__content {
       display: flex;
       flex-direction: column;
-      margin-left: 2rem;
+      margin-left: $right-space;
       gap: 1rem;
 
       app-custom-input {
-        width: 50%;
+        width: $number-input-width;
       }
 
       &__daily {

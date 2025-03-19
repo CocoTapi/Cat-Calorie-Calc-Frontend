@@ -1,14 +1,28 @@
 .pets {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     width: 90vw;
-    margin: 1rem auto;
+    margin: 0 auto; /* Remove any extra vertical margin */
+    padding: 1rem 0; 
+    overflow-y: auto;
+    max-height: 100vh;
+    flex: 1;
 }
 
 .responsive-icon {
     background-color: transparent;
-    border-color: transparent;
-    width: 1rem;
+    border: none;
+    width: 2rem; /* Ensure the button is wide enough */
+    height: 2rem; /* Make it square to match icon size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-left: auto;
+    overflow: visible; /* Ensure it's not clipped */
+
+    mat-icon {
+        font-size: 1.5rem; /* Ensure the icon scales properly */
+    }
 }
 
 .pet-profile-1, .graph-component{

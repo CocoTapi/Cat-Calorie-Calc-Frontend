@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { SlidePanelComponent } from './ui/slide-panel/slide-panel.component';
 import { SlidePanelService } from './services/slide-panel/slide-panel.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { PetProfileComponent } from './pet-profile/pet-profile.component';
 
 @Component({
   selector: 'app-root',
-  imports: [SlidePanelComponent, ReactiveFormsModule],
+  imports: [SlidePanelComponent, ReactiveFormsModule, PetProfileComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
