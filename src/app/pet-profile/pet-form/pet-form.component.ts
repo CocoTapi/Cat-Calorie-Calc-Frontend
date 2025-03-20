@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal, OnInit, Input, DestroyRef, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MedItemType, Pet_Form_Data, Pet_Profile } from '../models/pet-profile.model';
+import { MedItemType, Pet_Form_Data, Pet_Profile, UnitType } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -179,7 +179,7 @@ export class PetFormComponent implements OnInit {
   }
 
   // Convert lb to kg
-  private getWeightInKg(weight: number, unit: 'lb' | 'kg'): number {
+  private getWeightInKg(weight: number, unit: UnitType): number {
     if (!weight) throw new Error('Current weight is missing')
 
     let current = weight;

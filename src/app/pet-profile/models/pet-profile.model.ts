@@ -32,3 +32,5 @@ export interface Pet_Profile extends Pet_Form_Data {
 }
 
 export type MedItemType = typeof CommonConstants.MED_NAME | typeof CommonConstants.DIRECTIONS;
+
+export type UnitType = typeof CommonConstants.LB | typeof CommonConstants.KG;
