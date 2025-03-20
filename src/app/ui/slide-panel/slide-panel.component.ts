@@ -66,16 +66,8 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  // Check if user is at the top of the scrollable content
-  private isAtTop(): boolean {
-    if (!this.content?.nativeElement) return false;
-
-    if (this.content.nativeElement.scrollTop !== 0) return false;
-
-    return true;
-  }
-
-  // // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
+  // TODO: check if you can optimize code
+  // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
   private checkUserInteraction(event: TouchEvent | MouseEvent): boolean {
     const target = event.target as HTMLElement;
 
@@ -93,7 +85,7 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   }
 
   onTouchStart(event: TouchEvent | MouseEvent) {
-    if (!this.isAtTop() || !this.checkUserInteraction(event)) return;
+    if (!this.checkUserInteraction(event)) return;
 
     event.preventDefault(); 
 
