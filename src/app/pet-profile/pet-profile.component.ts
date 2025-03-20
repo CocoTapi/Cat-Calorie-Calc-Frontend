@@ -1,14 +1,14 @@
 import { Component, computed, inject, signal, input } from '@angular/core';
-import { CardComponent } from "../ui/card/card.component";
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
 import { MatIconModule } from '@angular/material/icon';
 import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
 import { SlidePanelComponent } from '../ui/slide-panel/slide-panel.component';
+import { CardComponent } from '../ui/card/card.component';
 
 @Component({
   selector: 'app-pet-profile',
-  imports: [CardComponent, PetFormComponent, MatIconModule, SlidePanelComponent],
+ imports: [PetFormComponent, MatIconModule, SlidePanelComponent, CardComponent],
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })
@@ -48,8 +48,10 @@ export class PetProfileComponent {
     return title;
   });
 
-  onEdit() {
-    this.slidePanelService.open();
+  onEdit(panelId: string) {
+    this.slidePanelService.open(panelId);
+
+    // this.showEditPage.set(!this.showEditPage());
   }
   
 }

@@ -1,12 +1,20 @@
-<app-slide-panel title="Pet Profile">
+<!-- <app-slide-panel title="Pet Profile">
         <app-pet-form [pet]="pet()" />
+</app-slide-panel> -->
+<!-- @if(showEditPage()) {
+    <div class="modal">
+       <app-pet-form [pet]="pet()" />
+    </div>
+} -->
+<app-slide-panel id="petProfile" title="Edit">
+    <app-pet-form [pet]="pet()" />
 </app-slide-panel>
 
 <div class="pets">
     <h1 class="heading-1">{{ pet().name}}</h1>
 
     <!-- Edit button -->
-    <button (click)="onEdit()" class="responsive-icon">
+    <button (click)="onEdit('petProfile')" class="responsive-icon">
         <mat-icon>settings</mat-icon>
     </button>
     

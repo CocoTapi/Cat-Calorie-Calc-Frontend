@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild, input } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild, input, Input } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
 
@@ -20,8 +20,12 @@ import { SlidePanelService } from '../../services/slide-panel/slide-panel.servic
   ]
 })
 export class SlidePanelComponent implements OnInit, OnDestroy {
-  title = input<string | undefined>(); 
+  // Unique ID for the panel
+  @Input({ required: true }) id!: string; 
+  
+  title = input<string | undefined>();
   @ViewChild('panel', { static: false }) panel!: ElementRef;
+  @ViewChild('content', { static: false }) content!: ElementRef;
 
   // When the panel size becomes 30% or less of user's screen size, close the screen.
   // Change this when you want to change closing timing
@@ -33,17 +37,17 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   private lastPosition = 100; // Store last panel position
   isOpen = false;
 
-  constructor(private renderer: Renderer2, private slidePanelService: SlidePanelService) {}
+  constructor(private renderer: Renderer2, private slidePanelService: SlidePanelService) { }
 
   ngOnInit(): void {
-    this.slidePanelService.register(this);
+    this.slidePanelService.register(this.id, this);
   }
 
   // Clean up reference when component is destroyed
   ngOnDestroy() {
-    this.slidePanelService.register(null); 
+    this.slidePanelService.unregister(this.id);
   }
-  
+
   openPanel() {
     this.isOpen = true;
     this.lastPosition = 0;
@@ -59,36 +63,37 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
       this.isOpen = false;
 
       // Notify the service when closing
-      this.slidePanelService.notifyClose();
+      this.slidePanelService.notifyClose(this.id);
     }, 300);
   }
 
-  // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
-  private checkUserInteraction(event: TouchEvent | MouseEvent) {
-    const target = event.target as HTMLElement;
+  // Check if user is at the top of the scrollable content
+  private isAtTop(): boolean {
+    console.log(this.content.nativeElement.scrollTop);
+    if (!this.content?.nativeElement) return false;
 
-    console.log("event", event);
+    if (this.content.nativeElement.scrollTop !== 0) return false;
 
-    // Allow text inputs to receive focus
-    if (
-      target.tagName === 'INPUT' || 
-      target.tagName === 'TEXTAREA' ||  
-      target.tagName === 'SPAN' ||
-      target.tagName === 'BUTTON' ||
-      target.tagName === 'MAT-ICON'||
-      target.tagName === 'DIV'||
-      target.tagName === 'path'
-    ) {
-      return;
-    }
-
-    // Otherwise, continue panel interaction
-    event.preventDefault(); 
+    return true;
   }
 
+  // // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
+  private checkUserInteraction(event: TouchEvent | MouseEvent): boolean {
+    const target = event.target as HTMLElement;
+
+    // List of elements that should not trigger dragging
+    const excludedTags = ['INPUT', 'TEXTAREA', 'BUTTON', 'SPAN', 'MAT-ICON', 'PATH'];
+
+    // If the touched element is any of the excluded tags, return false
+    if (excludedTags.includes(target.tagName)) return false;
+
+    return true;
+  }
 
   onTouchStart(event: TouchEvent | MouseEvent) {
-    this.checkUserInteraction(event);
+    if (!this.isAtTop() || !this.checkUserInteraction(event)) return;
+
+    event.preventDefault(); 
 
     // Get the Difference of start position
     if ('touches' in event) {
@@ -114,42 +119,43 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
 
     return position;
   }
-  
+
   onTouchMove(event: TouchEvent | MouseEvent) {
     this.checkUserInteraction(event);
 
     if (!this.isDragging) return;
+
     if ('touches' in event) {
       this.currentY = event.touches[0].clientY;
     } else {
       this.currentY = event.clientY;
     }
-    
+
     const newPosition = this.getPositionFromDifference();
-    
+
     // if user is moving the panel, add the transition to move the panel with dragging
     this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${newPosition}%)`);
   }
-  
+
   onTouchEnd(event: TouchEvent | MouseEvent) {
     this.checkUserInteraction(event);
 
     if (!this.isDragging) return;
-  
+
     // Add transition for the dropping animation
     this.renderer.setStyle(this.panel.nativeElement, 'transition', 'transform 0.3s ease-in-out');
-   
+
     const finalPosition = this.getPositionFromDifference();
-    
+
     if (finalPosition > this.thresholdPercent) {
       this.closePanel();
     } else {
       // this.lastPosition = finalPosition;
       this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${this.lastPosition}%)`);
     }
-    
+
     this.isDragging = false;
-  
+
     if (!('touches' in event)) {
       window.removeEventListener('mousemove', this.onTouchMove.bind(this));
       window.removeEventListener('mouseup', this.onTouchEnd.bind(this));

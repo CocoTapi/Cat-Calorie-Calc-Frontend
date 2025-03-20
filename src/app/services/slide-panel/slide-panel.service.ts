@@ -4,33 +4,37 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SlidePanelService {
-  private slidePanel!: { openPanel: () => void; closePanel: () => void } | null;
-  private onCloseCallback?: () => void;
+  private panels = new Map<string, { openPanel: () => void; closePanel: () => void }>();
+  private onCloseCallbacks = new Map<string, () => void>();
 
-  register(panel: { openPanel: () => void; closePanel: () => void } | null) {
-    this.slidePanel = panel;
+  // Register a panel with a unique ID
+  register(id: string, panel: { openPanel: () => void; closePanel: () => void }) {
+    this.panels.set(id, panel);
   }
 
-  // For button to open the slide panel
-  open() {
-    this.slidePanel?.openPanel();
+  // Unregister when component is destroyed
+  unregister(id: string) {
+    this.panels.delete(id);
+    this.onCloseCallbacks.delete(id);
   }
 
-  // Use this to close panel
-  close() {
-    this.slidePanel?.closePanel();
+  // Open a specific panel
+  open(id: string) {
+    this.panels.get(id)?.openPanel();
   }
 
-  // Use this To detect when the panel has closed and execute a function (like submitting a form)
-  onClose(callback: () => void) {
-    this.onCloseCallback = callback; // Keep the latest callback
+  // Close a specific panel
+  close(id: string) {
+    this.panels.get(id)?.closePanel();
   }
 
+  // Register a close callback for a specific panel
+  onClose(id: string, callback: () => void) {
+    this.onCloseCallbacks.set(id, callback);
+  }
 
-
-  // This is only for SlidePanelComponent 
-  // Called when the panel has completely closed
-  notifyClose() {
-    this.onCloseCallback?.(); // Execute the callback every time the panel closes
+  // Notify when a panel is closed
+  notifyClose(id: string) {
+    this.onCloseCallbacks.get(id)?.();
   }
 }

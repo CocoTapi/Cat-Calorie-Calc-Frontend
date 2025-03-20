@@ -1,38 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { SlidePanelComponent } from './ui/slide-panel/slide-panel.component';
-import { SlidePanelService } from './services/slide-panel/slide-panel.service';
+import { Component } from '@angular/core';
+// import { SlidePanelComponent } from './ui/slide-panel/slide-panel.component';
+// import { SlidePanelService } from './services/slide-panel/slide-panel.service';
 import { PetProfileComponent } from './pet-profile/pet-profile.component';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { SlidePanelService } from './services/slide-panel/slide-panel.service';
+import { SlidePanelComponent } from './ui/slide-panel/slide-panel.component';
+// import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [SlidePanelComponent, PetProfileComponent, ReactiveFormsModule ],
+  imports: [PetProfileComponent, SlidePanelComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
   title = 'cat-calorie-calc-frontend';
   constructor(private slidePanelService: SlidePanelService) {}
-  myForm!: FormGroup;
 
-  pet = { name: 'Dodger'}
 
-  ngOnInit(): void {
-const initialProfile = { name: this.pet.name }
-
-    this.myForm = new FormGroup({
-      name: new FormControl(initialProfile.name),
-    });
-
-    this.slidePanelService.onClose(() => this.onSubmit());
-  }
-
-  openPanel(){
-    this.slidePanelService.open();
-  }
-
-  onSubmit(){
-    this.pet.name = this.myForm.value.name;
-    console.log('Form Submitted:', this.pet);
+  openPanel(id: string) {
+    this.slidePanelService.open(id);
   }
 }

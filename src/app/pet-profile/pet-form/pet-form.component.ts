@@ -24,7 +24,7 @@ import { CommonConstants } from '../../app.constants';
     MatDatepickerModule,
     MatNativeDateModule,
     CustomInputComponent,
-    CustomSelectionComponent
+    CustomSelectionComponent,
 ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
