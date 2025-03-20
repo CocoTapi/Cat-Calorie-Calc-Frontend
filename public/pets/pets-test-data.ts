@@ -15,7 +15,7 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
                 med_id: 0,
                 med_name: 'Atopica',
                 directions: '1 pill / day'
-            }
+            },
         ],
         goal: 'Lose',
         target_weight: 16,

@@ -45,10 +45,10 @@
     <!-- TODO: make a line graph -->
     <app-card [title]="graphTitle()" class="graph-component">
         <div class="line-graph">
-            <app-pet-form [pet]="pet()" />
         </div>
     </app-card>
 
+    <!-- Health Profile -->
     <div class="pet-profile-2">
         <div class="pet-profile-2__calories">
             <h2 class="heading-2">Daily Calories :</h2>
@@ -59,29 +59,29 @@
         </div>
        
         <div class="pet-profile-2__medications">
-            <h2 class="heading-2 mb-sm">Medications :</h2>
-            @if(pet().medications){
-                <ul>
+            <h2 class="heading-2">Medications :</h2>
+            <ul>
+                @if(pet().medications){
                     @for(item of pet().medications; track item.med_id){
                         <li>
-                            {{ item.med_name }}
+                            {{ item.med_name }},
                             <span>{{ item.directions }}</span>
                         </li>
                     }
-                </ul> 
-            } @else {
-                <p>None</p>
-            }
+                } @else {
+                    <li>None</li>
+                }
+            </ul> 
         </div>
        
         <div class="pet-profile-2__allergies">
-            <h2 class="heading-2 mb-sm">Food Allergy :</h2>
+            <h2 class="heading-2">Food Allergy :</h2>
             <p>{{ pet().allergies }}</p>
         </div>
         
         @if (pet().notes){
             <div class="pet-profile-2__notes">
-                <h2 class="heading-2 mb-sm">Personality Notes :</h2>
+                <h2 class="heading-2">Personality Notes :</h2>
                 <p class="pet-profile-2__notes__content">{{ pet().notes }}</p>
             </div>
         }
