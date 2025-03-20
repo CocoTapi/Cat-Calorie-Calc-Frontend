@@ -123,8 +123,6 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   }
 
   onTouchMove(event: TouchEvent | MouseEvent) {
-    this.checkUserInteraction(event);
-
     if (!this.isDragging) return;
 
     if ('touches' in event) {
@@ -140,8 +138,6 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   }
 
   onTouchEnd(event: TouchEvent | MouseEvent) {
-    this.checkUserInteraction(event);
-
     if (!this.isDragging) return;
 
     // Add transition for the dropping animation

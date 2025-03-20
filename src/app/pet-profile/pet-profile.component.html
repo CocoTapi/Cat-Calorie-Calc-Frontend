@@ -44,8 +44,11 @@
 
     <!-- TODO: make a line graph -->
     <app-card [title]="graphTitle()" class="graph-component">
-        <div class="line-graph"></div>
+        <div class="line-graph">
+            <app-pet-form [pet]="pet()" />
+        </div>
     </app-card>
+
     <div class="pet-profile-2">
         <div class="pet-profile-2__calories">
             <h2 class="heading-2">Daily Calories :</h2>
