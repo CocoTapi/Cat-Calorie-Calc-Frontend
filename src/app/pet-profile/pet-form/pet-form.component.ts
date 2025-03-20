@@ -25,7 +25,7 @@ import { CommonConstants } from '../../app.constants';
     MatNativeDateModule,
     CustomInputComponent,
     CustomSelectionComponent,
-],
+  ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,26 +35,30 @@ export class PetFormComponent implements OnInit {
 
   title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
-  // petProfileForm!: FormGroup;
 
   private _petProfileForm!: FormGroup;
 
-  get petProfileForm():FormGroup {
-    if(!this._petProfileForm) throw new Error('property _petProfileForm does not exist!');
+  get petProfileForm(): FormGroup {
+    if (!this._petProfileForm) throw new Error('property _petProfileForm does not exist!');
     return this._petProfileForm;
   }
   set petProfileForm(value: FormGroup) {
     this._petProfileForm = value;
   }
 
-  goalSelection : SELECTION[] = [
+  goalSelection: SELECTION[] = [
     { value: CommonConstants.MAINTAIN },
     { value: CommonConstants.LOSE },
     { value: CommonConstants.GAIN },
   ]
 
+  suggestedFactor = signal<number>(1.2);
+
   // TODO: get user's pet amount 
   newId: number = Math.random();
+
+  // TODO: default birthday
+  defaultBday: Date = new Date();
 
   ngOnInit(): void {
     // Setup initial form values
@@ -62,7 +66,7 @@ export class PetFormComponent implements OnInit {
       id: this.pet?.id ?? this.newId,
       species: this.pet?.species ?? CommonConstants.CAT,
       name: this.pet?.name ?? '',
-      birthday: this.pet?.birthday ?? null,
+      birthday: this.pet?.birthday ?? this.defaultBday,
 
       weight: this.pet?.weight ?? 0,
       weight_unit: this.pet?.weight_unit ?? CommonConstants.LB,
@@ -81,9 +85,9 @@ export class PetFormComponent implements OnInit {
 
     // Setup reactive form group
     this.petProfileForm = new FormGroup({
-      species: new FormControl(initialPetProfile.species,Validators.required),
+      species: new FormControl(initialPetProfile.species, Validators.required),
       name: new FormControl(initialPetProfile.name, {
-        validators:[ Validators.required]
+        validators: [Validators.required]
       }),
       birthday: new FormControl(initialPetProfile.birthday, Validators.required),
 
@@ -106,6 +110,8 @@ export class PetFormComponent implements OnInit {
       daily_calories: new FormControl(initialPetProfile.daily_calories, Validators.required),
     });
 
+    // TODO: setup suggested factor based on goal
+
     // Listen for changes in 'goal' and update 'factor'
     const subscriptionForGoal = this.petProfileForm.get(CommonConstants.GOAL)?.valueChanges.subscribe(goal => {
       const factorControl = this.petProfileForm.get(CommonConstants.FACTOR);
@@ -124,49 +130,72 @@ export class PetFormComponent implements OnInit {
           factorControl?.setValue(1.0);
       }
     });
-    
+
     this.destroyRef.onDestroy(() => subscriptionForGoal?.unsubscribe());
 
     // Listen for changes in 'factor' and update 'daily_calories'
-    const subscriptionForFactor = this.petProfileForm.get(CommonConstants.FACTOR)?.valueChanges.subscribe(factor => {
-      const dailyCaloriesControl = this.petProfileForm.get(CommonConstants.DAILY_CALORIES);
-      const weightControl = this.petProfileForm.get(CommonConstants.WEIGHT);
-      const weightUnitControl = this.petProfileForm.get(CommonConstants.WEIGHT_UNIT);
-
-      // Ensure controls exist before proceeding
-      if (!weightControl || !weightUnitControl || !dailyCaloriesControl) {
-        return;
-      }
-
-      let currentWeightInKg = weightControl.value;
-
-      // Convert lb to kg
-      if (weightUnitControl.value === CommonConstants.LB) {
-        currentWeightInKg = currentWeightInKg / 2.2046;
-      }
-
+    const subscriptionForFactor = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
       // Ensure valid inputs  
-      if (!currentWeightInKg || !factor) {
-        return;
-      }
+      if (!factor) return;
 
-      // Calculate daily calories
-      const RER = 70 * Math.pow(currentWeightInKg, 0.75);
-      const dailyCalories = (RER * factor).toFixed(1);
+      const dailyCaloriesControl = this.getFormControl(CommonConstants.DAILY_CALORIES);
 
-      dailyCaloriesControl?.setValue(dailyCalories);
+      // Calculate calories
+      const RER = this.getRER();
+      const newDailyCalories = (RER * factor).toFixed(1);
+
+      // Update 'daily_calories' without triggering valueChanges event
+      dailyCaloriesControl.setValue(newDailyCalories, { emitEvent: false });
     })
-
-    // TODO: Listen for changes in 'daily_calories' and update 'factor' 
-
     this.destroyRef.onDestroy(() => subscriptionForFactor?.unsubscribe());
+
+    // Listen for changes in 'daily_calories' and update 'factor' 
+    const subscriptionForCalories = this.petProfileForm.get(CommonConstants.DAILY_CALORIES)?.valueChanges.subscribe(calories => {
+      // Ensure valid inputs  
+      if (!calories) return;
+
+      const factorControl = this.getFormControl(CommonConstants.FACTOR);
+
+      // Calculate factor
+      const RER = this.getRER();
+      const newFactor = (calories / RER).toFixed(1);
+
+      // Update 'factor' without triggering valueChanges event
+      factorControl.setValue(newFactor, { emitEvent: false });
+    })
+    this.destroyRef.onDestroy(() => subscriptionForCalories?.unsubscribe());
   }
 
-  // Getter for Form Controls to use validations
+  // Get RER
+  private getRER(): number {
+    const weightControl = this.getFormControl(CommonConstants.WEIGHT);
+    const weightUnitControl = this.getFormControl(CommonConstants.WEIGHT_UNIT);
+    const currentWeight = this.getWeightInKg(weightControl.value, weightUnitControl.value);
+
+    // Calculate RER
+    const RER = 70 * Math.pow(currentWeight, 0.75);
+
+    return RER;
+  }
+
+  // Convert lb to kg
+  private getWeightInKg(weight: number, unit: 'lb' | 'kg'): number {
+    if (!weight) throw new Error('Current weight is missing')
+
+    let current = weight;
+
+    if (unit === CommonConstants.LB) {
+      current = current / 2.2046;
+    }
+
+    return current;
+  }
+
+  // Getter for Form Controls to access form values
   getFormControl(fieldName: string): FormControl {
     const fieldControl = this.petProfileForm.get(fieldName) as FormControl;
     if (!fieldControl) throw new Error(`${fieldName} is missing in petProfileForm. Result: ${fieldControl}`);
-  
+
     return fieldControl;
   }
 
@@ -175,6 +204,8 @@ export class PetFormComponent implements OnInit {
     const medications = this.petProfileForm.get(CommonConstants.MEDICATIONS) as FormArray;
     if (!medications) throw new Error(`property medications does not exist within petProfileForm!`);
 
+    console.log("medications", medications)
+
     return medications;
   }
 
@@ -182,16 +213,16 @@ export class PetFormComponent implements OnInit {
   getMedItemControl(index: number, medItem: MedItemType): FormControl {
     const medItemControl = this.medications.at(index).get(medItem) as FormControl;
     if (!medItemControl) throw new Error(`${medItem} is missing in petProfileForm. Result: ${medItemControl}`);
-    
+
     return medItemControl;
   }
 
   // if the last medication item is empty, disable add button;
-  isAddDisabled(): boolean { 
+  isAddDisabled(): boolean {
     if (this.medications.length === 0) {
       return false; // Allow adding first medication
     }
-  
+
     const lastIdx = this.medications.length - 1;
     let lastItemDirections = this.getMedItemControl(lastIdx, CommonConstants.DIRECTIONS);
     lastItemDirections = lastItemDirections?.value.trim();
@@ -225,7 +256,7 @@ export class PetFormComponent implements OnInit {
     }
 
     // Remove medications without a `med_name`
-    formData.medications = formData.medications.filter(med => 
+    formData.medications = formData.medications.filter(med =>
       med.med_name && med.med_name.trim().length > 0
     )
 
