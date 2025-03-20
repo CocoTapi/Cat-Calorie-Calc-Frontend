@@ -21,13 +21,12 @@ import { SlidePanelService } from '../../services/slide-panel/slide-panel.servic
 })
 export class SlidePanelComponent implements OnInit, OnDestroy {
   // Unique ID for the panel
-  @Input({ required: true }) id!: string; 
-  
+  @Input({ required: true }) panelId!: string; 
+
   title = input<string | undefined>();
   @ViewChild('panel', { static: false }) panel!: ElementRef;
   @ViewChild('content', { static: false }) content!: ElementRef;
 
-  // When the panel size becomes 30% or less of user's screen size, close the screen.
   // Change this when you want to change closing timing
   private thresholdPercent = 70;
 
@@ -40,12 +39,12 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
   constructor(private renderer: Renderer2, private slidePanelService: SlidePanelService) { }
 
   ngOnInit(): void {
-    this.slidePanelService.register(this.id, this);
+    this.slidePanelService.register(this.panelId, this);
   }
 
   // Clean up reference when component is destroyed
   ngOnDestroy() {
-    this.slidePanelService.unregister(this.id);
+    this.slidePanelService.unregister(this.panelId);
   }
 
   openPanel() {
@@ -63,13 +62,12 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
       this.isOpen = false;
 
       // Notify the service when closing
-      this.slidePanelService.notifyClose(this.id);
+      this.slidePanelService.notifyClose(this.panelId);
     }, 300);
   }
 
   // Check if user is at the top of the scrollable content
   private isAtTop(): boolean {
-    console.log(this.content.nativeElement.scrollTop);
     if (!this.content?.nativeElement) return false;
 
     if (this.content.nativeElement.scrollTop !== 0) return false;
@@ -82,10 +80,14 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLElement;
 
     // List of elements that should not trigger dragging
-    const excludedTags = ['INPUT', 'TEXTAREA', 'BUTTON', 'SPAN', 'MAT-ICON', 'PATH'];
+    const excludedTags = ['INPUT', 'TEXTAREA', 'BUTTON', 'SPAN', 'MAT-ICON', 'PATH', 'svg'];
 
     // If the touched element is any of the excluded tags, return false
     if (excludedTags.includes(target.tagName)) return false;
+
+    // For custom selection
+    const classList = ['mat-mdc-select-value', "mat-mdc-form-field-infix"]
+    if (classList.includes(target.className)) return false;
 
     return true;
   }

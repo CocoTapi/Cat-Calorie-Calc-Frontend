@@ -3,10 +3,10 @@
   <app-pet-profile />
 <!-- </app-slide-panel> -->
 
-<button (click)="openPanel('petProfile')">Open Pet Form</button>
+<button (click)="openPanel('petProfile')">Open Edit Form</button>
 
 <!-- Pet Form Panel -->
-<app-slide-panel id="petForm" title="Pet">
+<app-slide-panel panelId="form" title="Pet">
   <!-- <form [formGroup]="myForm">
     <label for="name">Name:</label>
     <input formControlName="name" type="text" />
@@ -14,4 +14,4 @@
   <p>Second one</p>
 </app-slide-panel>
 
-<button (click)="openPanel('petForm')">Open Edit Form</button>
+<button (click)="openPanel('form')">Open Second Form</button>
