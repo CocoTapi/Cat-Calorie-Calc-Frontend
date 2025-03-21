@@ -11,6 +11,7 @@ import { medicationValidator } from './pet-form-validators';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
 import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/custom-selection.component';
 import { CommonConstants } from '../../app.constants';
+import { DatePickerComponent } from "../../ui/date-picker/date-picker.component";
 
 @Component({
   selector: 'app-pet-form',
@@ -25,7 +26,8 @@ import { CommonConstants } from '../../app.constants';
     MatNativeDateModule,
     CustomInputComponent,
     CustomSelectionComponent,
-  ],
+    DatePickerComponent
+],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
