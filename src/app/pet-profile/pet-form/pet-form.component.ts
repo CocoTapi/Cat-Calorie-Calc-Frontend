@@ -3,9 +3,6 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MedItemType, Pet_Form_Data, Pet_Profile, UnitType } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { medicationValidator } from './pet-form-validators';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
@@ -20,9 +17,6 @@ import { DatePickerComponent } from "../../ui/date-picker/date-picker.component"
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     CustomInputComponent,
     CustomSelectionComponent,
