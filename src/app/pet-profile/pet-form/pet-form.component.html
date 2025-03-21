@@ -101,7 +101,7 @@
                 <app-custom-selection 
                     label="Goal"
                     formFieldName="goal"
-                    [selectedValue]="getFormControl('goal').value"
+                    [selectFormControl]="getFormControl('goal')"
                     [selectionArr]="goalSelection"
                 />
                 <p>weight</p>
@@ -133,10 +133,9 @@
                 </a>
             </p>
             
+            <!-- TODO: suggested factor Table -->
             <p>
-                suggested factor for
-                <span>{{ getFormControl('goal').value }} weight</span> :
-                <span>{{ suggestedFactor() }}</span>
+                suggested factor Table
             </p>
 
             <!-- Factor Input -->

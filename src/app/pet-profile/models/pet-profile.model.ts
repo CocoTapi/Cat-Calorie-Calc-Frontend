@@ -27,10 +27,30 @@ interface Pet_Form_Medication {
     directions: string
 }
 
+export interface Suggested_Factor {
+    Maintain : number,
+    Lose: number,
+    Gain: number
+}
+
+export type GoalKeys = keyof Suggested_Factor;  // 'Maintain' | 'Lose' | 'Gain'
+
+
 export interface Pet_Profile extends Pet_Form_Data {   
     icon: string,
 }
 
-export type MedItemType = typeof CommonConstants.MED_NAME | typeof CommonConstants.DIRECTIONS;
+export type MedItemType = 
+    typeof CommonConstants.MED_NAME | 
+    typeof CommonConstants.DIRECTIONS;
 
-export type UnitType = typeof CommonConstants.LB | typeof CommonConstants.KG;
+export type UnitType = 
+    typeof CommonConstants.LB | 
+    typeof CommonConstants.KG;
+
+export type GoalType = 
+    typeof CommonConstants.MAINTAIN | 
+    typeof CommonConstants.GAIN | 
+    typeof CommonConstants.LOSE;
+
+

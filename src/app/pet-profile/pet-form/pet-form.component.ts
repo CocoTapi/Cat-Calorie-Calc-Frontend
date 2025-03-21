@@ -35,7 +35,6 @@ export class PetFormComponent implements OnInit {
 
   title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
-
   private _petProfileForm!: FormGroup;
 
   get petProfileForm(): FormGroup {
@@ -47,18 +46,16 @@ export class PetFormComponent implements OnInit {
   }
 
   goalSelection: SELECTION[] = [
-    { value: CommonConstants.MAINTAIN },
-    { value: CommonConstants.LOSE },
-    { value: CommonConstants.GAIN },
+    { value: CommonConstants.MAINTAIN, viewValue: 'Maintain' },
+    { value: CommonConstants.LOSE, viewValue: 'Lose' },
+    { value: CommonConstants.GAIN, viewValue: 'Gain' },
   ]
-
-  suggestedFactor = signal<number>(1.2);
 
   // TODO: get user's pet amount 
   newId: number = Math.random();
 
-  // TODO: default birthday
-  defaultBday: Date = new Date();
+  // TODO: initial birthday
+  defaultBirthday: Date = new Date();
 
   ngOnInit(): void {
     // Setup initial form values
@@ -66,7 +63,7 @@ export class PetFormComponent implements OnInit {
       id: this.pet?.id ?? this.newId,
       species: this.pet?.species ?? CommonConstants.CAT,
       name: this.pet?.name ?? '',
-      birthday: this.pet?.birthday ?? this.defaultBday,
+      birthday: this.pet?.birthday ?? this.defaultBirthday,
 
       weight: this.pet?.weight ?? 0,
       weight_unit: this.pet?.weight_unit ?? CommonConstants.LB,
@@ -110,29 +107,6 @@ export class PetFormComponent implements OnInit {
       daily_calories: new FormControl(initialPetProfile.daily_calories, Validators.required),
     });
 
-    // TODO: setup suggested factor based on goal
-
-    // Listen for changes in 'goal' and update 'factor'
-    const subscriptionForGoal = this.petProfileForm.get(CommonConstants.GOAL)?.valueChanges.subscribe(goal => {
-      const factorControl = this.petProfileForm.get(CommonConstants.FACTOR);
-
-      switch (goal) {
-        case CommonConstants.MAINTAIN:
-          factorControl?.setValue(1.2);
-          break;
-        case CommonConstants.LOSE:
-          factorControl?.setValue(0.8);
-          break;
-        case CommonConstants.GAIN:
-          factorControl?.setValue(1.1);
-          break;
-        default:
-          factorControl?.setValue(1.0);
-      }
-    });
-
-    this.destroyRef.onDestroy(() => subscriptionForGoal?.unsubscribe());
-
     // Listen for changes in 'factor' and update 'daily_calories'
     const subscriptionForFactor = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
       // Ensure valid inputs  
@@ -149,8 +123,9 @@ export class PetFormComponent implements OnInit {
     })
     this.destroyRef.onDestroy(() => subscriptionForFactor?.unsubscribe());
 
+
     // Listen for changes in 'daily_calories' and update 'factor' 
-    const subscriptionForCalories = this.petProfileForm.get(CommonConstants.DAILY_CALORIES)?.valueChanges.subscribe(calories => {
+    const subscriptionForCalories = this.getFormControl(CommonConstants.DAILY_CALORIES).valueChanges.subscribe(calories => {
       // Ensure valid inputs  
       if (!calories) return;
 
@@ -203,8 +178,6 @@ export class PetFormComponent implements OnInit {
   get medications(): FormArray {
     const medications = this.petProfileForm.get(CommonConstants.MEDICATIONS) as FormArray;
     if (!medications) throw new Error(`property medications does not exist within petProfileForm!`);
-
-    console.log("medications", medications)
 
     return medications;
   }

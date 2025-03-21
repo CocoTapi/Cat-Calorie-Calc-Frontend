@@ -1,8 +1,8 @@
 <mat-form-field>
-  <mat-label>{{ label }}</mat-label>
-  <mat-select [(ngModel)]="selectedValue" [name]="formFieldName">
+  <mat-label>Favorite Food</mat-label>
+  <mat-select [formControl]="selectFormControl" name="food">
     @for (item of selectionArr; track item) {
-      <mat-option [value]="item.value">{{item.value}}</mat-option>
+      <mat-option [value]="item.value">{{item.viewValue}}</mat-option>
     }
   </mat-select>
 </mat-form-field>
