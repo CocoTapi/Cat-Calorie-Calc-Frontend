@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal, OnInit, Input, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input, DestroyRef, inject, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MedItemType, Pet_Form_Data, Pet_Profile, UnitType } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
-import { medicationValidator } from './pet-form-validators';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
 import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/custom-selection.component';
 import { CommonConstants } from '../../app.constants';
@@ -13,7 +12,7 @@ import { DatePickerComponent } from "../../ui/date-picker/date-picker.component"
 @Component({
   selector: 'app-pet-form',
   imports: [
-    FormsModule,
+    FormsModule,          
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatIconModule,
@@ -29,8 +28,10 @@ import { DatePickerComponent } from "../../ui/date-picker/date-picker.component"
 export class PetFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
-  title = signal('Pet Profile');
   @Input() pet!: Pet_Profile;
+  @Output() formStatusChanged = new EventEmitter<boolean>(); 
+  @Output() formGroupData = new EventEmitter<FormGroup>(); 
+
   private _petProfileForm!: FormGroup;
 
   get petProfileForm(): FormGroup {
@@ -40,6 +41,8 @@ export class PetFormComponent implements OnInit {
   set petProfileForm(value: FormGroup) {
     this._petProfileForm = value;
   }
+
+  // output form validation 
 
   goalSelection: SELECTION[] = [
     { value: CommonConstants.MAINTAIN, viewValue: 'Maintain' },
@@ -135,6 +138,22 @@ export class PetFormComponent implements OnInit {
       factorControl.setValue(newFactor, { emitEvent: false });
     })
     this.destroyRef.onDestroy(() => subscriptionForCalories?.unsubscribe());
+
+
+    // Send validation to parent
+    const validationSubscription = this.petProfileForm.statusChanges.subscribe(() => {
+      this.formStatusChanged.emit(this.petProfileForm.valid);
+    });
+
+    // send data to parent
+    const dataSubscription = this.petProfileForm.statusChanges.subscribe(() => {
+      this.formGroupData.emit(this.petProfileForm);
+    });
+
+    this.destroyRef.onDestroy(() => validationSubscription?.unsubscribe());
+    this.destroyRef.onDestroy(() => dataSubscription?.unsubscribe());
+
+
   }
 
   // ------  FUNCTIONS FOR ALL   ------
@@ -213,8 +232,10 @@ export class PetFormComponent implements OnInit {
       med_id: new FormControl(this.medications.length),
       med_name: new FormControl('', Validators.required),
       directions: new FormControl('', Validators.required)
-    }, medicationValidator));
+    }, Validators.required));
   }
+
+  // TODO: display invalid when the user open the medication slot but close the panel without touch them 
 
   // Remove a medication by index
   removeMedication(index: number) {
@@ -234,11 +255,18 @@ export class PetFormComponent implements OnInit {
       ...this.petProfileForm.value
     }
 
+    // When no allergy
+    if (!formData.allergies.length) {
+      formData.allergies = 'none';
+    }
+
     // Remove medications without a `med_name`
     formData.medications = formData.medications.filter(med =>
       med.med_name && med.med_name.trim().length > 0
     )
 
-    console.log("form", formData)
+    console.log("form submitted through submit button", formData)
   }
+
+
 }

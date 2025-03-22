@@ -14,7 +14,7 @@ export class SlidePanelService {
     this.panels.get(id)?.openPanel();
   }
 
-  // When you want to prevent the panel closing, send false in the callback
+  // When you want to prevent the panel closing, send false in the callback within ngAfterViewInit()
   canClose(id: string, callback: () => boolean) {
     this.canCloseCallbacks.set(id, callback);
   }

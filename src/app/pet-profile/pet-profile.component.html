@@ -1,6 +1,10 @@
 <!-- Edit Profile Form -->
 <app-slide-panel [panelId]="panelId" title="Edit">
-    <app-pet-form [pet]="pet()" />
+    <app-pet-form 
+        [pet]="pet()" 
+        (formStatusChanged)="onFormStatusChanged($event)"
+        (formGroupData)="onFormGroupChanged($event)"
+    />
 </app-slide-panel> 
 
 <div class="pets">
