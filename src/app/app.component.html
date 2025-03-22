@@ -1,12 +1,9 @@
-<!-- Pet Profile Panel -->
-<!-- <app-slide-panel id="petProfile" title="Edit"> -->
-  <app-pet-profile />
-<!-- </app-slide-panel> -->
+<app-pet-profile />
 
 <button (click)="openPanel('petProfile')">Open Edit Form</button>
 
 <!-- Pet Form Panel -->
-<app-slide-panel panelId="form" title="Pet">
+<app-slide-panel [panelId]="panelId" title="Pet">
   <!-- <form [formGroup]="myForm">
     <label for="name">Name:</label>
     <input formControlName="name" type="text" />

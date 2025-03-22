@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
 import { SlidePanelComponent } from '../ui/slide-panel/slide-panel.component';
 import { CardComponent } from '../ui/card/card.component';
+import { CommonConstants } from '../app.constants';
 
 @Component({
   selector: 'app-pet-profile',
@@ -14,6 +15,7 @@ import { CardComponent } from '../ui/card/card.component';
 })
 export class PetProfileComponent {
   id = input<number>(0);
+  panelId: string = CommonConstants.PET_FORM;
 
   private petProfileService = inject(PetProfileService);
   private slidePanelService = inject(SlidePanelService);

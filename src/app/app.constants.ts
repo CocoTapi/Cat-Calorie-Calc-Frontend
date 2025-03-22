@@ -1,4 +1,7 @@
 export abstract class CommonConstants {
+    // Panel Id
+    static readonly PET_FORM: string = 'petProfile';
+
 
     // PET_FORM_DATA
     static readonly PET_ID: string = 'id';

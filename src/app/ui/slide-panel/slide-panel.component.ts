@@ -47,17 +47,24 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     this.slidePanelService.unregister(this.panelId);
   }
 
+  // Set the panel's y position
+  setYPosition(position: number) {
+    if (position < 0 || position > 100) throw new Error ('position is invalid. Required between 0 and 100.') ;
+
+    return this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${position}%)`);
+  }
+
   openPanel() {
     this.isOpen = true;
     this.lastPosition = 0;
     setTimeout(() => {
-      this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${this.lastPosition}%)`);
+      this.setYPosition(this.lastPosition);
     });
   }
 
   closePanel() {
     this.lastPosition = 100;
-    this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${this.lastPosition}%)`);
+    this.setYPosition(this.lastPosition);
     setTimeout(() => {
       this.isOpen = false;
 
@@ -66,7 +73,8 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  // TODO: check if you can optimize code
+  // TODO: reconsider the function. 
+  // When top content is displayed and user scroll down, stop interaction and close the panel
   // Checks if the user interacted with a form field, and if so, it prevents the event handler from running. 
   private checkUserInteraction(event: TouchEvent | MouseEvent): boolean {
     const target = event.target as HTMLElement;
@@ -126,7 +134,7 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     const newPosition = this.getPositionFromDifference();
 
     // if user is moving the panel, add the transition to move the panel with dragging
-    this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${newPosition}%)`);
+    this.setYPosition(newPosition);
   }
 
   onTouchEnd(event: TouchEvent | MouseEvent) {
@@ -138,10 +146,11 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     const finalPosition = this.getPositionFromDifference();
 
     if (finalPosition > this.thresholdPercent) {
-      this.closePanel();
+      // this.closePanel();
+      this.slidePanelService.close(this.panelId); // will check canClose before closing
     } else {
       // this.lastPosition = finalPosition;
-      this.renderer.setStyle(this.panel.nativeElement, 'transform', `translateY(${this.lastPosition}%)`);
+      this.setYPosition(this.lastPosition);
     }
 
     this.isDragging = false;

@@ -137,6 +137,18 @@ export class PetFormComponent implements OnInit {
     this.destroyRef.onDestroy(() => subscriptionForCalories?.unsubscribe());
   }
 
+  // ------  FUNCTIONS FOR ALL   ------
+
+   // Getter for Form Controls to access form values
+   getFormControl(fieldName: string): FormControl {
+    const fieldControl = this.petProfileForm.get(fieldName) as FormControl;
+    if (!fieldControl) throw new Error(`${fieldName} is missing in petProfileForm. Result: ${fieldControl}`);
+
+    return fieldControl;
+  }
+
+  // ------  FUNCTIONS FOR WEIGHT  ------
+
   // Get RER
   private getRER(): number {
     const weightControl = this.getFormControl(CommonConstants.WEIGHT);
@@ -162,13 +174,9 @@ export class PetFormComponent implements OnInit {
     return current;
   }
 
-  // Getter for Form Controls to access form values
-  getFormControl(fieldName: string): FormControl {
-    const fieldControl = this.petProfileForm.get(fieldName) as FormControl;
-    if (!fieldControl) throw new Error(`${fieldName} is missing in petProfileForm. Result: ${fieldControl}`);
+ 
 
-    return fieldControl;
-  }
+  // ------ FUNCTIONS FOR MEDICATION  ------
 
   // Getter for medications' FormArray
   get medications(): FormArray {
@@ -212,6 +220,8 @@ export class PetFormComponent implements OnInit {
   removeMedication(index: number) {
     this.medications.removeAt(index);
   }
+
+   // ------ FUNCTIONS FOR SUBMIT  ------
 
   onSubmit() {
     if (this.petProfileForm.invalid) {
