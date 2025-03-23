@@ -7,6 +7,9 @@ import { SlidePanelComponent } from '../ui/slide-panel/slide-panel.component';
 import { CardComponent } from '../ui/card/card.component';
 import { CommonConstants } from '../app.constants';
 import { FormGroup } from '@angular/forms';
+import { Pet_Form_Data } from './models/pet-profile.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+
 
 @Component({
   selector: 'app-pet-profile',
@@ -31,12 +34,16 @@ export class PetProfileComponent implements AfterViewInit {
 
 
   showEditPage = signal(false);
-  pet = signal(this.petProfileService.getPetById(this.id()));
+  pet = toSignal(
+      this.petProfileService.getPetById(this.id()), {
+      initialValue: undefined,
+    }
+  );
 
-  imagePath = computed(() => 'pets/' + this.pet().icon);
+  imagePath = computed(() => 'pets/' + this.pet()?.icon);
 
   age = computed(() => {
-    const birthday = this.pet().birthday;
+    const birthday = this.pet()?.birthday;
     const today = new Date();
     
     let age = today.getFullYear() - birthday!.getFullYear();
@@ -51,10 +58,10 @@ export class PetProfileComponent implements AfterViewInit {
   });
 
   graphTitle = computed(() => {
-    let title = `Goal: ${this.pet().goal} weight`;
+    let title = `Goal: ${this.pet()?.goal} weight`;
 
-    if (this.pet().target_weight) {
-      title = `Goal: ${this.pet().goal} Weight to ${this.pet().target_weight} ${this.pet().weight_unit}`
+    if (this.pet()?.target_weight) {
+      title = `Goal: ${this.pet()?.goal} Weight to ${this.pet()?.target_weight} ${this.pet()?.weight_unit}`
     }
 
     return title;
@@ -77,12 +84,14 @@ export class PetProfileComponent implements AfterViewInit {
   canPanelClose(): boolean {
     if (!this.formValid) {
       console.log(this.formValid);
+
+      // TODO: display validation error to a user 
+
       return false; // This will prevent closing
     }
 
     // Submit form
-    // TODO: set data type
-    const formData = {
+    const formData: Pet_Form_Data = {
           id: this.id(),
           ...this.petFormGroup.value
     }
