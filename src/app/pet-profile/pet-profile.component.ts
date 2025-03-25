@@ -9,6 +9,7 @@ import { CommonConstants } from '../app.constants';
 import { FormGroup } from '@angular/forms';
 import { Pet_Form_Data } from './models/pet-profile.model';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of } from 'rxjs';
 
 
 @Component({
@@ -34,18 +35,30 @@ export class PetProfileComponent implements AfterViewInit {
 
 
   showEditPage = signal(false);
+
+  // handle Observable as signal
   pet = toSignal(
-      this.petProfileService.getPetById(this.id()), {
+    this.petProfileService.getPetById(this.id()).pipe(
+      catchError((error) => {
+        console.error('Error fetching pet:', error);
+        return of(undefined); // fallback so toSignal doesn’t break
+      })
+    ), 
+    {
       initialValue: undefined,
     }
   );
 
-  imagePath = computed(() => 'pets/' + this.pet()?.icon);
+  imagePath = computed(() => {
+    const icon = 'pets/' + this.pet()?.icon;
+    return icon ? icon : 'pets/paw.png';
+  });
 
   age = computed(() => {
     const birthday = this.pet()?.birthday;
+    if(!birthday) return 0;
+
     const today = new Date();
-    
     let age = today.getFullYear() - birthday!.getFullYear();
     const monthDiff = today.getMonth() - birthday!.getMonth();
 
