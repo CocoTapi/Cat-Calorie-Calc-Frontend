@@ -1,11 +1,13 @@
 <!-- Edit Profile Form -->
-<app-slide-panel [panelId]="panelId" title="Edit">
-    <app-pet-form 
-        [pet]="pet()" 
-        (formStatusChanged)="onFormStatusChanged($event)"
-        (formGroupData)="onFormGroupChanged($event)"
-    />
-</app-slide-panel> 
+ @if (pet()){
+    <app-slide-panel [panelId]="panelId" title="Edit">
+        <app-pet-form 
+            [pet]="pet()" 
+            (formStatusChanged)="onFormStatusChanged($event)"
+            (formGroupData)="onFormGroupChanged($event)"
+        />
+    </app-slide-panel> 
+ }
 
 <div class="pets">
     <h1 class="heading-1">{{ pet().name}}</h1>
