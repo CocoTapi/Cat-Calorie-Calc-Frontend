@@ -9,6 +9,7 @@ import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/c
 import { CommonConstants } from '../../app.constants';
 import { DatePickerComponent } from "../../ui/date-picker/date-picker.component";
 import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
+import { createPetProfileForm, getInitialPetProfile } from './pet-profile-form';
 
 @Component({
   selector: 'app-pet-form',
@@ -56,57 +57,14 @@ export class PetFormComponent implements OnInit {
   newId: number = Math.random();
 
   // TODO: initial birthday
-  defaultBirthday: Date = new Date();
+  //defaultBirthday: Date = new Date();
 
   ngOnInit(): void {
     // Setup initial form values
-    const initialPetProfile: Pet_Form_Data = {
-      id: this.pet?.id ?? this.newId,
-      species: this.pet?.species ?? CommonConstants.CAT,
-      name: this.pet?.name ?? '',
-      birthday: this.pet?.birthday ?? this.defaultBirthday,
-
-      weight: this.pet?.weight ?? 0,
-      weight_unit: this.pet?.weight_unit ?? CommonConstants.LB,
-
-      allergies: this.pet?.allergies ?? '',
-      medications: this.pet?.medications ?? [],
-
-      goal: this.pet?.goal ?? CommonConstants.MAINTAIN,
-      target_weight: this.pet?.target_weight ?? 0,
-
-      factor: this.pet?.factor ?? 1,
-      daily_calories: this.pet?.daily_calories ?? 0,
-
-      notes: this.pet?.notes ?? '',
-    };
+    const initialPetProfile: Pet_Form_Data = getInitialPetProfile(this.pet, this.newId)
 
     // Setup pet profile form 
-    this.petProfileForm = new FormGroup({
-      species: new FormControl(initialPetProfile.species, Validators.required),
-      name: new FormControl(initialPetProfile.name, {
-        validators: [Validators.required]
-      }),
-      birthday: new FormControl(initialPetProfile.birthday, Validators.required),
-
-      weight: new FormControl(initialPetProfile.weight, Validators.required),
-      weight_unit: new FormControl(initialPetProfile.weight_unit, Validators.required),
-
-      allergies: new FormControl(initialPetProfile.allergies),
-      medications: new FormArray(
-        initialPetProfile.medications.map(med => new FormGroup({
-          med_id: new FormControl(med.med_id),
-          med_name: new FormControl(med.med_name, Validators.required),
-          directions: new FormControl(med.directions, Validators.required)
-        }))
-      ),
-
-      goal: new FormControl(initialPetProfile.goal, Validators.required),
-      target_weight: new FormControl(initialPetProfile.target_weight),
-
-      factor: new FormControl(initialPetProfile.factor, Validators.required),
-      daily_calories: new FormControl(initialPetProfile.daily_calories, Validators.required),
-    });
+    this.petProfileForm = createPetProfileForm(initialPetProfile)
 
     // Listen for changes in 'factor' and update 'daily_calories'
     const subscriptionForFactor = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
@@ -147,7 +105,7 @@ export class PetFormComponent implements OnInit {
       this.formValidationChange.emit(this.petProfileForm.valid);
     });
 
-    // send data to parent
+    // send form data to parent
     const dataSubscription = this.petProfileForm.statusChanges.subscribe(() => {
       this.formGroupData.emit(this.petProfileForm);
     });
@@ -247,7 +205,7 @@ export class PetFormComponent implements OnInit {
   // ------ FUNCTIONS FOR SUBMIT  ------
 
   onSubmit() {
-    // close this slide
+    // Close this slide
     this.slidePanelService.close;
   }
 

@@ -42,9 +42,10 @@ export class PetProfileComponent implements AfterViewInit {
     return pet;
   });
 
-  // Edit pet data validation to submit
+  // For edit pet data use
   formValid: boolean = false;
   petFormGroup!: FormGroup;
+  showEditPage = signal(false);
 
   // When user close the edit slide page, check the form validation and tell if it's allow to close
   ngAfterViewInit(): void {
@@ -52,9 +53,7 @@ export class PetProfileComponent implements AfterViewInit {
     this.slidePanelService.canClose(this.panelId, () => this.canPanelClose());
   }
 
-  showEditPage = signal(false);
-
-
+  
 
 
   // ------ For pet profile ------
@@ -135,6 +134,7 @@ export class PetProfileComponent implements AfterViewInit {
   // When the panel close, send a request to update pet profile 
   canPanelClose(): boolean {
     // Check validation
+    console.log(this.formValid)
     if (!this.formValid) {
       return false; 
     }
