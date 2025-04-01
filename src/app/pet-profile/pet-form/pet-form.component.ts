@@ -8,6 +8,7 @@ import { CustomInputComponent } from "../../ui/custom-input/custom-input.compone
 import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/custom-selection.component';
 import { CommonConstants } from '../../app.constants';
 import { DatePickerComponent } from "../../ui/date-picker/date-picker.component";
+import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
 
 @Component({
   selector: 'app-pet-form',
@@ -27,9 +28,10 @@ import { DatePickerComponent } from "../../ui/date-picker/date-picker.component"
 })
 export class PetFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
+  private slidePanelService = inject(SlidePanelService);
 
   @Input() pet!: Pet_Profile;
-  @Output() formStatusChanged = new EventEmitter<boolean>(); 
+  @Output() formValidationChange = new EventEmitter<boolean>(); 
   @Output() formGroupData = new EventEmitter<FormGroup>(); 
 
   private _petProfileForm!: FormGroup;
@@ -79,7 +81,7 @@ export class PetFormComponent implements OnInit {
       notes: this.pet?.notes ?? '',
     };
 
-    // Setup reactive form group
+    // Setup pet profile form 
     this.petProfileForm = new FormGroup({
       species: new FormControl(initialPetProfile.species, Validators.required),
       name: new FormControl(initialPetProfile.name, {
@@ -142,7 +144,7 @@ export class PetFormComponent implements OnInit {
 
     // Send validation to parent
     const validationSubscription = this.petProfileForm.statusChanges.subscribe(() => {
-      this.formStatusChanged.emit(this.petProfileForm.valid);
+      this.formValidationChange.emit(this.petProfileForm.valid);
     });
 
     // send data to parent
@@ -242,30 +244,11 @@ export class PetFormComponent implements OnInit {
     this.medications.removeAt(index);
   }
 
-   // ------ FUNCTIONS FOR SUBMIT  ------
+  // ------ FUNCTIONS FOR SUBMIT  ------
 
   onSubmit() {
-    if (this.petProfileForm.invalid) {
-      console.log('INVALID FORM');
-      return;
-    }
-
-    const formData: Pet_Form_Data = {
-      id: this.pet?.id ?? null,
-      ...this.petProfileForm.value
-    }
-
-    // When no allergy
-    if (!formData.allergies.length) {
-      formData.allergies = 'none';
-    }
-
-    // Remove medications without a `med_name`
-    formData.medications = formData.medications.filter(med =>
-      med.med_name && med.med_name.trim().length > 0
-    )
-
-    console.log("form submitted through submit button", formData)
+    // close this slide
+    this.slidePanelService.close;
   }
 
 

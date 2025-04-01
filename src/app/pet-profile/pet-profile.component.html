@@ -3,8 +3,8 @@
     <app-slide-panel [panelId]="panelId" title="Edit">
         <app-pet-form 
             [pet]="pet()" 
-            (formStatusChanged)="onFormStatusChanged($event)"
-            (formGroupData)="onFormGroupChanged($event)"
+            (formValidationChange)="onFormValidityChange($event)"
+            (formGroupData)="onFormGroupChange($event)"
         />
     </app-slide-panel> 
  }
@@ -17,22 +17,26 @@
         <mat-icon>settings</mat-icon>
     </button>
     
-    <!-- Main profile -->
+    <!-- Main pet profile -->
     <div class="pet-profile-1">
         <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
         <div class="pet-profile-1__summary">
+            
+            <!-- Age -->
             <p>Age :</p>
             <p>
                 {{ age() }}
                 <span>years</span>
             </p>
 
+            <!-- Weight -->
             <p>Weight :</p>
             <p>
                 {{ pet().weight }} 
                 <span>{{ pet().weight_unit }}</span>
             </p>
         
+            <!-- Goal weight -->
             <p>Goal :</p>
             <p>
                 {{ pet().goal }}
@@ -47,8 +51,10 @@
         </div>
     </app-card>
 
-    <!-- Health Profile -->
+    <!-- Health Profile for pets -->
     <div class="pet-profile-2">
+
+        <!-- Daily calories suggestion amount -->
         <div class="pet-profile-2__calories">
             <h2 class="heading-2">Daily Calories :</h2>
             <p>
@@ -57,6 +63,7 @@
             </p>
         </div>
        
+        <!-- Pet's taken medicine -->
         <div class="pet-profile-2__medications">
             <h2 class="heading-2">Medications :</h2>
             <ul>
@@ -73,11 +80,13 @@
             </ul> 
         </div>
        
+        <!-- Pet's food allergy list -->
         <div class="pet-profile-2__allergies">
             <h2 class="heading-2">Food Allergy :</h2>
             <p>{{ pet().allergies }}</p>
         </div>
         
+        <!-- Pet's personality notes from owner -->
         @if (pet().notes){
             <div class="pet-profile-2__notes">
                 <h2 class="heading-2">Personality Notes :</h2>

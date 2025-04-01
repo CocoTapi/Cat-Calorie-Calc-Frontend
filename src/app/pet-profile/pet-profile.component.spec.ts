@@ -22,7 +22,7 @@ describe('PetProfileComponent', () => {
   beforeEach(async () => {
     petProfileService = jasmine.createSpyObj(
       'PetProfileService', [
-        'getPetById'
+        'getPetByPetId'
       ]
     );
     slidePanelService = jasmine.createSpyObj(
@@ -64,7 +64,7 @@ describe('PetProfileComponent', () => {
   });
 
   it ('should compute image path after observable emits', fakeAsync(() => {
-    petProfileService.getPetById.and.returnValue(of(PETS_TEST_DATA[0]));
+    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
 
     fixture.detectChanges();
     tick(); // resolve observable
@@ -73,7 +73,7 @@ describe('PetProfileComponent', () => {
 
   // icon is undefined
   it ('should display default icon when icon is undefined', fakeAsync(() => {
-    petProfileService.getPetById.and.returnValue(of(undefined as unknown as Pet_Profile))
+    petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile))
 
     // re-create the component for error case.
     fixture = TestBed.createComponent(PetProfileComponent); 

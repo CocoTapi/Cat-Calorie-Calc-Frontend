@@ -20,7 +20,7 @@ describe('PetProfileService', () => {
   });
 
   it ('should retrieve pet profile by id', (done) => {
-    petProfileService.getPetById(0).subscribe(profile => {
+    petProfileService.getPetByPetId(0).subscribe(profile => {
       expect(profile).toBeTruthy("No pet profile returned.");
       expect(profile.id).toBe(0);
       done(); // important to signal async completion
@@ -28,7 +28,7 @@ describe('PetProfileService', () => {
   })
 
   it('should throw error for invalid pet id', (done) => {
-    petProfileService.getPetById(999).subscribe({
+    petProfileService.getPetByPetId(999).subscribe({
       next: () => {
         // make sure the method doesn't return a value
         fail('Expected error but got success');
