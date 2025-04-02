@@ -49,7 +49,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   // For edit pet data use
   formValid: boolean = false;
   petFormGroup!: FormGroup;
-  showEditPage = signal(false);
+  showEditPage: boolean = false;
 
   // When user close the edit slide page, check the form validation and tell if it's allow to close
   ngAfterViewInit(): void {
@@ -67,7 +67,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     const url = this.pet()?.icon;
 
     // Return default img
-    if(url.length <= 0) return 'pets/paw.png'
+    if(!this.pet() || url.length < 1) return 'pets/paw.png'
 
     // Return user's img
     return 'pets/' + this.pet().icon;
@@ -75,10 +75,10 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
   // Calculate pet's age from birthday
   age = computed(() => {
+     // Return default age
+     if (!this.pet()) return 0;
+
     const birthday = this.pet()?.birthday;
-    
-    // Return default age
-    if (!birthday) return 0;
 
     // Subtract birthday from today's date
     const today = new Date();
@@ -95,21 +95,26 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
   // Setup line graph title based on pet's goal
   graphTitle = computed(() => {
-    let goal = this.pet()?.goal;
+    let title = `Goal: Maintain Weight`
+    const goal = this.pet()?.goal;
 
     // Return default goal
-    if(!goal) goal = 'Maintain'
+    if(!this.pet() || goal === CommonConstants.MAINTAIN) {
+      return title;
+    }
 
-    let title = `Goal: ${goal} Weight`;
     const targetWeight = this.pet()?.target_weight;    
 
-    // Return default title
-    if(!targetWeight) return title;
+    // Return goal title without target weight
+    const currentWeight = this.pet()?.weight;
+    if(!targetWeight || targetWeight === currentWeight) {
+      return `Goal: ${goal} Weight`;
+    }
 
     let unit = this.pet()?.weight_unit;
 
     // Set default unit
-    if(!unit) unit = 'lb'
+    if(!unit) unit = 'lb';
     
     title = `Goal: ${goal} Weight to ${targetWeight} ${unit}`
 

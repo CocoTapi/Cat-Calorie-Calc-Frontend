@@ -6,6 +6,19 @@ import { PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
 import { CommonConstants } from '../app.constants';
 import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
 import { Pet_Profile } from './models/pet-profile.model';
+// import { Component, EventEmitter, Output } from '@angular/core';
+// import { FormGroup } from '@angular/forms';
+// import { By } from '@angular/platform-browser';
+
+// @Component({
+//   selector: 'app-pet-form',
+//   template: ''
+// })
+// class MockPetFormComponent {
+//   @Output() formValidityChange = new EventEmitter<boolean>();
+//   @Output() formGroupChange = new EventEmitter<FormGroup>();
+// }
+
 
 describe('PetProfileComponent', () => {
   let component: PetProfileComponent;
@@ -30,7 +43,11 @@ describe('PetProfileComponent', () => {
   function createComponent() {
     fixture = TestBed.createComponent(PetProfileComponent);
     component = fixture.componentInstance;
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+    fixture.autoDetectChanges();
+  }
+
+  function updateCheck() {
+    tick(); // flush observable
     fixture.detectChanges();
   }
 
@@ -38,6 +55,7 @@ describe('PetProfileComponent', () => {
     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
 
     createComponent();
+
     expect(component).toBeTruthy();
   });
 
@@ -48,8 +66,7 @@ describe('PetProfileComponent', () => {
     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
 
     createComponent();
-    tick(); // flush observable
-    fixture.detectChanges();
+    updateCheck();
 
     // Access signal directly
     expect(component['_pet']()).toBe(PETS_TEST_DATA[0]); 
@@ -70,9 +87,7 @@ describe('PetProfileComponent', () => {
   it('should get undefined data and keep it undefined', fakeAsync(() => {
     petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile));
     
-    createComponent();
-    tick(); // flush observable
-    fixture.detectChanges();
+    updateCheck();
 
     expect(() => component.pet()).toBeUndefined;
   }))
@@ -124,95 +139,120 @@ describe('PetProfileComponent', () => {
   it ('should compute image path after observable emits', fakeAsync(() => {
     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
     
-    // Need this for fakeAsync 
-    fixture = TestBed.createComponent(PetProfileComponent);
-    component = fixture.componentInstance; 
-
-    fixture.detectChanges(); // initializes the component
-    tick();                  // flush the observable emission
-    fixture.detectChanges(); // ensures computed signals re-evaluate
-   
+    createComponent();
+    updateCheck();
 
     expect(component.imagePath()).toBe('pets/dodger.png');
   }));
 
+  // Fetch pet data but no img url are registered
+  it ('should display default image path', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0];
+    mockData.icon = '';
+    petProfileService.getPetByPetId.and.returnValue(of(mockData));
+
+    createComponent();
+    updateCheck();
+
+    tick(); 
+    expect(component.imagePath()).toBe('pets/paw.png');
+  }));
+
   // Get age data successfully
-  it ('should compute image path after observable emits', fakeAsync(() => {
+  it ('should get birthday and calculate age', fakeAsync(() => {
     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
 
-    fixture.detectChanges(); 
-    tick();                  
-    fixture.detectChanges();
+    createComponent();
+
+    updateCheck();
 
     expect(component.age()).toBe(11);
   }));
 
+   // Get graph title successfully 
+   it ('should display goal with target weight', fakeAsync(() => {
+    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+
+    createComponent();
+    tick(); // resolve observable
+
+    expect(component.graphTitle()).toBe("Goal: Lose Weight to 16 lb");
+  }));
+
+   // When user's goal = maintain
+   it ('should display only title (goal = maintain)', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0];
+    mockData.goal = 'Maintain';
+
+    petProfileService.getPetByPetId.and.returnValue(of(mockData));
+
+    createComponent();
+    tick(); // resolve observable
+
+    expect(component.graphTitle()).toBe("Goal: Maintain Weight");
+  }));
+
+  
+   // When user's target weight are same as current weight 
+   it ('should display only title:(target weight = current weight)', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0];
+    mockData.goal = 'Maintain';
+    mockData.target_weight = 17.5;
+
+    petProfileService.getPetByPetId.and.returnValue(of(mockData));
+
+    createComponent();
+    tick(); // resolve observable
+
+    expect(component.graphTitle()).toBe("Goal: Maintain Weight");
+  }));
+
 });
 
-// No image data and set default img
-// it ('should compute default image path', fakeAsync(() => {
-//   petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile));
+ // // Data fetch failed and display default title
+  // it('should display only goal without target weight', fakeAsync(() => {
+  //   petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile)); 
   
-//   // Need this for fakeAsync 
-//   fixture = TestBed.createComponent(PetProfileComponent);
-//   component = fixture.componentInstance; 
+  //   createComponent();
+  //   updateCheck();
 
-//   fixture.detectChanges(); // initializes the component
-//   tick();                  // flush the observable emission
-//   fixture.detectChanges(); // ensures computed signals re-evaluate
- 
-
-//   expect(component.imagePath()).toBe('pets/paw.png');
-// }));
+  //   // fallback/default
+  //   expect(component.graphTitle()).toBe("Goal: Maintain Weight"); 
+  // }));
 
 
+ //   // ----- edit form -----
+
+  // // Receive child data and set validation
+  // it('should update formValid when child emits formValidityChange', () => {
+  //   petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+
+  //   createComponent();
+  //   tick(); // resolve observable
+
+  //   // mock an edit form component
+  //   const mockChild = fixture.debugElement.query(
+  //     By.directive(MockPetFormComponent)).componentInstance;
+
+  //   // send validation true from form component
+  //   mockChild.formValidityChange.emit(true);
+
+  //   expect(component.formValid).toBeTrue();
+  // });
 
 
 
-//   // No age data received 
-//   it('should compute default image path when no pet data is received', fakeAsync(() => {
-//     petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile)); 
-  
-//     fixture.detectChanges();
-//     tick(); 
-  
-//     // fallback/default
-//     expect(component.age()).toBe(0); 
-//   }));
-
-//    // Graph title with user data 
-//    it ('should compute image path after observable emits', fakeAsync(() => {
-//     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-
-//     fixture.detectChanges();
-//     tick(); // resolve observable
-
-//     expect(component.graphTitle()).toBe("Goal: Lose Weight to 16 lb");
-//   }));
-
-//   // Graph title when user data is missing
-//   it('should compute default image path when no pet data is received', fakeAsync(() => {
-//     petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile)); 
-  
-//     fixture.detectChanges();
-//     tick(); 
-  
-//     // fallback/default
-//     expect(component.graphTitle()).toBe("Goal: Lose Weight"); 
-//   }));
 
 
-//   // ----- edit form -----
 
-//   // Receive child data and set validation
-//   it('should update formValid when child emits formValidityChange', () => {
-//     const mockChild = fixture.debugElement.query(
-//       By.directive(MockPetFormComponent)).componentInstance;
 
-//     mockChild.formValidityChange.emit(true);
 
-//     expect(component.formValid).toBeTrue();
-//   });
+
+
+
+
+
+
 
 //   // Receive child data and set petFormGroup
 //   it('should update petFormGroup when child emits formGroupChange', () => {
