@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, input, AfterViewInit } from '@angular/core';
+import { Component, computed, inject, signal, input, AfterViewInit, OnInit } from '@angular/core';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,6 @@ import { CardComponent } from '../ui/card/card.component';
 import { CommonConstants } from '../app.constants';
 import { FormGroup } from '@angular/forms';
 import { Pet_Form_Data, Pet_Profile } from './models/pet-profile.model';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
 
@@ -18,22 +17,25 @@ import { catchError, of } from 'rxjs';
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })
-export class PetProfileComponent implements AfterViewInit {
+export class PetProfileComponent implements AfterViewInit, OnInit {
   id = input<number>(0);
+  private _pet = signal<Pet_Profile | undefined>(undefined);
+
   private petProfileService = inject(PetProfileService);
   private slidePanelService = inject(SlidePanelService);
   panelId: string = CommonConstants.PET_FORM;
 
   // Get pet data by pet id
-  private _pet = toSignal<Pet_Profile | undefined>(
+  ngOnInit() {
     this.petProfileService.getPetByPetId(this.id()).pipe(
-      catchError((error) => {
-        console.error('Error fetching Pet_Profile:', error);
+      catchError(error => {
+        console.error('Error loading pet:', error);
         return of(undefined);
       })
-    ),
-    { initialValue: undefined }
-  );
+    ).subscribe(pet => {
+      this._pet.set(pet);
+    });
+  }
 
   // Set read only pet data to use
   readonly pet = computed(() => {
@@ -41,6 +43,8 @@ export class PetProfileComponent implements AfterViewInit {
     if (!pet) throw new Error('Pet not loaded yet or failed to load.');
     return pet;
   });
+ 
+
 
   // For edit pet data use
   formValid: boolean = false;
@@ -63,7 +67,7 @@ export class PetProfileComponent implements AfterViewInit {
     const url = this.pet()?.icon;
 
     // Return default img
-    if(!url) return 'pets/paw.png'
+    if(url.length <= 0) return 'pets/paw.png'
 
     // Return user's img
     return 'pets/' + this.pet().icon;

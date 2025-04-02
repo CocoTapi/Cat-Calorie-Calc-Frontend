@@ -9,5 +9,5 @@ import { PetProfileComponent } from './pet-profile/pet-profile.component';
 })
 export class AppComponent {
   title = 'cat-calorie-calc-frontend';
-
+  pet_id = 0;
 }
