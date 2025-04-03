@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, input, AfterViewInit, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, input, AfterViewInit, OnInit, DestroyRef } from '@angular/core';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
 import { MatIconModule } from '@angular/material/icon';
@@ -18,16 +18,19 @@ import { catchError, of } from 'rxjs';
   styleUrl: './pet-profile.component.scss'
 })
 export class PetProfileComponent implements AfterViewInit, OnInit {
-  id = input<number>(0);
+  id = input.required<number>();
+  panelId: string = CommonConstants.PET_FORM;
+  
   private _pet = signal<Pet_Profile | undefined>(undefined);
+  isGoalCorrect = signal<boolean>(true);
 
   private petProfileService = inject(PetProfileService);
   private slidePanelService = inject(SlidePanelService);
-  panelId: string = CommonConstants.PET_FORM;
+  private destroyRef = inject(DestroyRef);
 
   // Get pet data by pet id
   ngOnInit() {
-    this.petProfileService.getPetByPetId(this.id()).pipe(
+    const subscription = this.petProfileService.getPetByPetId(this.id()).pipe(
       catchError(error => {
         console.error('Error loading pet:', error);
         return of(undefined);
@@ -35,12 +38,21 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     ).subscribe(pet => {
       this._pet.set(pet);
     });
+
+    this.destroyRef.onDestroy(() => subscription?.unsubscribe());
   }
 
   // Set read only pet data to use
-  readonly pet = computed(() => {
+  readonly pet = computed<Pet_Profile>(() => {
     const pet = this._pet();
-    if (!pet) throw new Error('Pet not loaded yet or failed to load.');
+
+    // This keep throwing error until the data arrives
+    // This will be thrown at imagePath, age, graphTitle too
+    if (!pet) {
+      // TODO: loading effect
+      throw new Error('Pet not loaded yet or failed to load.')
+    }
+
     return pet;
   });
  
@@ -57,36 +69,37 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     this.slidePanelService.canClose(this.panelId, () => this.canPanelClose());
   }
 
-  
-
 
   // ------ For pet profile ------
 
   // Setup pet's icon picture
   imagePath = computed(() => {
-    const url = this.pet()?.icon;
+    const pet = this.pet();
+    const url = pet.icon;
+
 
     // Return default img
-    if(!this.pet() || url.length < 1) return 'pets/paw.png'
+    if (!url || url.length < 1) return 'pets/paw.png'
 
     // Return user's img
-    return 'pets/' + this.pet().icon;
+    return 'pets/' + url;
   });
 
   // Calculate pet's age from birthday
   age = computed(() => {
-     // Return default age
-     if (!this.pet()) return 0;
-
-    const birthday = this.pet()?.birthday;
+    const pet = this.pet();
+    const birthday = pet.birthday;
 
     // Subtract birthday from today's date
     const today = new Date();
-    let age = today.getFullYear() - birthday!.getFullYear();
-    const monthDiff = today.getMonth() - birthday!.getMonth();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const monthDiff = today.getMonth() - birthday.getMonth();
 
     // Adjust age if birthday hasn't occurred this year yet
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday!.getDate())) {
+    if (
+      monthDiff < 0 || 
+      (monthDiff === 0 && today.getDate() < birthday!.getDate())
+    ) {
       age--;
     }
 
@@ -95,28 +108,44 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
   // Setup line graph title based on pet's goal
   graphTitle = computed(() => {
+    const pet = this.pet();
+    const goal = pet.goal;
+
     let title = `Goal: Maintain Weight`
-    const goal = this.pet()?.goal;
 
     // Return default goal
-    if(!this.pet() || goal === CommonConstants.MAINTAIN) {
+    if (goal === CommonConstants.MAINTAIN) {
       return title;
     }
 
-    const targetWeight = this.pet()?.target_weight;    
+    const targetWeight = pet.target_weight; 
+    const currentWeight = pet.weight; 
+    let unit = pet.weight_unit;  
+    let realGoal;
 
     // Return goal title without target weight
-    const currentWeight = this.pet()?.weight;
-    if(!targetWeight || targetWeight === currentWeight) {
-      return `Goal: ${goal} Weight`;
+    if (targetWeight === currentWeight) {
+      realGoal = CommonConstants.MAINTAIN;
+      return `Goal: ${realGoal} Weight`;
     }
 
-    let unit = this.pet()?.weight_unit;
+    // Check if user set the correct goal based on their current and target weights
+    if (targetWeight > currentWeight) {
+      realGoal = CommonConstants.GAIN;
+
+      if (realGoal !== goal) this.isGoalCorrect.set(false);
+
+    } else if (targetWeight < currentWeight) {
+      realGoal = CommonConstants.LOSE;
+
+      if (realGoal !== goal) this.isGoalCorrect.set(false);
+    }
 
     // Set default unit
     if(!unit) unit = 'lb';
     
-    title = `Goal: ${goal} Weight to ${targetWeight} ${unit}`
+    // Display real goal based on weight
+    title = `Goal: ${realGoal} Weight to ${targetWeight} ${unit}`
 
     return title;
   });

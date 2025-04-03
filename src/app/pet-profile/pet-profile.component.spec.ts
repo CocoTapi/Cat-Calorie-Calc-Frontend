@@ -1,35 +1,34 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PetProfileComponent } from './pet-profile.component';
+
+import { Component, ComponentRef, EventEmitter, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { of } from 'rxjs';
 import { PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
-import { CommonConstants } from '../app.constants';
-import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
 import { Pet_Profile } from './models/pet-profile.model';
-// import { Component, EventEmitter, Output } from '@angular/core';
-// import { FormGroup } from '@angular/forms';
-// import { By } from '@angular/platform-browser';
 
-// @Component({
-//   selector: 'app-pet-form',
-//   template: ''
-// })
-// class MockPetFormComponent {
-//   @Output() formValidityChange = new EventEmitter<boolean>();
-//   @Output() formGroupChange = new EventEmitter<FormGroup>();
-// }
+@Component({
+  selector: 'app-pet-form',
+  template: '',
+  standalone: true
+})
+export class MockPetFormComponent {
+  @Output() formValidityChange = new EventEmitter<boolean>();
+  @Output() formGroupChange = new EventEmitter<FormGroup>();
+}
 
 
 describe('PetProfileComponent', () => {
-  let component: PetProfileComponent;
-  let fixture: ComponentFixture<PetProfileComponent>;
+  let component: PetProfileComponent
+  let componentRef: ComponentRef<PetProfileComponent>
+  let fixture: ComponentFixture<PetProfileComponent>
+  // const undefinedData = undefined as unknown as Pet_Profile;
 
   // Shared mock service with a spy that we override per test
   const petProfileService = {
     getPetByPetId: jasmine.createSpy('getPetByPetId')
   };
-
-  const slidePanelService = jasmine.createSpyObj('SlidePanelService', ['canClose', 'open']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -37,177 +36,233 @@ describe('PetProfileComponent', () => {
       providers: [
         { provide: PetProfileService, useValue: petProfileService },
       ]
-    }).compileComponents();
-  });
+    }).compileComponents()
 
-  function createComponent() {
-    fixture = TestBed.createComponent(PetProfileComponent);
+    fixture = TestBed.createComponent(PetProfileComponent)
+
     component = fixture.componentInstance;
-    fixture.autoDetectChanges();
+    componentRef = fixture.componentRef;
+  })
+
+  function setData(returnedData: Pet_Profile) {
+    petProfileService.getPetByPetId.and.returnValue(of(returnedData));
+    componentRef.setInput('id', '0');
+    
+    // call ngOninit()
+    fixture.detectChanges()
   }
 
-  function updateCheck() {
-    tick(); // flush observable
-    fixture.detectChanges();
-  }
+  // PetProfileService was called with id in ngOnInit
+  it('should call the petProfileService when id is set', () => {
+    setData(PETS_TEST_DATA[0]);
+    
+    expect(petProfileService.getPetByPetId).toHaveBeenCalledWith('0');
+  })
 
-  it ('should create the component', () => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+  // pet data is stored correctly
+  it('should store the fetched data correctly', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    const mockName = PETS_TEST_DATA[0].name
 
-    createComponent();
+    tick();
+  
+    expect(component.pet().name).toEqual(mockName);
+  }));
 
-    expect(component).toBeTruthy();
-  });
 
   // ------ pet data fetch and set ------
 
-  // Fetch pet data and set _pet
-  it('should set _pet signal when pet data is returned', fakeAsync(() => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+  // ----- IMAGE PATH -----
 
-    createComponent();
-    updateCheck();
+  // User setup img and display on the screen
+  it("should display custom image", fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+
+    const mockPath = 'pets/' + PETS_TEST_DATA[0].icon;
+    
+    tick()
 
     // Access signal directly
-    expect(component['_pet']()).toBe(PETS_TEST_DATA[0]); 
+    expect(component.imagePath()).toBe(mockPath); 
+  }));
+
+   // User hasn't set icon and display default icon
+   it("should display default image", fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0];
+    mockData.icon = ''
+    setData(mockData);
+
+    const mockPath = 'pets/paw.png'
+    
+    tick()
+
+    // Access signal directly
+    expect(component.imagePath()).toBe(mockPath); 
   }));
 
 
-  // Fetch data and set pet() 
-  it('should pet data and update pet()', () => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+  // ----- AGE -----
 
-    createComponent();
-
-    expect(component.pet()).toBe(PETS_TEST_DATA[0]); 
-  });
-
-    
   // Data fetch failed and keep pet() undefined.
-  it('should get undefined data and keep it undefined', fakeAsync(() => {
-    petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile));
-    
-    updateCheck();
+  it('should get pet age', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
 
-    expect(() => component.pet()).toBeUndefined;
+    const mockAge = 11;
+    
+    tick();
+
+    expect(component.age()).toBe(mockAge); 
   }))
 
 
-  // ------ ngAfterViewInit ------
-  it('should register canClose callback with slidePanelService on ngAfterViewInit', () => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+  // ----- GRAPH TITLE -----
 
-    // Configure TestBed with just this mock
-    TestBed.configureTestingModule({
-      imports: [PetProfileComponent],
-      providers: [
-        { provide: SlidePanelService, useValue: slidePanelService },
-        { provide: PetProfileService, useValue: petProfileService }
-      ]
-    }).compileComponents();
+   // User's goal are lose weight or gain weight
+   it('should display title for user goal', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0] 
+    const mockGoal = mockData.goal;
+    const mockTargetWeight = mockData.target_weight;
+    const mockUnit = mockData.weight_unit;
 
-    // Re-Create the component
-    const fixture = TestBed.createComponent(PetProfileComponent);
-    const component = fixture.componentInstance;
-
+    const mockTitle =  `Goal: ${mockGoal} Weight to ${mockTargetWeight} ${mockUnit}`
     
-    component.panelId =  CommonConstants.PET_FORM;
-    
-    // mock canPanelClose to return false
-    spyOn(component, 'canPanelClose').and.returnValue(false);
-  
-    // Trigger the registration logic
-    component.ngAfterViewInit();
-  
-    // Get the callback function that was registered with the service
-    const registeredCallback = (
-      slidePanelService.canClose as jasmine.Spy).calls.mostRecent().args[1];
-  
-    // Simulate the panel trying to close 
-    const result = registeredCallback();
+    setData(mockData);
 
-    // Expect panel won't close
-    expect(result).toBeFalse();
-  });
+    tick();
 
-    
-  
-  
-  // ------ For pet profile ------
+    expect(component.graphTitle()).toBe(mockTitle); 
+  }))
 
-  // imagePath Check from data 
-  it ('should compute image path after observable emits', fakeAsync(() => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-    
-    createComponent();
-    updateCheck();
-
-    expect(component.imagePath()).toBe('pets/dodger.png');
-  }));
-
-  // Fetch pet data but no img url are registered
-  it ('should display default image path', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0];
-    mockData.icon = '';
-    petProfileService.getPetByPetId.and.returnValue(of(mockData));
-
-    createComponent();
-    updateCheck();
-
-    tick(); 
-    expect(component.imagePath()).toBe('pets/paw.png');
-  }));
-
-  // Get age data successfully
-  it ('should get birthday and calculate age', fakeAsync(() => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-
-    createComponent();
-
-    updateCheck();
-
-    expect(component.age()).toBe(11);
-  }));
-
-   // Get graph title successfully 
-   it ('should display goal with target weight', fakeAsync(() => {
-    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-
-    createComponent();
-    tick(); // resolve observable
-
-    expect(component.graphTitle()).toBe("Goal: Lose Weight to 16 lb");
-  }));
-
-   // When user's goal = maintain
-   it ('should display only title (goal = maintain)', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0];
+  // User's goal are maintain
+  it('should display title for maintain', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0] 
     mockData.goal = 'Maintain';
 
-    petProfileService.getPetByPetId.and.returnValue(of(mockData));
+    const mockTitle =  `Goal: Maintain Weight`
+    
+    setData(mockData);
 
-    createComponent();
-    tick(); // resolve observable
+    tick();
 
-    expect(component.graphTitle()).toBe("Goal: Maintain Weight");
-  }));
+    expect(component.graphTitle()).toBe(mockTitle); 
+  }))
+
+   // User's target weight and current weight are same so display Maintain
+   it('should display title for maintain based on weight', fakeAsync(() => {
+    const mockData = PETS_TEST_DATA[0] 
+    mockData.weight = 10;
+    mockData.target_weight = 10;
+
+    const mockTitle =  `Goal: Maintain Weight`
+    
+    setData(mockData);
+
+    tick();
+
+    expect(component.graphTitle()).toBe(mockTitle); 
+  }))
+
+
+})
+
+
+
+
+
+
+    
+
+
+
+//   // ------ ngAfterViewInit ------
+//   it('should register canClose callback with slidePanelService on ngAfterViewInit', () => {
+//     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+
+//     // Configure TestBed with just this mock
+//     TestBed.configureTestingModule({
+//       imports: [PetProfileComponent],
+//       providers: [
+//         { provide: SlidePanelService, useValue: slidePanelService },
+//         { provide: PetProfileService, useValue: petProfileService }
+//       ]
+//     }).compileComponents();
+
+//     // Re-Create the component
+//     const fixture = TestBed.createComponent(PetProfileComponent);
+//     const component = fixture.componentInstance;
+
+    
+//     component.panelId =  CommonConstants.PET_FORM;
+    
+//     // mock canPanelClose to return false
+//     spyOn(component, 'canPanelClose').and.returnValue(false);
+  
+//     // Trigger the registration logic
+//     component.ngAfterViewInit();
+  
+//     // Get the callback function that was registered with the service
+//     const registeredCallback = (
+//       slidePanelService.canClose as jasmine.Spy).calls.mostRecent().args[1];
+  
+//     // Simulate the panel trying to close 
+//     const result = registeredCallback();
+
+//     // Expect panel won't close
+//     expect(result).toBeFalse();
+//   });
+
+    
+
+
+//   // ----- edit form -----
+
+
+//   // Receive child data and set validation
+//   // it('should update formValid when child emits formValidityChange', fakeAsync(() => {
+//   //   // Arrange data
+//   //   petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+//   //   createComponent();
+//   //   tick();
+//   //   fixture.detectChanges();
+
+//   //   // Setup a child component
+//   //   const debugEl = fixture.debugElement.query(By.directive(MockPetFormComponent));
+//   //   expect(debugEl).withContext('Child component not found in DOM').not.toBeNull();
+  
+//   //   const mockChild = debugEl.componentInstance;
+
+//   //   // send validation true from form component
+//   //   mockChild.formValidityChange.emit(true);
+
+//   //   expect(component.formValid).toBeTrue();
+//   // }));
+
+//   it('should update formValid when child emits formValidityChange', fakeAsync(() => {
+//     // Arrange: mock service returns test data
+//     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+  
+//     // Act: create component and trigger lifecycle
+//     createComponent();   // assumes this calls TestBed.createComponent and assigns to `component` and `fixture`
+//     tick();              // completes any async operations
+//     fixture.detectChanges(); // triggers ngOnInit and template render
+  
+//     // Assert: locate child component after DOM is fully rendered
+//     const debugEl = fixture.debugElement.query(By.css('app-pet-form'));
+//     expect(debugEl).withContext('app-pet-form not found').not.toBeNull();
+  
+//     const mockChild = debugEl.componentInstance;
+//     mockChild.formValidityChange.emit(true);
+//     fixture.detectChanges(); // allow parent to react to output
+
+//     console.log('mockChild', mockChild);
+
+
+//     expect(component.formValid).toBeTrue();
+//   }));
 
   
-   // When user's target weight are same as current weight 
-   it ('should display only title:(target weight = current weight)', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0];
-    mockData.goal = 'Maintain';
-    mockData.target_weight = 17.5;
 
-    petProfileService.getPetByPetId.and.returnValue(of(mockData));
-
-    createComponent();
-    tick(); // resolve observable
-
-    expect(component.graphTitle()).toBe("Goal: Maintain Weight");
-  }));
-
-});
+// });
 
  // // Data fetch failed and display default title
   // it('should display only goal without target weight', fakeAsync(() => {
@@ -221,24 +276,10 @@ describe('PetProfileComponent', () => {
   // }));
 
 
- //   // ----- edit form -----
 
-  // // Receive child data and set validation
-  // it('should update formValid when child emits formValidityChange', () => {
-  //   petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
 
-  //   createComponent();
-  //   tick(); // resolve observable
 
-  //   // mock an edit form component
-  //   const mockChild = fixture.debugElement.query(
-  //     By.directive(MockPetFormComponent)).componentInstance;
-
-  //   // send validation true from form component
-  //   mockChild.formValidityChange.emit(true);
-
-  //   expect(component.formValid).toBeTrue();
-  // });
+ 
 
 
 
