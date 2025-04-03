@@ -123,20 +123,19 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     let unit = pet.weight_unit;  
     let realGoal;
 
-    // Return goal title without target weight
+    // Return maintain if the target and current weight are same
     if (targetWeight === currentWeight) {
-      realGoal = CommonConstants.MAINTAIN;
-      return `Goal: ${realGoal} Weight`;
+      return title;
     }
 
-    // Check if user set the correct goal based on their current and target weights
+    // Check if user set the correct goal based on weights
     if (targetWeight > currentWeight) {
-      realGoal = CommonConstants.GAIN;
+      realGoal = 'Gain';
 
       if (realGoal !== goal) this.isGoalCorrect.set(false);
 
     } else if (targetWeight < currentWeight) {
-      realGoal = CommonConstants.LOSE;
+      realGoal = 'Lose';
 
       if (realGoal !== goal) this.isGoalCorrect.set(false);
     }

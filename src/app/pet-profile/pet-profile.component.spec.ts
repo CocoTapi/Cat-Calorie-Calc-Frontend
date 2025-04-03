@@ -1,22 +1,12 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PetProfileComponent } from './pet-profile.component';
-
-import { Component, ComponentRef, EventEmitter, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { ComponentRef, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { of } from 'rxjs';
-import { PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
+import { PET_TEST_FORM_DATA, PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
 import { Pet_Profile } from './models/pet-profile.model';
-
-@Component({
-  selector: 'app-pet-form',
-  template: '',
-  standalone: true
-})
-export class MockPetFormComponent {
-  @Output() formValidityChange = new EventEmitter<boolean>();
-  @Output() formGroupChange = new EventEmitter<FormGroup>();
-}
+import { By } from '@angular/platform-browser';
+import { CommonConstants } from '../app.constants';
 
 
 describe('PetProfileComponent', () => {
@@ -27,7 +17,7 @@ describe('PetProfileComponent', () => {
 
   // Shared mock service with a spy that we override per test
   const petProfileService = {
-    getPetByPetId: jasmine.createSpy('getPetByPetId')
+    getPetByPetId: jasmine.createSpy('getPetByPetId'),
   };
 
   beforeEach(async () => {
@@ -35,7 +25,8 @@ describe('PetProfileComponent', () => {
       imports: [PetProfileComponent],
       providers: [
         { provide: PetProfileService, useValue: petProfileService },
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents()
 
     fixture = TestBed.createComponent(PetProfileComponent)
@@ -44,6 +35,7 @@ describe('PetProfileComponent', () => {
     componentRef = fixture.componentRef;
   })
 
+  // setup pet profile data
   function setData(returnedData: Pet_Profile) {
     petProfileService.getPetByPetId.and.returnValue(of(returnedData));
     componentRef.setInput('id', '0');
@@ -51,6 +43,23 @@ describe('PetProfileComponent', () => {
     // call ngOninit()
     fixture.detectChanges()
   }
+
+  // Setup child component
+  function findComponent<T>(
+    fixture: ComponentFixture<T>,
+    selector: string,
+  ): DebugElement {
+    return fixture.debugElement.query(By.css(selector));
+  }
+
+  // Setup edit button element
+  function setUpEditButton() {
+    const editDebugElement = fixture.debugElement.query(By.css('.responsive-icon'));
+    const editButton = editDebugElement.nativeElement;
+
+    return editButton;
+  }
+  
 
   // PetProfileService was called with id in ngOnInit
   it('should call the petProfileService when id is set', () => {
@@ -94,7 +103,7 @@ describe('PetProfileComponent', () => {
 
     const mockPath = 'pets/paw.png'
     
-    tick()
+    tick();
 
     // Access signal directly
     expect(component.imagePath()).toBe(mockPath); 
@@ -163,10 +172,71 @@ describe('PetProfileComponent', () => {
   }))
 
 
+  // ----- edit form -----
+
+  // Check the presence of child component
+  it('renders an independent petFormComponent', () => {
+    setData(PETS_TEST_DATA[0]);
+
+    // Prepare child component
+    const petForm = findComponent(fixture, 'app-pet-form');
+
+    expect(petForm).toBeTruthy();
+  });
+  
+
+  // Receive form validity data from child component and set validation
+  it('should update formValid when child emits formValidityChange', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    const petForm = findComponent(fixture, 'app-pet-form');
+
+    // Simulate Output
+    petForm.triggerEventHandler('formValidationChange', true);
+
+    tick();
+
+    expect(component.formValid).toBeTrue();
+  }));
+
+  // Receive form data from child component and set the data 
+  it('should set edited form data', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    const petForm = findComponent(fixture, 'app-pet-form');
+    const mockFormData = PET_TEST_FORM_DATA[0];
+
+    // Simulate Output
+    petForm.triggerEventHandler('formGroupData', mockFormData);
+
+    tick();
+
+    expect(component.petFormGroup).toBeTruthy();
+  }));
+
+  // Edit button exists. 
+  it('render edit button', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+
+    const editButton = setUpEditButton();
+
+    expect(editButton).toBeTruthy();
+   
+  })); 
+
+  // When user click edit button, slidePanelService is called to open edit display
+  it('should be called slidePanelService.open with panel id', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    const panelId = CommonConstants.PET_FORM;
+    const slidePanelServiceSpy = spyOn(component['slidePanelService'], 'open');
+
+    component.onEdit(panelId);
+
+    expect(slidePanelServiceSpy).toHaveBeenCalledWith(panelId);
+  }));
+  
+  
+
 })
-
-
-
+ 
 
 
 
@@ -214,158 +284,6 @@ describe('PetProfileComponent', () => {
     
 
 
-//   // ----- edit form -----
-
-
-//   // Receive child data and set validation
-//   // it('should update formValid when child emits formValidityChange', fakeAsync(() => {
-//   //   // Arrange data
-//   //   petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-//   //   createComponent();
-//   //   tick();
-//   //   fixture.detectChanges();
-
-//   //   // Setup a child component
-//   //   const debugEl = fixture.debugElement.query(By.directive(MockPetFormComponent));
-//   //   expect(debugEl).withContext('Child component not found in DOM').not.toBeNull();
-  
-//   //   const mockChild = debugEl.componentInstance;
-
-//   //   // send validation true from form component
-//   //   mockChild.formValidityChange.emit(true);
-
-//   //   expect(component.formValid).toBeTrue();
-//   // }));
-
-//   it('should update formValid when child emits formValidityChange', fakeAsync(() => {
-//     // Arrange: mock service returns test data
-//     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-  
-//     // Act: create component and trigger lifecycle
-//     createComponent();   // assumes this calls TestBed.createComponent and assigns to `component` and `fixture`
-//     tick();              // completes any async operations
-//     fixture.detectChanges(); // triggers ngOnInit and template render
-  
-//     // Assert: locate child component after DOM is fully rendered
-//     const debugEl = fixture.debugElement.query(By.css('app-pet-form'));
-//     expect(debugEl).withContext('app-pet-form not found').not.toBeNull();
-  
-//     const mockChild = debugEl.componentInstance;
-//     mockChild.formValidityChange.emit(true);
-//     fixture.detectChanges(); // allow parent to react to output
-
-//     console.log('mockChild', mockChild);
-
-
-//     expect(component.formValid).toBeTrue();
-//   }));
-
-  
-
-// });
-
- // // Data fetch failed and display default title
-  // it('should display only goal without target weight', fakeAsync(() => {
-  //   petProfileService.getPetByPetId.and.returnValue(of(undefined as unknown as Pet_Profile)); 
-  
-  //   createComponent();
-  //   updateCheck();
-
-  //   // fallback/default
-  //   expect(component.graphTitle()).toBe("Goal: Maintain Weight"); 
-  // }));
 
 
 
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   // Receive child data and set petFormGroup
-//   it('should update petFormGroup when child emits formGroupChange', () => {
-//     const mockForm = new FormGroup({
-//       name: new FormControl('Dodger'),
-//       age: new FormControl(11)
-//     });
-
-//     const mockChild = fixture.debugElement.query(By.directive(MockPetFormComponent)).componentInstance;
-//     mockChild.formGroupChange.emit(mockForm);
-
-//     expect(component.petFormGroup).toBe(mockForm);
-//   });
-
-//   // Click onEdit button and call service function with panel id
-//   it('should open the slide panel when onEdit is called', () => {
-//     const panelId = CommonConstants.PET_FORM;
-//     const openSpy = spyOn(slidePanelService, 'open');
-  
-//     component.onEdit(panelId);
-  
-//     expect(openSpy).toHaveBeenCalledWith(panelId);
-//   });
-
-//   // When the form is invalid, return false
-//   it('should update formValid when child emits formValidityChange', () => {
-//     component.formValid = false;
-
-//     // check canPanelClose return false
-//     expect(component.canPanelClose).toBeFalse();
-    
-//     // Not called service function to edit
-//     expect(petProfileService.editPetData).not.toHaveBeenCalled();
-//   });
-
-//   // When the form is valid with allergies, return true
-//   it('should update formValid when child emits formValidityChange', () => {
-//     // Form validation is true
-//     component.formValid = true; 
-//     expect(component.canPanelClose).toBeTrue();
-
-//     // Mock received formData 
-//     component.petFormGroup = createPetProfileForm(PETS_TEST_DATA[0]);
-
-//     // Check if id was added and send it as PET_FORM_DATA
-//     expect(petProfileService.editPetData).toHaveBeenCalledWith(PETS_TEST_DATA[0]);
-
-//     // check canPanelClose return true;
-//     expect(component.canPanelClose()).toBeTrue();
-    
-//   });
-
-//   // When the form is valid without allergies, updated allergies, return true
-//   it('should update formValid when child emits formValidityChange', () => {
-//     // Form validation is true
-//     component.formValid = true; 
-//     expect(component.canPanelClose).toBeTrue();
-
-//     // Mock received formData with allergies are empty
-//     const initialData = PETS_TEST_DATA[0];
-//     initialData.allergies = '';
-//     component.petFormGroup = createPetProfileForm(initialData);
-
-//     // Mock expected formData with allergies
-//     const expectedData = PETS_TEST_DATA[0];
-//     expectedData.allergies = 'none'
-
-//     // Check if id was added and send it as PET_FORM_DATA
-//     expect(petProfileService.editPetData).toHaveBeenCalledWith(expectedData);
-
-//     // check canPanelClose return true;
-//     expect(component.canPanelClose()).toBeTrue();
-    
-//   });
-// });
