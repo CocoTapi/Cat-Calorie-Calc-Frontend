@@ -1,8 +1,8 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PetProfileComponent } from './pet-profile.component';
-import { ComponentRef, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentRef, DebugElement, NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { PET_TEST_FORM_DATA, PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
 import { Pet_Profile } from './models/pet-profile.model';
 import { By } from '@angular/platform-browser';
@@ -39,8 +39,8 @@ describe('PetProfileComponent', () => {
 
   // setup pet profile data
   function setData(returnedData: Pet_Profile) {
-    petProfileService.getPetByPetId.and.returnValue(of(returnedData));
     componentRef.setInput('id', '0');
+    petProfileService.getPetByPetId.and.returnValue(of(returnedData));
     
     // call ngOninit()
     fixture.detectChanges()
@@ -81,6 +81,27 @@ describe('PetProfileComponent', () => {
   }));
 
 
+  // Fetch data with pet id failed
+  it('should handle error from getPetByPetId', fakeAsync(() => {
+    componentRef.setInput('id', '0');
+    const consoleSpy = spyOn(console, 'error');
+    petProfileService.getPetByPetId.and.returnValue(throwError(() => new Error('Mock error')));
+
+    component.ngOnInit();
+
+    expect(consoleSpy).toHaveBeenCalledWith('Error loading pet:', jasmine.any(Error));
+    expect(component['_pet']()).toBeUndefined(); 
+  }));
+
+  // Error for compute pet()
+  it('should throw when pet is not loaded', () => {
+    // Set _pet to return undefined
+    component['_pet'] = signal<undefined>(undefined);
+
+    expect(() => component.pet()).toThrowError('Pet not loaded yet or failed to load.');
+  });
+
+
   // ------ pet data fetch and set ------
 
   // ----- IMAGE PATH -----
@@ -99,9 +120,9 @@ describe('PetProfileComponent', () => {
 
    // User hasn't set icon and display default icon
    it("should display default image", fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0];
-    mockData.icon = ''
-    setData(mockData);
+    const newIconData = PETS_TEST_DATA[0];
+    newIconData.icon = ''
+    setData(newIconData);
 
     const mockPath = 'pets/paw.png'
     
@@ -125,6 +146,18 @@ describe('PetProfileComponent', () => {
     expect(component.age()).toBe(mockAge); 
   }))
 
+  // Pet is less than 1 year old
+  it('should get pet age (less than 1 year old)', fakeAsync(() => {
+    const newBirthdayData = PETS_TEST_DATA[0];
+    newBirthdayData.birthday = new Date();
+    setData(newBirthdayData);
+
+    const mockAge = 0;
+    
+    tick();
+
+    expect(component.age()).toBe(mockAge); 
+  }))
 
   // ----- GRAPH TITLE -----
 
@@ -146,12 +179,12 @@ describe('PetProfileComponent', () => {
 
   // User's goal are maintain
   it('should display title for maintain', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0] 
-    mockData.goal = 'Maintain';
+    const newUserGoalData = PETS_TEST_DATA[0] 
+    newUserGoalData.goal = 'Maintain';
 
     const mockTitle =  `Goal: Maintain Weight`
     
-    setData(mockData);
+    setData(newUserGoalData);
 
     tick();
 
@@ -160,13 +193,13 @@ describe('PetProfileComponent', () => {
 
    // User's target weight and current weight are same so display Maintain
    it('should display title for maintain based on weight', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0] 
-    mockData.weight = 10;
-    mockData.target_weight = 10;
+    const mockGoalData = PETS_TEST_DATA[0] 
+    mockGoalData.weight = 10;
+    mockGoalData.target_weight = 10;
 
     const mockTitle =  `Goal: Maintain Weight`
     
-    setData(mockData);
+    setData(mockGoalData);
 
     tick();
 

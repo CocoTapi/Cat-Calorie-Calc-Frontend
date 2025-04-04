@@ -3,6 +3,7 @@
     <app-slide-panel [panelId]="panelId" title="Edit">
         <app-pet-form 
             [pet]="pet()" 
+            [petId]="id()"
             (formValidationChange)="onFormValidityChange($event)"
             (formGroupData)="onFormGroupChange($event)"
         />

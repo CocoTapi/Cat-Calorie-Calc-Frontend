@@ -32,36 +32,25 @@ export class PetFormComponent implements OnInit {
   private slidePanelService = inject(SlidePanelService);
 
   @Input() pet!: Pet_Profile;
+  @Input({ required: true }) petId!: number
   @Output() formValidationChange = new EventEmitter<boolean>(); 
   @Output() formGroupData = new EventEmitter<FormGroup>(); 
 
-  private _petProfileForm!: FormGroup;
-
-  get petProfileForm(): FormGroup {
-    if (!this._petProfileForm) throw new Error('property _petProfileForm does not exist!');
-    return this._petProfileForm;
-  }
-  set petProfileForm(value: FormGroup) {
-    this._petProfileForm = value;
-  }
+  petProfileForm!: FormGroup;
 
   // output form validation 
-
   goalSelection: SELECTION[] = [
     { value: CommonConstants.MAINTAIN, viewValue: 'Maintain' },
     { value: CommonConstants.LOSE, viewValue: 'Lose' },
     { value: CommonConstants.GAIN, viewValue: 'Gain' },
   ]
 
-  // TODO: get user's pet amount 
-  newId: number = Math.random();
-
   // TODO: initial birthday
   //defaultBirthday: Date = new Date();
 
   ngOnInit(): void {
     // Setup initial form values
-    const initialPetProfile: Pet_Form_Data = getInitialPetProfile(this.pet, this.newId)
+    const initialPetProfile: Pet_Form_Data = getInitialPetProfile(this.pet, this.petId)
 
     // Setup pet profile form 
     this.petProfileForm = createPetProfileForm(initialPetProfile)
@@ -116,7 +105,7 @@ export class PetFormComponent implements OnInit {
 
   }
 
-  // ------  FUNCTIONS FOR ALL   ------
+  // ------  FUNCTIONS FOR ALL Form Control  ------
 
    // Getter for Form Controls to access form values
    getFormControl(fieldName: string): FormControl {
