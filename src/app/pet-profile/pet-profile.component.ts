@@ -66,7 +66,9 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   // When user close the edit slide page, check the form validation and tell if it's allow to close
   ngAfterViewInit(): void {
     // Register canClose condition for the 'form' panel
-    this.slidePanelService.canClose(this.panelId, () => this.canPanelClose());
+    this.slidePanelService.canClose(
+      this.panelId, () => this.canPanelClose()
+    );
   }
 
 
@@ -171,7 +173,6 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   // When the panel close, send a request to update pet profile 
   canPanelClose(): boolean {
     // Check validation
-    console.log(this.formValid)
     if (!this.formValid) {
       return false; 
     }

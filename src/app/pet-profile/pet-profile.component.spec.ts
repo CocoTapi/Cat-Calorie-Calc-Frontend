@@ -7,6 +7,7 @@ import { PET_TEST_FORM_DATA, PETS_TEST_DATA } from '../../../public/pets/pets-te
 import { Pet_Profile } from './models/pet-profile.model';
 import { By } from '@angular/platform-browser';
 import { CommonConstants } from '../app.constants';
+import { FormBuilder } from '@angular/forms';
 
 
 describe('PetProfileComponent', () => {
@@ -18,6 +19,7 @@ describe('PetProfileComponent', () => {
   // Shared mock service with a spy that we override per test
   const petProfileService = {
     getPetByPetId: jasmine.createSpy('getPetByPetId'),
+    editPetData: jasmine.createSpy('editPetData'),
   };
 
   beforeEach(async () => {
@@ -184,7 +186,6 @@ describe('PetProfileComponent', () => {
     expect(petForm).toBeTruthy();
   });
   
-
   // Receive form validity data from child component and set validation
   it('should update formValid when child emits formValidityChange', fakeAsync(() => {
     setData(PETS_TEST_DATA[0]);
@@ -222,7 +223,7 @@ describe('PetProfileComponent', () => {
    
   })); 
 
-  // When user click edit button, slidePanelService is called to open edit display
+  // When user click edit button, slidePanelService is called to open edit panel
   it('should be called slidePanelService.open with panel id', fakeAsync(() => {
     setData(PETS_TEST_DATA[0]);
     const panelId = CommonConstants.PET_FORM;
@@ -232,8 +233,65 @@ describe('PetProfileComponent', () => {
 
     expect(slidePanelServiceSpy).toHaveBeenCalledWith(panelId);
   }));
+
+
+  // ------ ngAfterViewInit ------
   
+  // Panel close and validation check are called
+  it('should register canClose callback with slidePanelService on ngAfterViewInit', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    component.panelId =  CommonConstants.PET_FORM;
+    const slidePanelServiceSpy = spyOn(component['slidePanelService'], 'canClose');
+
+    // mock canPanelClose to return false
+    spyOn(component, 'canPanelClose').and.returnValue(false);
+
+    // Trigger ngAfterViewInit 
+    component.ngAfterViewInit();
+
+    // Mock the callback
+    const registeredCallback = 
+      slidePanelServiceSpy.calls.mostRecent().args[1]
   
+    // Simulate the panel trying to close 
+    const result = registeredCallback();
+
+    // Expect panel won't close
+    expect(result).toBeFalse();
+  }));
+
+  // Panel close but form validation was false, return false
+  it('should be return false when form is invalid', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    component.formValid = false;
+    
+    const result = component.canPanelClose();
+
+    expect(result).toBeFalse();
+  }));
+
+  // TODO: Panel close and form data updated correctly and return true
+  it('should send correct data and return true', fakeAsync(() => {
+  setData(PETS_TEST_DATA[0]);
+  component.formValid = true;
+
+  // Mock form data
+  const mockFormData = PET_TEST_FORM_DATA[0];
+  // mockFormData.medications = [];
+
+  // Build a form group that returns the mock data as value
+  component.petFormGroup = new FormBuilder().group(mockFormData);
+
+  // mock petProfileService
+  const editPetDataSpy = component['petProfileService'].editPetData;
+  
+  const result = component.canPanelClose();
+
+  expect(editPetDataSpy).toHaveBeenCalledWith(mockFormData);
+  expect(result).toBeTrue();
+}));
+
+  // Panel close and form data updated correctly and return true (No allergies case)
 
 })
  
@@ -241,49 +299,3 @@ describe('PetProfileComponent', () => {
 
 
     
-
-
-
-//   // ------ ngAfterViewInit ------
-//   it('should register canClose callback with slidePanelService on ngAfterViewInit', () => {
-//     petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
-
-//     // Configure TestBed with just this mock
-//     TestBed.configureTestingModule({
-//       imports: [PetProfileComponent],
-//       providers: [
-//         { provide: SlidePanelService, useValue: slidePanelService },
-//         { provide: PetProfileService, useValue: petProfileService }
-//       ]
-//     }).compileComponents();
-
-//     // Re-Create the component
-//     const fixture = TestBed.createComponent(PetProfileComponent);
-//     const component = fixture.componentInstance;
-
-    
-//     component.panelId =  CommonConstants.PET_FORM;
-    
-//     // mock canPanelClose to return false
-//     spyOn(component, 'canPanelClose').and.returnValue(false);
-  
-//     // Trigger the registration logic
-//     component.ngAfterViewInit();
-  
-//     // Get the callback function that was registered with the service
-//     const registeredCallback = (
-//       slidePanelService.canClose as jasmine.Spy).calls.mostRecent().args[1];
-  
-//     // Simulate the panel trying to close 
-//     const result = registeredCallback();
-
-//     // Expect panel won't close
-//     expect(result).toBeFalse();
-//   });
-
-    
-
-
-
-
-

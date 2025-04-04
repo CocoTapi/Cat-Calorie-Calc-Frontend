@@ -47,7 +47,6 @@ export function createPetProfileForm(initialPetProfile: Pet_Form_Data){
           directions: new FormControl(med.directions, Validators.required)
         }))
       ),
-
       goal: new FormControl(initialPetProfile.goal, Validators.required),
       target_weight: new FormControl(initialPetProfile.target_weight),
 
@@ -56,24 +55,3 @@ export function createPetProfileForm(initialPetProfile: Pet_Form_Data){
     })
   )
 }
-
-// {
-//   id: pet?.id ?? newId,
-//   species: pet?.species ?? CommonConstants.CAT,
-//   name: pet?.name ?? '',
-//   birthday: pet?.birthday ?? defaultBirthday,
-
-//   weight: pet?.weight ?? 0,
-//   weight_unit: pet?.weight_unit ?? CommonConstants.LB,
-
-//   allergies: pet?.allergies ?? '',
-//   medications: pet?.medications ?? [],
-
-//   goal: pet?.goal ?? CommonConstants.MAINTAIN,
-//   target_weight: pet?.target_weight ?? 0,
-
-//   factor: pet?.factor ?? 1,
-//   daily_calories: pet?.daily_calories ?? 0,
-
-//   notes: pet?.notes ?? '',
-// };
