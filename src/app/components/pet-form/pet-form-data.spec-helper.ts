@@ -3,7 +3,7 @@ export const name = 'Dodger';
 export const birthday = new Date(2014, 2, 14);
 export const weight = 17.5;
 export const weight_unit = 'lb';
-export const allergies = "none";
+export const allergies = "";
 export const med_id = 0;
 export const med_name = 'Atopica';
 export const directions = '1 pill / day';
@@ -20,7 +20,7 @@ export const PET_INITIAL_TEST_DATA = [
         birthday: new Date(2014, 2, 14),
         weight: 17.5,
         weight_unit: 'lb',
-        allergies: "none",
+        allergies: "",
         medications: [
             {
                 med_id: 0,

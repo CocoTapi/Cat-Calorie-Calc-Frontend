@@ -1,15 +1,16 @@
-import { Component, computed, inject, signal, input, AfterViewInit, OnInit, DestroyRef, effect } from '@angular/core';
-import { PetProfileService } from '../services/pet-profile/pet-profile.service';
-import { PetFormComponent } from "./pet-form/pet-form.component";
-import { MatIconModule } from '@angular/material/icon';
-import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
-import { SlidePanelComponent } from '../ui/slide-panel/slide-panel.component';
-import { CardComponent } from '../ui/card/card.component';
-import { GoalType } from './models/pet-profile.model';
-import { CommonConstants } from '../app.constants';
+import { Component, computed, inject, signal, input, AfterViewInit, OnInit, DestroyRef, effect, Signal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Pet_Form_Data, Pet_Profile } from './models/pet-profile.model';
+import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
+import { CommonConstants } from '../../app.constants';
+import { PetProfileService } from '../../services/pet-profile/pet-profile.service';
+import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
+import { CardComponent } from '../../ui/card/card.component';
+import { SlidePanelComponent } from '../../ui/slide-panel/slide-panel.component';
+import { PetProfile, GoalType, PetFormData, DisplayAge } from './models/pet-profile.model';
+import { PetFormComponent } from '../pet-form/pet-form.component';
+import { calcMonthYear } from '../../utils/util';
+
 
 
 @Component({
@@ -21,8 +22,8 @@ import { catchError, of } from 'rxjs';
 export class PetProfileComponent implements AfterViewInit, OnInit {
   id = input.required<number>();
   panelId: string = CommonConstants.PET_FORM;
-  
-  private _pet = signal<Pet_Profile | undefined>(undefined);
+
+  private _pet = signal<PetProfile | undefined>(undefined);
   isGoalCorrect = signal<boolean>(true);
 
   private petProfileService = inject(PetProfileService);
@@ -38,21 +39,21 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
       const goal = pet.goal;
       const targetWeight = pet.target_weight;
       const currentWeight = pet.weight;
-      
+
       // Check for special cases
-      if (goal === GoalType.MAINTAIN || targetWeight === currentWeight) {
+      if (goal === 'Maintain' || targetWeight === currentWeight) {
         this.isGoalCorrect.set(true);
         return;
       }
-      
+
       // Determine the correct goal based on weights
       let correctGoal: GoalType;
       if (targetWeight > currentWeight) {
-        correctGoal = GoalType.GAIN;
+        correctGoal = 'Gain';
       } else {
-        correctGoal = GoalType.LOSE;
+        correctGoal = 'Lose';
       }
-      
+
       // Update the signal
       this.isGoalCorrect.set(correctGoal === goal);
     });
@@ -73,7 +74,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   }
 
   // Set read only pet data to use
-  readonly pet = computed<Pet_Profile>(() => {
+  readonly pet = computed<PetProfile>(() => {
     const pet = this._pet();
 
     // This keep throwing error until the data arrives
@@ -85,7 +86,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
     return pet;
   });
- 
+
 
 
   // For edit pet data use
@@ -118,24 +119,9 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   });
 
   // Calculate pet's age from birthday
-  age = computed(() => {
-    const pet = this.pet();
-    const birthday = pet.birthday;
-
-    // Subtract birthday from today's date
-    const today = new Date();
-    let age = today.getFullYear() - birthday.getFullYear();
-    const monthDiff = today.getMonth() - birthday.getMonth();
-
-    // Adjust age if birthday hasn't occurred this year yet
-    if (
-      monthDiff < 0 || 
-      (monthDiff === 0 && today.getDate() < birthday!.getDate())
-    ) {
-      age--;
-    }
-
-    return age;
+  age: Signal<DisplayAge> = computed(() => {
+    const {birthday} = this.pet();
+    return calcMonthYear(birthday)
   });
 
   // Setup line graph title based on pet's goal
@@ -146,13 +132,13 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     let title = `Goal: Maintain Weight`
 
     // Return default goal
-    if (goal === GoalType.MAINTAIN) {
+    if (goal === 'Maintain') {
       return title;
     }
 
-    const targetWeight = pet.target_weight; 
-    const currentWeight = pet.weight; 
-    let unit = pet.weight_unit;  
+    const targetWeight = pet.target_weight;
+    const currentWeight = pet.weight;
+    let unit = pet.weight_unit;
     let realGoal;
 
     // Return maintain if the target and current weight are same
@@ -168,8 +154,8 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     }
 
     // Set default unit
-    if(!unit) unit = 'lb';
-    
+    if (!unit) unit = 'lb';
+
     // Display real goal based on weight
     title = `Goal: ${realGoal} Weight to ${targetWeight} ${unit}`
 
@@ -197,11 +183,11 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     // Check validation
     if (!this.formValid) {
       // We don't need to do anything more here as the PetFormComponent will handle showing the errors
-      return false; 
+      return false;
     }
 
     // Remake form data with user id
-    const formData: Pet_Form_Data = {
+    const formData: PetFormData = {
       id: this.id(),
       ...this.petFormGroup.value
     }
@@ -212,9 +198,9 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     }
 
     // If allergies are not assigned, put default
-    if (!formData.allergies.length) {
-      formData.allergies = 'none';
-    }
+    // if (!formData.allergies.length) {
+    //   formData.allergies = 'none';
+    // }
 
     // Send edit request to service 
     this.petProfileService.editPetData(formData);

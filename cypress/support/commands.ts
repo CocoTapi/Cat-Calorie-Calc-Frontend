@@ -88,9 +88,9 @@ Cypress.Commands.add('swipeDownPanel', () => {
       .trigger('mousedown', { clientX: startX, clientY: startY, force: true })
       .wait(100) // Wait a bit before moving to simulate a real gesture
       .trigger('mousemove', { clientX: startX, clientY: startY + 100, force: true })
-      .wait(50)
+      .wait(200)
       .trigger('mousemove', { clientX: startX, clientY: startY + 300, force: true })
-      .wait(50)
+      .wait(200)
       .trigger('mousemove', { clientX: startX, clientY: endY, force: true })
       .wait(100)
       .trigger('mouseup', { force: true });

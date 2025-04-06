@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PETS_TEST_DATA } from '../../../../public/pets/pets-test-data';
-import { Pet_Form_Data, Pet_Profile } from '../../pet-profile/models/pet-profile.model';
+import { PETS_TEST_DATA } from '../../utils/pets-test-data';
 import { Observable, of, throwError } from 'rxjs';
+import { PetFormData, PetProfile } from '../../components/pet-profile/models/pet-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { Observable, of, throwError } from 'rxjs';
 export class PetProfileService {
 
   // fetch pet data by pet id
-  getPetByPetId(id: number): Observable<Pet_Profile> {
+  getPetByPetId(id: number): Observable<PetProfile> {
     
     // TODO: connect to backend
     const pet = PETS_TEST_DATA.find((item) => item.id === id);
@@ -27,7 +27,7 @@ export class PetProfileService {
   // }
 
   // Update pet data
-  editPetData(petProfileData: Pet_Form_Data){
+  editPetData(petProfileData: PetFormData){
     // TODO
     console.log(petProfileData);
   }

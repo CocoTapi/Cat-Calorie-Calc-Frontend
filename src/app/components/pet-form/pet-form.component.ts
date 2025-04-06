@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, Input, DestroyRef, inject, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MedItemType, Pet_Profile } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
@@ -9,14 +8,15 @@ import { CustomSelectionComponent, SELECTION } from '../../ui/custom-selection/c
 import { CommonConstants } from '../../app.constants';
 import { DatePickerComponent } from "../../ui/date-picker/date-picker.component";
 import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
-import { createPetProfileForm, getInitialPetProfile } from './pet-profile-form';
+import { createNewPetProfileForm, patchPetProfileForm } from './pet-profile-form';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model';
 
 @Component({
   selector: 'app-pet-form',
   imports: [
-    FormsModule,          
+    FormsModule,
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatIconModule,
@@ -25,7 +25,7 @@ import { Subscription } from 'rxjs';
     CustomSelectionComponent,
     DatePickerComponent,
     CommonModule
-],
+  ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,10 +39,10 @@ export class PetFormComponent implements OnInit {
   private caloriesSubscription: Subscription | undefined;
   private formSubscription: Subscription | undefined;
 
-  @Input() pet!: Pet_Profile;
+  @Input() pet!: PetProfile;
   @Input({ required: true }) petId!: number
-  @Output() formValidationChange = new EventEmitter<boolean>(); 
-  @Output() formGroupData = new EventEmitter<FormGroup>(); 
+  @Output() formValidationChange = new EventEmitter<boolean>();
+  @Output() formGroupData = new EventEmitter<FormGroup>();
 
   petProfileForm!: FormGroup;
   showValidationErrors = false;
@@ -56,12 +56,13 @@ export class PetFormComponent implements OnInit {
 
   ngOnInit(): void {
     // Setup initial form values and form
-    this.petProfileForm = createPetProfileForm(
-      getInitialPetProfile(this.pet, this.petId)
-    );
 
+    this.petProfileForm = createNewPetProfileForm()
+
+    if (this.pet) patchPetProfileForm(this.petProfileForm, this.pet)
+    this.emitFormDataValidity();
     this.setupSubscriptions();
-    
+
     // Register canClose callback to validate form when closing panel
     this.registerPanelCloseValidation();
   }
@@ -78,14 +79,14 @@ export class PetFormComponent implements OnInit {
       }
       return true;
     });
-    
+
     // Subscribe to validation trigger events
     const validationSubscription = this.slidePanelService.getValidationTrigger(CommonConstants.PET_FORM)
       .subscribe(() => {
         console.log('Validation trigger received, showing form errors');
         this.showFormErrors();
       });
-      
+
     this.destroyRef.onDestroy(() => {
       validationSubscription.unsubscribe();
     });
@@ -113,7 +114,7 @@ export class PetFormComponent implements OnInit {
       if (control) {
         control.markAsTouched();
         // Don't mark as dirty - this prevents validation errors from showing too early
-        
+
         // If it's a FormArray, mark all its children as touched
         if (control instanceof FormArray) {
           control.controls.forEach(item => {
@@ -131,7 +132,7 @@ export class PetFormComponent implements OnInit {
         }
       }
     });
-    
+
     console.log('All form controls marked as touched');
   }
 
@@ -144,7 +145,7 @@ export class PetFormComponent implements OnInit {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
-    
+
     // Also explicitly blur all input elements in the form
     const formElement = document.querySelector('form.form');
     if (formElement) {
@@ -164,39 +165,43 @@ export class PetFormComponent implements OnInit {
     // Factor changes -> update daily calories
     this.factorSubscription = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
       if (!factor) return;
-      
+
       const dailyCaloriesControl = this.getFormControl(CommonConstants.DAILY_CALORIES);
       const RER = this.getRER();
       dailyCaloriesControl.setValue((RER * factor).toFixed(1), { emitEvent: false });
     });
-    
+
     // Daily calories changes -> update factor
     this.caloriesSubscription = this.getFormControl(CommonConstants.DAILY_CALORIES).valueChanges.subscribe(calories => {
       if (!calories) return;
-      
+
       const factorControl = this.getFormControl(CommonConstants.FACTOR);
       const RER = this.getRER();
       factorControl.setValue((calories / RER).toFixed(1), { emitEvent: false });
     });
-    
+
     // Form status changes -> emit validation and data
     this.formSubscription = this.petProfileForm.statusChanges.subscribe(() => {
-      this.formValidationChange.emit(this.petProfileForm.valid);
-      this.formGroupData.emit(this.petProfileForm);
-      
+      this.emitFormDataValidity();
+
       // Hide validation errors if form becomes valid
       if (this.petProfileForm.valid) {
         this.showValidationErrors = false;
         this.cdr.markForCheck();
       }
     });
-    
+
     // Cleanup subscriptions
     this.destroyRef.onDestroy(() => {
       this.factorSubscription?.unsubscribe();
       this.caloriesSubscription?.unsubscribe();
       this.formSubscription?.unsubscribe();
     });
+  }
+
+  emitFormDataValidity() {
+    this.formValidationChange.emit(this.petProfileForm.valid);
+    this.formGroupData.emit(this.petProfileForm);
   }
 
   /**
@@ -219,16 +224,16 @@ export class PetFormComponent implements OnInit {
   private getRER(): number {
     const weightControl = this.getFormControl(CommonConstants.WEIGHT);
     const weightUnitControl = this.getFormControl(CommonConstants.WEIGHT_UNIT);
-    
+
     // Get weight in kg
     let weight = weightControl.value;
     if (!weight) return 0;
-    
+
     // Convert lb to kg if needed
     if (weightUnitControl.value === CommonConstants.LB) {
       weight = weight / 2.2046; //TODO: put this in constants
     }
-    
+
     // Calculate RER
     return 70 * Math.pow(weight, 0.75); //TODO: change this to use constants and a separate function
   }
@@ -265,7 +270,7 @@ export class PetFormComponent implements OnInit {
    */
   isAddDisabled(): boolean {
     if (this.medications.length === 0) return false; // Allow adding first medication
-    
+
 
     const lastIdx = this.medications.length - 1;
     const lastItemName = this.getMedItemControl(lastIdx, CommonConstants.MED_NAME)?.value?.trim();

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PetProfileComponent } from './pet-profile/pet-profile.component';
+import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 
 @Component({
   selector: 'app-root',

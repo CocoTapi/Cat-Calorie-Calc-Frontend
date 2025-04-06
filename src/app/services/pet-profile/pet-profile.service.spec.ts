@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { PetProfileService } from './pet-profile.service';
-import { GoalType, PetSpecies } from '../../pet-profile/models/pet-profile.model';
+import { PetProfile } from '../../components/pet-profile/models/pet-profile.model';
 
 
 describe('PetProfileService', () => {
@@ -47,19 +47,18 @@ describe('PetProfileService', () => {
     spyOn(console, 'log');
     
     // Create test form data
-    const testFormData = {
+    const testFormData: PetProfile = {
       id: 1,
-      species: PetSpecies.CAT,
+      species: 'cat',
       name: 'Test Cat',
       icon: 'cat.png',
       birthday: new Date(),
       weight: 10,
       weight_unit: 'kg',
-      allergies: 'None',
+      allergies: '',
       medications: [],
-      goal: GoalType.MAINTAIN,
+      goal: 'Maintain',
       target_weight: 10,
-      target_weight_unit: 'kg',
       factor: 1.0,
       daily_calories: 350,
       notes: 'Test notes'

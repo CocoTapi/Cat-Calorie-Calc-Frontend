@@ -1,3 +1,5 @@
+import { PetFormData } from "./components/pet-profile/models/pet-profile.model";
+
 export abstract class CommonConstants {
     // Panel Id
     static readonly PET_FORM: string = 'petProfile';
@@ -22,7 +24,7 @@ export abstract class CommonConstants {
     static readonly DAILY_CALORIES: string = 'daily_calories';
 
     static readonly NOTE: string = 'notes';
-    
+
 
     // PET_FORM_Medication
     static readonly MED_ID: string = 'med_id';
@@ -45,6 +47,31 @@ export abstract class CommonConstants {
     static readonly LOSE: string = 'Lose';
     static readonly GAIN: string = 'Gain';
 
-
-
 }
+
+export const UNIT_TYPES = {
+    WEIGHT_UNITS: {
+        LB: 'lb',
+        KG: 'kg',
+    },
+}
+
+export const PET_DEFAULT: PetFormData = {
+  species: 'cat',
+  name: '',
+  birthday: new Date(),
+
+  weight: 0,
+  weight_unit: 'kg',
+
+  allergies: '',
+  medications: [],
+
+  goal: 'Maintain',
+  target_weight: 0,
+
+  factor: 1,
+  daily_calories: 0,
+
+  notes: ''
+};
