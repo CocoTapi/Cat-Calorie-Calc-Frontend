@@ -204,7 +204,8 @@ describe('SlidePanelComponent', () => {
     } as unknown as TouchEvent;
     
     // Spy on getPositionFromDifference
-    spyOn(component as any, 'getPositionFromDifference').and.returnValue(10);
+    // @ts-expect-error: Accessing private method for testing
+    spyOn(component, 'getPositionFromDifference').and.returnValue(10);
     
     component.onTouchMove(mockTouchEvent);
     
@@ -226,7 +227,8 @@ describe('SlidePanelComponent', () => {
     } as unknown as MouseEvent;
     
     // Spy on getPositionFromDifference
-    spyOn(component as any, 'getPositionFromDifference').and.returnValue(10);
+    // @ts-expect-error: Accessing private method for testing
+    spyOn(component, 'getPositionFromDifference').and.returnValue(10);
     
     component.onTouchMove(mockMouseEvent);
     
@@ -259,7 +261,8 @@ describe('SlidePanelComponent', () => {
     component['isDragging'] = true;
     
     // Position is above threshold to close
-    spyOn(component as any, 'getPositionFromDifference').and.returnValue(80);
+    // @ts-expect-error: Accessing private method for testing
+    spyOn(component, 'getPositionFromDifference').and.returnValue(80);
     
     const mockTouchEvent = {} as unknown as TouchEvent;
     
@@ -281,7 +284,8 @@ describe('SlidePanelComponent', () => {
     component['lastPosition'] = 0;
     
     // Position is below threshold to close
-    spyOn(component as any, 'getPositionFromDifference').and.returnValue(30);
+    // @ts-expect-error: Accessing private method for testing
+    spyOn(component, 'getPositionFromDifference').and.returnValue(30);
     
     const mockTouchEvent = {} as unknown as TouchEvent;
     
@@ -312,7 +316,8 @@ describe('SlidePanelComponent', () => {
     const mockMouseEvent = {} as unknown as MouseEvent;
     
     // Position is below threshold to close
-    spyOn(component as any, 'getPositionFromDifference').and.returnValue(30);
+    // @ts-expect-error: Accessing private method for testing
+    spyOn(component, 'getPositionFromDifference').and.returnValue(30);
     
     component.onTouchEnd(mockMouseEvent);
     
