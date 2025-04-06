@@ -1,22 +1,27 @@
 import { Component, Input } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-date-picker',
+  standalone: true,
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule,
-    ReactiveFormsModule
+    MatDatepickerModule
   ],
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'
 })
 export class DatePickerComponent {
-  @Input({ required: true }) label!: string;
-
+  @Input() label: string = "Date";
   @Input({ required: true }) customFormControl!: FormControl;
+  
+  // Use the globally provided ErrorStateMatcher
+  constructor(public errorStateMatcher: ErrorStateMatcher) {}
 }

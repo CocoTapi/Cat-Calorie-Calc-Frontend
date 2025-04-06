@@ -1,8 +1,13 @@
 <mat-form-field>
-  <mat-label>Favorite Food</mat-label>
-  <mat-select [formControl]="selectFormControl" name="food">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select 
+    [formControl]="selectFormControl" 
+    [errorStateMatcher]="errorStateMatcher">
     @for (item of selectionArr; track item) {
       <mat-option [value]="item.value">{{item.viewValue}}</mat-option>
     }
   </mat-select>
+  @if (selectFormControl.hasError('required')) {
+    <mat-error>{{ label }} is <strong>required</strong></mat-error>
+  }
 </mat-form-field>

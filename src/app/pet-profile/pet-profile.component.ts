@@ -1,10 +1,11 @@
-import { Component, computed, inject, signal, input, AfterViewInit, OnInit, DestroyRef } from '@angular/core';
+import { Component, computed, inject, signal, input, AfterViewInit, OnInit, DestroyRef, effect } from '@angular/core';
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { PetFormComponent } from "./pet-form/pet-form.component";
 import { MatIconModule } from '@angular/material/icon';
 import { SlidePanelService } from '../services/slide-panel/slide-panel.service';
 import { SlidePanelComponent } from '../ui/slide-panel/slide-panel.component';
 import { CardComponent } from '../ui/card/card.component';
+import { GoalType } from './models/pet-profile.model';
 import { CommonConstants } from '../app.constants';
 import { FormGroup } from '@angular/forms';
 import { Pet_Form_Data, Pet_Profile } from './models/pet-profile.model';
@@ -27,6 +28,35 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   private petProfileService = inject(PetProfileService);
   private slidePanelService = inject(SlidePanelService);
   private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    // Register an effect to check goal correctness whenever pet data changes
+    effect(() => {
+      const pet = this._pet();
+      if (!pet) return;
+
+      const goal = pet.goal;
+      const targetWeight = pet.target_weight;
+      const currentWeight = pet.weight;
+      
+      // Check for special cases
+      if (goal === GoalType.MAINTAIN || targetWeight === currentWeight) {
+        this.isGoalCorrect.set(true);
+        return;
+      }
+      
+      // Determine the correct goal based on weights
+      let correctGoal: GoalType;
+      if (targetWeight > currentWeight) {
+        correctGoal = GoalType.GAIN;
+      } else {
+        correctGoal = GoalType.LOSE;
+      }
+      
+      // Update the signal
+      this.isGoalCorrect.set(correctGoal === goal);
+    });
+  }
 
   // Get pet data by pet id
   ngOnInit() {
@@ -116,7 +146,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
     let title = `Goal: Maintain Weight`
 
     // Return default goal
-    if (goal === CommonConstants.MAINTAIN) {
+    if (goal === GoalType.MAINTAIN) {
       return title;
     }
 
@@ -130,16 +160,11 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
       return title;
     }
 
-    // Check if user set the correct goal based on weights
+    // Determine real goal based on weights
     if (targetWeight > currentWeight) {
       realGoal = 'Gain';
-
-      if (realGoal !== goal) this.isGoalCorrect.set(false);
-
     } else if (targetWeight < currentWeight) {
       realGoal = 'Lose';
-
-      if (realGoal !== goal) this.isGoalCorrect.set(false);
     }
 
     // Set default unit
@@ -150,9 +175,6 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
     return title;
   });
-
-
-
 
   // ----- edit form -----
 
@@ -174,6 +196,7 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
   canPanelClose(): boolean {
     // Check validation
     if (!this.formValid) {
+      // We don't need to do anything more here as the PetFormComponent will handle showing the errors
       return false; 
     }
 
@@ -183,6 +206,11 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
       ...this.petFormGroup.value
     }
 
+    // Ensure medications is an array
+    if (formData.medications && !Array.isArray(formData.medications)) {
+      formData.medications = [formData.medications];
+    }
+
     // If allergies are not assigned, put default
     if (!formData.allergies.length) {
       formData.allergies = 'none';
@@ -190,6 +218,13 @@ export class PetProfileComponent implements AfterViewInit, OnInit {
 
     // Send edit request to service 
     this.petProfileService.editPetData(formData);
+
+    // Update the local pet data with the edited values
+    this._pet.set({
+      ...this.pet(),  // Keep existing data
+      ...formData     // Apply changes from form
+    });
+
     return true;
   }
 

@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-custom-input',
@@ -18,5 +19,7 @@ export class CustomInputComponent {
   @Input({ required: true }) placeholder!: string;
 
   @Input() customErrorMessage: string | undefined;
-
+  
+  // Use the globally provided ErrorStateMatcher
+  constructor(public errorStateMatcher: ErrorStateMatcher) {}
 }

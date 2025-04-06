@@ -1,5 +1,6 @@
 $right-space: 2rem;
 $number-input-width: 50%;
+$error-color: #f44336;
 
 // .modal {
 //   position: fixed;
@@ -10,6 +11,19 @@ $number-input-width: 50%;
 //   height: 50vh;
 // }
 
+.validation-error {
+  background-color: rgba($error-color, 0.1);
+  border-left: 4px solid $error-color;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  
+  p {
+    color: $error-color;
+    font-weight: 500;
+    margin: 0;
+  }
+}
 
 .form {
   background-color: grey;

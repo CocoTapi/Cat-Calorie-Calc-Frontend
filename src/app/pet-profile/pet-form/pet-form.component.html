@@ -1,4 +1,9 @@
-<form [formGroup]="petProfileForm" (ngSubmit)="onSubmit()" class="form">
+<form [formGroup]="petProfileForm" class="form">
+    <!-- Validation Error Message -->
+    <div class="validation-error" *ngIf="showValidationErrors && !petProfileForm.valid">
+        <p>Please correct all highlighted fields before closing the panel.</p>
+    </div>
+
     <!-- Type Selection -->
     <section class="form__species">
         <mat-button-toggle-group aria-label="species" formControlName="species" class="toggle-btn">
@@ -158,7 +163,5 @@
             </div>
         </div>
     </section>
-
-    <button class="btn form__btn">Submit</button>
 
 </form>

@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input, DestroyRef, inject, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input, DestroyRef, inject, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MedItemType, Pet_Form_Data, Pet_Profile, UnitType } from '../models/pet-profile.model';
+import { MedItemType, Pet_Profile } from '../models/pet-profile.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CustomInputComponent } from "../../ui/custom-input/custom-input.component";
@@ -10,6 +10,8 @@ import { CommonConstants } from '../../app.constants';
 import { DatePickerComponent } from "../../ui/date-picker/date-picker.component";
 import { SlidePanelService } from '../../services/slide-panel/slide-panel.service';
 import { createPetProfileForm, getInitialPetProfile } from './pet-profile-form';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pet-form',
@@ -21,7 +23,8 @@ import { createPetProfileForm, getInitialPetProfile } from './pet-profile-form';
     MatNativeDateModule,
     CustomInputComponent,
     CustomSelectionComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    CommonModule
 ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
@@ -30,6 +33,11 @@ import { createPetProfileForm, getInitialPetProfile } from './pet-profile-form';
 export class PetFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private slidePanelService = inject(SlidePanelService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private factorSubscription: Subscription | undefined;
+  private caloriesSubscription: Subscription | undefined;
+  private formSubscription: Subscription | undefined;
 
   @Input() pet!: Pet_Profile;
   @Input({ required: true }) petId!: number
@@ -37,116 +45,199 @@ export class PetFormComponent implements OnInit {
   @Output() formGroupData = new EventEmitter<FormGroup>(); 
 
   petProfileForm!: FormGroup;
+  showValidationErrors = false;
 
-  // output form validation 
+  // Selection options for goal dropdown
   goalSelection: SELECTION[] = [
     { value: CommonConstants.MAINTAIN, viewValue: 'Maintain' },
     { value: CommonConstants.LOSE, viewValue: 'Lose' },
     { value: CommonConstants.GAIN, viewValue: 'Gain' },
   ]
 
-  // TODO: initial birthday
-  //defaultBirthday: Date = new Date();
-
   ngOnInit(): void {
-    // Setup initial form values
-    const initialPetProfile: Pet_Form_Data = getInitialPetProfile(this.pet, this.petId)
+    // Setup initial form values and form
+    this.petProfileForm = createPetProfileForm(
+      getInitialPetProfile(this.pet, this.petId)
+    );
 
-    // Setup pet profile form 
-    this.petProfileForm = createPetProfileForm(initialPetProfile)
-
-    // Listen for changes in 'factor' and update 'daily_calories'
-    const subscriptionForFactor = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
-      // Ensure valid inputs  
-      if (!factor) return;
-
-      const dailyCaloriesControl = this.getFormControl(CommonConstants.DAILY_CALORIES);
-
-      // Calculate calories
-      const RER = this.getRER();
-      const newDailyCalories = (RER * factor).toFixed(1);
-
-      // Update 'daily_calories' without triggering valueChanges event
-      dailyCaloriesControl.setValue(newDailyCalories, { emitEvent: false });
-    })
-    this.destroyRef.onDestroy(() => subscriptionForFactor?.unsubscribe());
-
-
-    // Listen for changes in 'daily_calories' and update 'factor' 
-    const subscriptionForCalories = this.getFormControl(CommonConstants.DAILY_CALORIES).valueChanges.subscribe(calories => {
-      // Ensure valid inputs  
-      if (!calories) return;
-
-      const factorControl = this.getFormControl(CommonConstants.FACTOR);
-
-      // Calculate factor
-      const RER = this.getRER();
-      const newFactor = (calories / RER).toFixed(1);
-
-      // Update 'factor' without triggering valueChanges event
-      factorControl.setValue(newFactor, { emitEvent: false });
-    })
-    this.destroyRef.onDestroy(() => subscriptionForCalories?.unsubscribe());
-
-
-    // Send validation to parent
-    const validationSubscription = this.petProfileForm.statusChanges.subscribe(() => {
-      this.formValidationChange.emit(this.petProfileForm.valid);
-    });
-
-    // send form data to parent
-    const dataSubscription = this.petProfileForm.statusChanges.subscribe(() => {
-      this.formGroupData.emit(this.petProfileForm);
-    });
-
-    this.destroyRef.onDestroy(() => validationSubscription?.unsubscribe());
-    this.destroyRef.onDestroy(() => dataSubscription?.unsubscribe());
-
-
+    this.setupSubscriptions();
+    
+    // Register canClose callback to validate form when closing panel
+    this.registerPanelCloseValidation();
   }
 
-  // ------  FUNCTIONS FOR ALL Form Control  ------
+  /**
+   * Registers the validation callback for panel closing
+   */
+  private registerPanelCloseValidation(): void {
+    this.slidePanelService.canClose(CommonConstants.PET_FORM, () => {
+      if (!this.petProfileForm.valid) {
+        console.log('Form is invalid, preventing panel close');
+        this.showFormErrors();
+        return false;
+      }
+      return true;
+    });
+    
+    // Subscribe to validation trigger events
+    const validationSubscription = this.slidePanelService.getValidationTrigger(CommonConstants.PET_FORM)
+      .subscribe(() => {
+        console.log('Validation trigger received, showing form errors');
+        this.showFormErrors();
+      });
+      
+    this.destroyRef.onDestroy(() => {
+      validationSubscription.unsubscribe();
+    });
+  }
 
-   // Getter for Form Controls to access form values
-   getFormControl(fieldName: string): FormControl {
+  /**
+   * Shows all form validation errors by marking controls as touched and updating UI
+   */
+  showFormErrors(): void {
+    this.showValidationErrors = true;
+    this.markAllAsTouched();
+    this.cdr.markForCheck();
+    setTimeout(() => {
+      this.blurAllInputs();
+      this.cdr.detectChanges();
+    }, 0);
+  }
+
+  /**
+   * Mark all form controls as touched to trigger validation visuals
+   */
+  markAllAsTouched(): void {
+    Object.keys(this.petProfileForm.controls).forEach(key => {
+      const control = this.petProfileForm.get(key);
+      if (control) {
+        control.markAsTouched();
+        // Don't mark as dirty - this prevents validation errors from showing too early
+        
+        // If it's a FormArray, mark all its children as touched
+        if (control instanceof FormArray) {
+          control.controls.forEach(item => {
+            if (item instanceof FormGroup) {
+              Object.keys(item.controls).forEach(childKey => {
+                const childControl = item.get(childKey);
+                childControl?.markAsTouched();
+                // Don't mark as dirty
+              });
+            } else {
+              item.markAsTouched();
+              // Don't mark as dirty
+            }
+          });
+        }
+      }
+    });
+    
+    console.log('All form controls marked as touched');
+  }
+
+  /**
+   * Remove focus from all inputs to show validation errors
+   */
+  blurAllInputs(): void {
+    console.log('Blurring inputs to show validation errors');
+    // First try to blur active element
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    
+    // Also explicitly blur all input elements in the form
+    const formElement = document.querySelector('form.form');
+    if (formElement) {
+      const inputs = formElement.querySelectorAll('input, textarea, select');
+      inputs.forEach((input: Element) => {
+        if (input instanceof HTMLElement) {
+          input.blur();
+        }
+      });
+    }
+  }
+
+  /**
+   * Sets up all form subscriptions
+   */
+  private setupSubscriptions(): void {
+    // Factor changes -> update daily calories
+    this.factorSubscription = this.getFormControl(CommonConstants.FACTOR).valueChanges.subscribe(factor => {
+      if (!factor) return;
+      
+      const dailyCaloriesControl = this.getFormControl(CommonConstants.DAILY_CALORIES);
+      const RER = this.getRER();
+      dailyCaloriesControl.setValue((RER * factor).toFixed(1), { emitEvent: false });
+    });
+    
+    // Daily calories changes -> update factor
+    this.caloriesSubscription = this.getFormControl(CommonConstants.DAILY_CALORIES).valueChanges.subscribe(calories => {
+      if (!calories) return;
+      
+      const factorControl = this.getFormControl(CommonConstants.FACTOR);
+      const RER = this.getRER();
+      factorControl.setValue((calories / RER).toFixed(1), { emitEvent: false });
+    });
+    
+    // Form status changes -> emit validation and data
+    this.formSubscription = this.petProfileForm.statusChanges.subscribe(() => {
+      this.formValidationChange.emit(this.petProfileForm.valid);
+      this.formGroupData.emit(this.petProfileForm);
+      
+      // Hide validation errors if form becomes valid
+      if (this.petProfileForm.valid) {
+        this.showValidationErrors = false;
+        this.cdr.markForCheck();
+      }
+    });
+    
+    // Cleanup subscriptions
+    this.destroyRef.onDestroy(() => {
+      this.factorSubscription?.unsubscribe();
+      this.caloriesSubscription?.unsubscribe();
+      this.formSubscription?.unsubscribe();
+    });
+  }
+
+  /**
+   * Gets a form control by field name
+   * @param fieldName The name of the form control to get
+   * @returns The form control
+   * @throws Error if the form control doesn't exist
+   */
+  getFormControl(fieldName: string): FormControl {
     const fieldControl = this.petProfileForm.get(fieldName) as FormControl;
     if (!fieldControl) throw new Error(`${fieldName} is missing in petProfileForm. Result: ${fieldControl}`);
 
     return fieldControl;
   }
 
-  // ------  FUNCTIONS FOR WEIGHT  ------
-
-  // Get RER
+  /**
+   * Calculates the Resting Energy Requirement (RER) based on the weight
+   * @returns The calculated RER
+   */
   private getRER(): number {
     const weightControl = this.getFormControl(CommonConstants.WEIGHT);
     const weightUnitControl = this.getFormControl(CommonConstants.WEIGHT_UNIT);
-    const currentWeight = this.getWeightInKg(weightControl.value, weightUnitControl.value);
-
-    // Calculate RER
-    const RER = 70 * Math.pow(currentWeight, 0.75);
-
-    return RER;
-  }
-
-  // Convert lb to kg
-  private getWeightInKg(weight: number, unit: UnitType): number {
-    if (!weight) throw new Error('Current weight is missing')
-
-    let current = weight;
-
-    if (unit === CommonConstants.LB) {
-      current = current / 2.2046;
+    
+    // Get weight in kg
+    let weight = weightControl.value;
+    if (!weight) return 0;
+    
+    // Convert lb to kg if needed
+    if (weightUnitControl.value === CommonConstants.LB) {
+      weight = weight / 2.2046; //TODO: put this in constants
     }
-
-    return current;
+    
+    // Calculate RER
+    return 70 * Math.pow(weight, 0.75); //TODO: change this to use constants and a separate function
   }
 
- 
-
-  // ------ FUNCTIONS FOR MEDICATION  ------
-
-  // Getter for medications' FormArray
+  /**
+   * Gets the medications FormArray
+   * @returns The medications FormArray
+   * @throws Error if the medications FormArray doesn't exist
+   */
   get medications(): FormArray {
     const medications = this.petProfileForm.get(CommonConstants.MEDICATIONS) as FormArray;
     if (!medications) throw new Error(`property medications does not exist within petProfileForm!`);
@@ -154,7 +245,13 @@ export class PetFormComponent implements OnInit {
     return medications;
   }
 
-  // Getter for each medication name and direction
+  /**
+   * Gets a medication item control
+   * @param index The index of the medication
+   * @param medItem The medication item property name
+   * @returns The form control for the medication item
+   * @throws Error if the medication item control doesn't exist
+   */
   getMedItemControl(index: number, medItem: MedItemType): FormControl {
     const medItemControl = this.medications.at(index).get(medItem) as FormControl;
     if (!medItemControl) throw new Error(`${medItem} is missing in petProfileForm. Result: ${medItemControl}`);
@@ -162,20 +259,24 @@ export class PetFormComponent implements OnInit {
     return medItemControl;
   }
 
-  // if the last medication item is empty, disable add button;
+  /**
+   * Check if current medications are valid before allowing to add new ones
+   * @returns boolean based on if the add button should be disabled
+   */
   isAddDisabled(): boolean {
-    if (this.medications.length === 0) {
-      return false; // Allow adding first medication
-    }
+    if (this.medications.length === 0) return false; // Allow adding first medication
+    
 
     const lastIdx = this.medications.length - 1;
-    let lastItemDirections = this.getMedItemControl(lastIdx, CommonConstants.DIRECTIONS);
-    lastItemDirections = lastItemDirections?.value.trim();
+    const lastItemName = this.getMedItemControl(lastIdx, CommonConstants.MED_NAME)?.value?.trim();
+    const lastItemDirections = this.getMedItemControl(lastIdx, CommonConstants.DIRECTIONS)?.value?.trim();
 
-    return !lastItemDirections // Disable if empty or only spaces
+    return !lastItemName || !lastItemDirections; // Disable if either field is empty
   }
 
-  // Add a new medication
+  /**
+   * Adds a new medication to the form
+   */
   addMedication() {
     this.medications.push(new FormGroup({
       med_id: new FormControl(this.medications.length),
@@ -184,19 +285,11 @@ export class PetFormComponent implements OnInit {
     }, Validators.required));
   }
 
-  // TODO: display invalid when the user open the medication slot but close the panel without touch them 
-
-  // Remove a medication by index
+  /**
+   * Removes a medication from the form
+   * @param index The index of the medication to remove
+   */
   removeMedication(index: number) {
     this.medications.removeAt(index);
   }
-
-  // ------ FUNCTIONS FOR SUBMIT  ------
-
-  onSubmit() {
-    // Close this slide
-    this.slidePanelService.close;
-  }
-
-
 }

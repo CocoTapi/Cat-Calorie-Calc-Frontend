@@ -146,10 +146,9 @@ export class SlidePanelComponent implements OnInit, OnDestroy {
     const finalPosition = this.getPositionFromDifference();
 
     if (finalPosition > this.thresholdPercent) {
-      // this.closePanel();
-      this.slidePanelService.close(this.panelId); // will check canClose before closing
+      // Use the service to attempt to close the panel, which will check validation
+      this.slidePanelService.close(this.panelId);
     } else {
-      // this.lastPosition = finalPosition;
       this.setYPosition(this.lastPosition);
     }
 

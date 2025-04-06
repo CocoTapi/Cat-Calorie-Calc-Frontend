@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { PetProfileService } from './pet-profile.service';
+import { GoalType, PetSpecies } from '../../pet-profile/models/pet-profile.model';
 
 
 describe('PetProfileService', () => {
@@ -41,5 +42,33 @@ describe('PetProfileService', () => {
     });
   });
 
-
+  it('should process pet data updates', () => {
+    // Spy on console.log to verify it's called with our test data
+    spyOn(console, 'log');
+    
+    // Create test form data
+    const testFormData = {
+      id: 1,
+      species: PetSpecies.CAT,
+      name: 'Test Cat',
+      icon: 'cat.png',
+      birthday: new Date(),
+      weight: 10,
+      weight_unit: 'kg',
+      allergies: 'None',
+      medications: [],
+      goal: GoalType.MAINTAIN,
+      target_weight: 10,
+      target_weight_unit: 'kg',
+      factor: 1.0,
+      daily_calories: 350,
+      notes: 'Test notes'
+    };
+    
+    // Call the method
+    petProfileService.editPetData(testFormData);
+    
+    // Verify console.log was called with our test data
+    expect(console.log).toHaveBeenCalledWith(testFormData);
+  });
 });

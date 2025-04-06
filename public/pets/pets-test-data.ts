@@ -1,9 +1,9 @@
-import { Pet_Form_Data, Pet_Profile } from "../../src/app/pet-profile/models/pet-profile.model";
+import { GoalType, Pet_Form_Data, Pet_Profile, PetSpecies } from "../../src/app/pet-profile/models/pet-profile.model";
 
 export const PETS_TEST_DATA: Pet_Profile[] = [
     {
         id: 0,
-        species: 'cat',
+        species: PetSpecies.CAT,
         name: 'Dodger',
         icon: 'dodger.png',
         birthday: new Date(2014, 2, 14),
@@ -17,7 +17,7 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
                 directions: '1 pill / day'
             },
         ],
-        goal: 'Lose',
+        goal: GoalType.LOSE,
         target_weight: 16,
         factor: 0.8,
         daily_calories: 264.8,
@@ -29,7 +29,7 @@ export const PETS_TEST_DATA: Pet_Profile[] = [
 export const PET_TEST_FORM_DATA: Pet_Form_Data[] = [
     {
         id: 0,
-        species: 'cat',
+        species: PetSpecies.CAT,
         name: 'Dodger',
         birthday: new Date(2014, 2, 14),
         weight: 17.5,
@@ -42,7 +42,7 @@ export const PET_TEST_FORM_DATA: Pet_Form_Data[] = [
                 directions: '1 pill / day'
             },
         ],
-        goal: 'Lose',
+        goal: GoalType.LOSE, 
         target_weight: 16,
         factor: 0.8,
         daily_calories: 264.8,

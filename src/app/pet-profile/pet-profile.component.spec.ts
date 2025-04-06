@@ -4,7 +4,7 @@ import { ComponentRef, DebugElement, NO_ERRORS_SCHEMA, signal } from '@angular/c
 import { PetProfileService } from '../services/pet-profile/pet-profile.service';
 import { of, throwError } from 'rxjs';
 import { PET_TEST_FORM_DATA, PETS_TEST_DATA } from '../../../public/pets/pets-test-data';
-import { Pet_Profile } from './models/pet-profile.model';
+import { GoalType, Pet_Profile } from './models/pet-profile.model';
 import { By } from '@angular/platform-browser';
 import { CommonConstants } from '../app.constants';
 import { FormBuilder } from '@angular/forms';
@@ -93,6 +93,22 @@ describe('PetProfileComponent', () => {
     expect(component['_pet']()).toBeUndefined(); 
   }));
 
+  // Test subscription cleanup
+  it('should register unsubscribe handler with destroyRef', () => {
+    componentRef.setInput('id', '0');
+    // Spy on DestroyRef.onDestroy
+    const onDestroySpy = spyOn(component['destroyRef'], 'onDestroy');
+    // Mock the getPetByPetId to return an observable
+    petProfileService.getPetByPetId.and.returnValue(of(PETS_TEST_DATA[0]));
+    
+    // Initialize the component
+    component.ngOnInit();
+    
+    // Verify onDestroy was called with a function
+    expect(onDestroySpy).toHaveBeenCalled();
+    expect(typeof onDestroySpy.calls.mostRecent().args[0]).toBe('function');
+  });
+
   // Error for compute pet()
   it('should throw when pet is not loaded', () => {
     // Set _pet to return undefined
@@ -108,9 +124,12 @@ describe('PetProfileComponent', () => {
 
   // User setup img and display on the screen
   it("should display custom image", fakeAsync(() => {
-    setData(PETS_TEST_DATA[0]);
+    const customData = {...PETS_TEST_DATA[0]};
+    // Ensure icon is properly set
+    customData.icon = 'dodger.png';
+    setData(customData);
 
-    const mockPath = 'pets/' + PETS_TEST_DATA[0].icon;
+    const mockPath = 'pets/' + customData.icon;
     
     tick()
 
@@ -138,12 +157,15 @@ describe('PetProfileComponent', () => {
   // Data fetch failed and keep pet() undefined.
   it('should get pet age', fakeAsync(() => {
     setData(PETS_TEST_DATA[0]);
-
-    const mockAge = 11;
+    
+    // Calculate the expected age dynamically based on the current date
+    const today = new Date();
+    const birthday = PETS_TEST_DATA[0].birthday;
+    const expectedAge = today.getFullYear() - birthday.getFullYear();
     
     tick();
 
-    expect(component.age()).toBe(mockAge); 
+    expect(component.age()).toBe(expectedAge); 
   }))
 
   // Pet is less than 1 year old
@@ -163,12 +185,14 @@ describe('PetProfileComponent', () => {
 
    // User's goal are lose weight or gain weight
    it('should display title for user goal', fakeAsync(() => {
-    const mockData = PETS_TEST_DATA[0] 
-    const mockGoal = mockData.goal;
-    const mockTargetWeight = mockData.target_weight;
-    const mockUnit = mockData.weight_unit;
-
-    const mockTitle =  `Goal: ${mockGoal} Weight to ${mockTargetWeight} ${mockUnit}`
+    const mockData = {...PETS_TEST_DATA[0]};
+    // Explicitly set goal and weights to ensure test consistency
+    mockData.goal = GoalType.LOSE;
+    mockData.weight = 20;
+    mockData.target_weight = 16;
+    mockData.weight_unit = 'lb';
+    
+    const mockTitle = `Goal: ${mockData.goal} Weight to ${mockData.target_weight} ${mockData.weight_unit}`;
     
     setData(mockData);
 
@@ -177,10 +201,30 @@ describe('PetProfileComponent', () => {
     expect(component.graphTitle()).toBe(mockTitle); 
   }))
 
+  // Test case for default weight unit
+  it('should use default weight unit when unit is missing', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    mockData.goal = GoalType.LOSE; 
+    mockData.weight = 20;
+    mockData.target_weight = 16;
+    // Force undefined weight_unit
+    Object.defineProperty(mockData, 'weight_unit', { 
+      value: undefined,
+      configurable: true 
+    });
+    
+    const mockTitle = `Goal: Lose Weight to 16 lb`; // Default unit is lb
+    
+    setData(mockData);
+    tick();
+
+    expect(component.graphTitle()).toBe(mockTitle);
+  }));
+
   // User's goal are maintain
   it('should display title for maintain', fakeAsync(() => {
     const newUserGoalData = PETS_TEST_DATA[0] 
-    newUserGoalData.goal = 'Maintain';
+    newUserGoalData.goal = GoalType.MAINTAIN; 
 
     const mockTitle =  `Goal: Maintain Weight`
     
@@ -190,6 +234,51 @@ describe('PetProfileComponent', () => {
 
     expect(component.graphTitle()).toBe(mockTitle); 
   }))
+
+   // Check if isGoalCorrect is set to false when the goal doesn't match the weights
+   it('should set isGoalCorrect to false when goal is incorrect (gain vs lose)', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    // Target weight is less than current weight but goal is set to Gain (incorrect)
+    mockData.weight = 20;
+    mockData.target_weight = 16;
+    mockData.goal = GoalType.GAIN; // This is wrong, should be Lose
+    
+    setData(mockData);
+    tick();
+    
+    // Check the signal value directly
+    expect(component.isGoalCorrect()).toBe(false);
+  }));
+
+  // Check if isGoalCorrect is set to false when the goal doesn't match the weights (lose vs gain)
+  it('should set isGoalCorrect to false when goal is incorrect (lose vs gain)', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    // Target weight is more than current weight but goal is set to Lose (incorrect)
+    mockData.weight = 15;
+    mockData.target_weight = 20;
+    mockData.goal = GoalType.LOSE; // This is wrong, should be Gain  
+    
+    setData(mockData);
+    tick();
+    
+    // Check the signal value directly
+    expect(component.isGoalCorrect()).toBe(false);
+  }));
+
+  // Check if isGoalCorrect is true when goal matches the weights
+  it('should set isGoalCorrect to true when goal is correct', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    // Target weight is less than current weight and goal is set to Lose (correct)
+    mockData.weight = 20;
+    mockData.target_weight = 16;
+    mockData.goal = GoalType.LOSE; // This is correct
+    
+    setData(mockData);
+    tick();
+    
+    // Check the signal value directly
+    expect(component.isGoalCorrect()).toBe(true);
+  }));
 
    // User's target weight and current weight are same so display Maintain
    it('should display title for maintain based on weight', fakeAsync(() => {
@@ -206,6 +295,35 @@ describe('PetProfileComponent', () => {
     expect(component.graphTitle()).toBe(mockTitle); 
   }))
 
+  // Check if isGoalCorrect is true when goal is set to Maintain
+  it('should set isGoalCorrect to true when goal is Maintain', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    // Even with inconsistent weights, goal of Maintain should always be valid
+    mockData.weight = 20;
+    mockData.target_weight = 16;
+    mockData.goal = GoalType.MAINTAIN;
+    
+    setData(mockData);
+    tick();
+    
+    // Check the signal value directly
+    expect(component.isGoalCorrect()).toBe(true);
+  }));
+
+  // Check if isGoalCorrect is true when weights are equal
+  it('should set isGoalCorrect to true when weights are equal', fakeAsync(() => {
+    const mockData = {...PETS_TEST_DATA[0]};
+    // When weights are equal, any goal should be considered valid
+    mockData.weight = 16;
+    mockData.target_weight = 16;
+    mockData.goal = GoalType.LOSE; // Normally incorrect for equal weights, but special cased
+    
+    setData(mockData);
+    tick();
+    
+    // Check the signal value directly
+    expect(component.isGoalCorrect()).toBe(true);
+  }));
 
   // ----- edit form -----
 
@@ -325,6 +443,27 @@ describe('PetProfileComponent', () => {
 }));
 
   // Panel close and form data updated correctly and return true (No allergies case)
+  it('should handle empty allergies correctly', fakeAsync(() => {
+    setData(PETS_TEST_DATA[0]);
+    component.formValid = true;
+
+    // Mock form data with empty allergies
+    const mockFormData = {...PET_TEST_FORM_DATA[0]};
+    mockFormData.allergies = '';
+
+    // Build a form group that returns the mock data as value
+    component.petFormGroup = new FormBuilder().group(mockFormData);
+
+    // mock petProfileService
+    const editPetDataSpy = component['petProfileService'].editPetData;
+    
+    const result = component.canPanelClose();
+
+    // Check that allergies were set to 'none'
+    const expectedData = {...mockFormData, allergies: 'none'};
+    expect(editPetDataSpy).toHaveBeenCalledWith(expectedData);
+    expect(result).toBeTrue();
+  }));
 
 })
  
