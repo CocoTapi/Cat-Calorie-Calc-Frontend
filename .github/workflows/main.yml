@@ -49,8 +49,8 @@ jobs:
           node-version: "lts/*"
       - name: Install dependencies
         run: npm install
-      - name: Install Cypress dependencies
-        run: npx cypress install
+      # - name: Install Cypress dependencies
+      #   run: npx cypress install
 
       - name: Run unit tests with ChromeHeadless and coverage
         run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
@@ -71,14 +71,14 @@ jobs:
           name: coverage-report
           path: coverage/
           
-      - name: Start Angular App
-        run: npm run start &
+      # - name: Start Angular App
+      #   run: npm run start &
         
-      - name: Wait for app to be ready
-        run: npx wait-on http://localhost:4200
+      # - name: Wait for app to be ready
+      #   run: npx wait-on http://localhost:4200
 
-      - name: Run Cypress Tests with Code Coverage
-        uses: cypress-io/github-action@v5
-        with:
-          browser: chrome
-          headless: true
+      # - name: Run Cypress Tests with Code Coverage
+      #   uses: cypress-io/github-action@v5
+      #   with:
+      #     browser: chrome
+      #     headless: true

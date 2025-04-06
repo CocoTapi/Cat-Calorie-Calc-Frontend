@@ -1,19 +1,111 @@
 
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use '@angular/material' as mat; 
+
+
+
+// TODO: basic styling
+
+// COLOR VARIABLES
+$color-primary: #c69963;
+$color-primary-dark: #B28451;
+
+$color-secondary: #101d2c;
+
+$color-grey-light-1: #f9f7f6;
+$color-grey-light-2: #aaa;
+
+$color-grey-dark-1: #1b1b1b;
+$color-grey-dark-2: #1f1f1f;
+
+// FONT VARIABLES
+$font-primary: 'Nunito', sans-serif;
+$font-display: 'Josefin Sans', sans-serif;
+
+
+// RESPONSIVE BREAKPOINTS
+$bp-largest: 75em; // 1200px / 16px
+$bp-large: 62.5em; //100px
+$bp-medium: 50em;  //800px
+$bp-small: 37.5em; //600px
+
+// FONT 
+%heading {
+  font-family: $font-display;
+  font-weight: 600;
+}
+
+.heading-1 {
+  @extend %heading;
+  font-size: 1.2rem;
+  color: $color-grey-dark-1;
+  line-height: 1;
+}
+
+.heading-2 {
+  @extend %heading;
+  font-size: 1rem;
+  line-height: 1;
+  color:$color-grey-dark-1;
+
+  &--light {color: $color-grey-light-1;}
+  &--dark {color: $color-grey-dark-1;}
+}
+
+// MARGIN BOTTOM
+.mb-sm { margin-bottom: .5rem; }
+.mb-md { margin-bottom: 1rem; }
+.mb-lg { margin-bottom: 1.5rem; }
+.mb-hg { margin-bottom: 2rem; }
+
+// Button Base
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-}/* You can add global styles to this file, and also import other style files */
+  // @include mat.theme((
+  //   color: (
+  //     theme-type: light,
+  //     primary: mat.$azure-palette,
+  //     tertiary: mat.$blue-palette,
+  //   ),
+  //   typography: Roboto,
+  //   density: 0,
+  // ));
+
+  box-sizing: border-box;
+
+  // font-size: 62.5%; //10px / 16px = 62.5% -> 1rem = 10px
+
+  @media only screen and (max-width: $bp-largest){
+      // font-size: 50%; //  1rem = 8px
+  }
+}
+
+html, body { height: 100%; }
+body { 
+  font-family: $font-primary;
+  color: $color-grey-dark-2;
+  font-weight: 400;
+  line-height: 1.2;
+  font-size: 1rem;
+  background-color: rgb(194, 191, 191);
+
+  
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

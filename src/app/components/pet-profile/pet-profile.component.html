@@ -1,0 +1,103 @@
+<!-- Edit Profile Form -->
+@if (pet()){
+<app-slide-panel [panelId]="panelId" title="Edit">
+    <app-pet-form [pet]="pet()" [petId]="id()" (formValidationChange)="onFormValidityChange($event)"
+        (formGroupData)="onFormGroupChange($event)" />
+</app-slide-panel>
+}
+
+<div class="pets">
+    <h1 class="heading-1">{{ pet().name}}</h1>
+
+    <!-- Edit button -->
+    <button (click)="onEdit('petProfile')" class="responsive-icon">
+        <mat-icon>settings</mat-icon>
+    </button>
+
+    <!-- Main pet profile -->
+    <div class="pet-profile-1">
+        <img [src]="imagePath()" [alt]="pet().name" class="pet-profile-1__img">
+        <div class="pet-profile-1__summary">
+
+            <!-- Age -->
+            <p>Age :</p>
+            <p>
+                @if(age().years > 0) {
+                <span>
+                    {{ age().years }}
+                    <span>year@if(age().years > 1) {s}</span>
+                </span>
+                }
+
+                <span>
+                    {{ age().months }}
+                    <span>month@if(age().months > 1) {s}</span>
+                </span>
+            </p>
+
+            <!-- Weight -->
+            <p>Weight :</p>
+            <p>
+                {{ pet().weight }}
+                <span>{{ pet().weight_unit }}</span>
+            </p>
+
+            <!-- Goal weight -->
+            <p>Goal :</p>
+            <p>
+                {{ pet().goal }}
+                <span>weight</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- TODO: make a line graph -->
+    <app-card [title]="graphTitle()" class="graph-component">
+        <div class="line-graph">
+        </div>
+    </app-card>
+
+    <!-- Health Profile for pets -->
+    <div class="pet-profile-2">
+
+        <!-- Daily calories suggestion amount -->
+        <div class="pet-profile-2__calories">
+            <h2 class="heading-2">Daily Calories :</h2>
+            <p>
+                360
+                <span>kcal</span>
+            </p>
+        </div>
+
+        <!-- Pet's taken medicine -->
+        <div class="pet-profile-2__medications">
+            <h2 class="heading-2">Medications :</h2>
+            <ul>
+                @if(pet().medications){
+                @for(item of pet().medications; track item.med_id){
+                <li>
+                    {{ item.med_name }},
+                    <span>{{ item.directions }}</span>
+                </li>
+                }
+                } @else {
+                <li>None</li>
+                }
+            </ul>
+        </div>
+
+        <!-- Pet's food allergy list -->
+        <div class="pet-profile-2__allergies">
+            <h2 class="heading-2">Food Allergy :</h2>
+            <p>{{ pet().allergies }}</p>
+        </div>
+
+        <!-- Pet's personality notes from owner -->
+        @if (pet().notes){
+        <div class="pet-profile-2__notes">
+            <h2 class="heading-2">Personality Notes :</h2>
+            <p class="pet-profile-2__notes__content">{{ pet().notes }}</p>
+        </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,173 @@
+$right-space: 2rem;
+$number-input-width: 50%;
+$error-color: #f44336;
+
+// .modal {
+//   position: fixed;
+//   top: 0; left: 0; right: 0; bottom: 0;
+//   background: rgba(0, 0, 0, 0.3);
+//   z-index: 99;
+//   width: 100%;
+//   height: 50vh;
+// }
+
+.validation-error {
+  background-color: rgba($error-color, 0.1);
+  border-left: 4px solid $error-color;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  
+  p {
+    color: $error-color;
+    font-weight: 500;
+    margin: 0;
+  }
+}
+
+.form {
+  background-color: grey;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  // flex: 1; /* Allows form to take available space */
+  // overflow-y: auto; /* Enables scrolling */
+  box-sizing: border-box;
+  width: 100%;
+  align-items: stretch;
+  padding: 1.5rem;
+
+  overflow-y: auto;
+  max-height: 100%;
+
+  & > * {
+    display: flex;
+  }
+
+  &__species {
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: .5rem;
+  }
+
+  &__name {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  &__birthday {
+    // TODO: mat-form-field design
+  }
+
+  &__weight {
+    gap: 1rem;
+    align-items: center;
+
+    app-custom-input {
+      width: $number-input-width;
+    }
+    
+  }
+
+  &__allergies {
+    flex-direction: column;
+  }
+
+  &__medications, &__goal, &__calories {
+    &__title {
+      margin-bottom: .7rem;
+    }
+  }
+
+  &__medications {
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1rem;
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      list-style: circle;
+
+      &__item {
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(192, 192, 192);
+        padding: 1rem;
+        margin-left: $right-space;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+
+        button {
+          justify-content: end;
+          background-color: transparent;
+          border-color: transparent;
+        }
+      }
+    }
+
+    &__btn {
+      margin: 0 auto;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+  }
+
+  &__goal {
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      margin-left: $right-space;
+
+      &__target {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+  
+      &__weight {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        app-custom-input {
+          width: $number-input-width;
+        }
+      }
+    } 
+  }
+
+  &__calories {
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      margin-left: $right-space;
+      gap: 1rem;
+
+      app-custom-input {
+        width: $number-input-width;
+      }
+
+      &__daily {
+       display: flex;
+       align-items: center;
+       gap: 1rem;
+      }
+    }
+  }
+
+  // TODO: button styling
+  &__btn {
+    margin: 0 auto;
+      gap: 1rem;
+      padding: 0 1rem;
+  }
+   
+    
+}
