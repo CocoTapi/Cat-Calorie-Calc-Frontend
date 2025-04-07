@@ -12,6 +12,7 @@ import { createNewPetProfileForm, patchPetProfileForm } from './pet-profile-form
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pet-form',
@@ -24,7 +25,8 @@ import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model
     CustomInputComponent,
     CustomSelectionComponent,
     DatePickerComponent,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',

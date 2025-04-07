@@ -14,7 +14,30 @@
       "dailyCalories": "１日のカロリー",
       "medications": "飲んでいるお薬",
       "noMedication": "なし",
-      "allergies": "食物アレルギー",
+      "allergies": "アレルギー",
       "personalityNote": "{{name}}さんの性格について"
+    },
+    "pet-form": {
+      "errorMessage": "入力内容に誤りがあります。赤字の部分を確認してください",
+      "cat": "猫",
+      "dog": "犬",
+      "namePlaceHolder": "ペットの名前",
+      "birthdayLabel": "誕生日を選んでください",
+      "allergyPlaceHolder": "例）乳製品、小麦",
+      "medName": "お薬の名前",
+      "medNamePlaceholder": "例）アトピカ",
+      "medDir": "お薬の用法",
+      "medDirPlaceHolder" : "例）１日食後に１回",
+      "addMedBtnText": "薬を追加",
+      "goalSectionTitle": "体重管理について",
+      "goalSuffix": "",
+      "targetWeight": "目標体重",
+      "targetWeightPlaceHolder": "例）５" ,
+      "dailyCaloriesNote": "私たちは、世界的に使用されている安静時エネルギー要求量(RER)と係数によって一日に必要な摂取カロリーを計算します。",
+      "factor": "係数",
+      "factorPlaceHolder": "例）1.2",
+      "targetCalories": "一日当たりの必要カロリー",
+      "targetCaloriesPlaceHolder": "例）200",
+      "caloryInputNote": "表示されているカロリーは、RERと係数をもとに、自動的に計算されたものです。"
     }
 }
