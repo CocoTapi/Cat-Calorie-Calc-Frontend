@@ -1,0 +1,20 @@
+{
+    "app": {
+      "hello": "こんにちは {{name}}",
+      "title": "ペット健康管理アプリ"
+    },
+    "pet-profile": {
+      "age": "年齢",
+      "year": "才",
+      "years": "才",
+      "month": "ヶ月",
+      "months": "ヶ月",
+      "weight": "体重",
+      "goal": "ゴール",
+      "dailyCalories": "１日のカロリー",
+      "medications": "飲んでいるお薬",
+      "noMedication": "なし",
+      "allergies": "食物アレルギー",
+      "personalityNote": "{{name}}さんの性格について"
+    }
+}

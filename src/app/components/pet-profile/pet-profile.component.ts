@@ -10,12 +10,13 @@ import { SlidePanelComponent } from '../../ui/slide-panel/slide-panel.component'
 import { PetProfile, GoalType, PetFormData, DisplayAge } from './models/pet-profile.model';
 import { PetFormComponent } from '../pet-form/pet-form.component';
 import { calcMonthYear } from '../../utils/util';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
 @Component({
   selector: 'app-pet-profile',
-  imports: [PetFormComponent, MatIconModule, SlidePanelComponent, CardComponent],
+  imports: [PetFormComponent, MatIconModule, SlidePanelComponent, CardComponent, TranslateModule],
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })

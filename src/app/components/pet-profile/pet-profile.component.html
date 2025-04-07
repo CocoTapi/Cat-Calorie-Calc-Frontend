@@ -20,30 +20,40 @@
         <div class="pet-profile-1__summary">
 
             <!-- Age -->
-            <p>Age :</p>
+            <p>{{'pet-profile.age' | translate }} :</p>
             <p>
                 @if(age().years > 0) {
                 <span>
                     {{ age().years }}
-                    <span>year@if(age().years > 1) {s}</span>
+                    @if(age().years > 1) {
+                        <span>{{'pet-profile.years' | translate }}</span>
+                    }
+                    @else {
+                        <span>{{'pet-profile.year' | translate }}</span>
+                    }
                 </span>
                 }
 
                 <span>
                     {{ age().months }}
-                    <span>month@if(age().months > 1) {s}</span>
+                    @if(age().months > 1) {
+                        <span>{{'pet-profile.months' | translate }}</span>
+                    }
+                    @else {
+                        <span>{{'pet-profile.month' | translate }}</span>
+                    }
                 </span>
             </p>
 
             <!-- Weight -->
-            <p>Weight :</p>
+            <p>{{'pet-profile.weight' | translate }} :</p>
             <p>
                 {{ pet().weight }}
                 <span>{{ pet().weight_unit }}</span>
             </p>
 
             <!-- Goal weight -->
-            <p>Goal :</p>
+            <p>{{'pet-profile.goal' | translate }} :</p>
             <p>
                 {{ pet().goal }}
                 <span>weight</span>
@@ -62,7 +72,7 @@
 
         <!-- Daily calories suggestion amount -->
         <div class="pet-profile-2__calories">
-            <h2 class="heading-2">Daily Calories :</h2>
+            <h2 class="heading-2">{{'pet-profile.dailyCalories' | translate }} :</h2>
             <p>
                 360
                 <span>kcal</span>
@@ -71,7 +81,7 @@
 
         <!-- Pet's taken medicine -->
         <div class="pet-profile-2__medications">
-            <h2 class="heading-2">Medications :</h2>
+            <h2 class="heading-2">{{'pet-profile.medications' | translate }} :</h2>
             <ul>
                 @if(pet().medications){
                 @for(item of pet().medications; track item.med_id){
@@ -81,21 +91,21 @@
                 </li>
                 }
                 } @else {
-                <li>None</li>
+                <li>{{'pet-profile.noMedication' | translate }}</li>
                 }
             </ul>
         </div>
 
         <!-- Pet's food allergy list -->
         <div class="pet-profile-2__allergies">
-            <h2 class="heading-2">Food Allergy :</h2>
+            <h2 class="heading-2">{{'pet-profile.allergies' | translate }} :</h2>
             <p>{{ pet().allergies }}</p>
         </div>
 
         <!-- Pet's personality notes from owner -->
         @if (pet().notes){
         <div class="pet-profile-2__notes">
-            <h2 class="heading-2">Personality Notes :</h2>
+            <h2 class="heading-2">{{'pet-profile.personalityNote' | translate: {name: pet().name} }} :</h2>
             <p class="pet-profile-2__notes__content">{{ pet().notes }}</p>
         </div>
         }

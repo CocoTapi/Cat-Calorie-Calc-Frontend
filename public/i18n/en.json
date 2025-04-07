@@ -1,0 +1,20 @@
+{
+    "app": {
+      "hello": "hello {{name}}",
+      "title": "Healthy Pet Management"
+    },
+    "pet-profile": {
+      "age": "Age",
+      "year": "year",
+      "years": "years",
+      "month": "month",
+      "months": "months",
+      "weight": "Weight",
+      "goal": "Goal",
+      "dailyCalories": "Daily Calories",
+      "medications": "Medications",
+      "noMedication": "None",
+      "allergies": "Food Allergies",
+      "personalityNote": "{{name}}'s Personality"
+    }
+}
