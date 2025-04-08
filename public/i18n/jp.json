@@ -11,11 +11,14 @@
       "months": "ヶ月",
       "weight": "体重",
       "goal": "ゴール",
+      "maintain": "現状維持",
+      "lose": "減量",
+      "gain": "増量",
       "dailyCalories": "１日のカロリー",
       "medications": "飲んでいるお薬",
       "noMedication": "なし",
       "allergies": "アレルギー",
-      "personalityNote": "{{name}}さんの性格について"
+      "personalityNote": "{{name}}さんの性格"
     },
     "pet-form": {
       "errorMessage": "入力内容に誤りがあります。赤字の部分を確認してください",
@@ -39,5 +42,8 @@
       "targetCalories": "一日当たりの必要カロリー",
       "targetCaloriesPlaceHolder": "例）200",
       "caloryInputNote": "表示されているカロリーは、RERと係数をもとに、自動的に計算されたものです。"
+    },
+    "custom-selection": {
+      "required": "{{field}}を入力してください"
     }
 }

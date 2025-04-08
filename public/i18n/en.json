@@ -11,6 +11,9 @@
       "months": "months",
       "weight": "Weight",
       "goal": "Goal",
+      "maintain": "Maintain",
+      "lose": "Lose",
+      "gain": "Gain",
       "dailyCalories": "Daily Calories",
       "medications": "Medications",
       "noMedication": "None",
@@ -39,5 +42,8 @@
       "targetCalories": "Target Daily Calories",
       "targetCaloriesPlaceHolder": "E.g. 200",
       "caloryInputNote": "Displayed calories are automatically calculated based on the factor and RER."
+    },
+    "custom-selection": {
+      "required": "{{field}} is required"
     }
 }

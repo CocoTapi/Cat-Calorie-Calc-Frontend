@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface SELECTION {
   value: string;
@@ -12,7 +13,14 @@ export interface SELECTION {
 
 @Component({
   selector: 'app-custom-selection',
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatInputModule],
+  imports: [
+    FormsModule, 
+    ReactiveFormsModule, 
+    MatFormFieldModule, 
+    MatSelectModule, 
+    MatInputModule,
+    TranslateModule
+  ],
   templateUrl: './custom-selection.component.html',
   styleUrl: './custom-selection.component.scss'
 })
