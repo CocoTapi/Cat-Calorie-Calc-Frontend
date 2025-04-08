@@ -43,7 +43,7 @@
       "targetCaloriesPlaceHolder": "例）200",
       "caloryInputNote": "表示されているカロリーは、RERと係数をもとに、自動的に計算されたものです。"
     },
-    "custom-selection": {
+    "custom-form": {
       "required": "{{field}}を入力してください"
     }
 }

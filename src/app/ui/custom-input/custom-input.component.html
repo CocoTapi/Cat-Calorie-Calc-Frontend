@@ -2,7 +2,9 @@
     <mat-label>{{ label }}</mat-label>
     <input [type]="type" matInput [formControl]="customFormControl" [placeholder]="placeholder" [errorStateMatcher]="errorStateMatcher">
     @if (customFormControl.hasError('required')) {
-        <mat-error>{{ label }} is <strong>required</strong></mat-error>
+        <mat-error>      
+            {{ 'custom-form.required' | translate: { field: label } }}
+        </mat-error>
     }
     @if ( 
         customErrorMessage && 

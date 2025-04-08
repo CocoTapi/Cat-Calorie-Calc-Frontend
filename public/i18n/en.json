@@ -43,7 +43,7 @@
       "targetCaloriesPlaceHolder": "E.g. 200",
       "caloryInputNote": "Displayed calories are automatically calculated based on the factor and RER."
     },
-    "custom-selection": {
+    "custom-form": {
       "required": "{{field}} is required"
     }
 }
