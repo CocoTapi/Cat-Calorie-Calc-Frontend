@@ -6,6 +6,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { OnlyTouchedErrorStateMatcher } from '../../utils/only-touched-error-state-matcher';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipeMock } from '../../utils/translatePipeMock';
 
 describe('CustomSelectionComponent', () => {
   let component: CustomSelectionComponent;
@@ -24,10 +26,12 @@ describe('CustomSelectionComponent', () => {
         ReactiveFormsModule,
         MatFormFieldModule,
         MatSelectModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
+        TranslateModule.forRoot(), 
+        TranslatePipeMock
       ],
       providers: [
-        { provide: ErrorStateMatcher, useClass: OnlyTouchedErrorStateMatcher }
+        { provide: ErrorStateMatcher, useClass: OnlyTouchedErrorStateMatcher },
       ]
     })
     .compileComponents();

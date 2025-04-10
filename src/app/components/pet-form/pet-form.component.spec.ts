@@ -8,6 +8,8 @@ import { CommonConstants } from '../../app.constants';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Subject, Subscription } from 'rxjs';
 import { MedItemType, PetProfile } from '../pet-profile/models/pet-profile.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipeMock } from '../../utils/translatePipeMock';
 
 describe('PetFormComponent', () => {
   let component: PetFormComponent;
@@ -27,7 +29,9 @@ describe('PetFormComponent', () => {
       imports: [
         PetFormComponent, 
         ReactiveFormsModule, 
-        MatNativeDateModule
+        MatNativeDateModule,
+        TranslateModule.forRoot(), 
+        TranslatePipeMock
       ],
       providers: [
         { provide: SlidePanelService, useValue: slidePanelService }

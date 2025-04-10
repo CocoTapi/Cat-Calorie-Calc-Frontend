@@ -14,11 +14,14 @@
       "maintain": "Maintain",
       "lose": "Lose",
       "gain": "Gain",
+      "goalSuffix": "weight",
       "dailyCalories": "Daily Calories",
       "medications": "Medications",
       "noMedication": "None",
       "allergies": "Allergies",
-      "personalityNote": "{{name}}'s Personality"
+      "personalityNote": "{{name}}'s Personality",
+      "graphTitleMaintain": "Goal: Maintain Weight",
+      "graphTitleDynamic": "Goal: {{goal}} Weight to {{weight}} {{unit}}"
     },
     "pet-form": {
       "errorMessage": "Please correct all highlighted fields before closing the panel.",
@@ -33,7 +36,6 @@
       "medDirPlaceHolder" : "E.g. 1 pill / day",
       "addMedBtnText": "Add Medicine",
       "goalSectionTitle": "Weight Management",
-      "goalSuffix": "weight",
       "targetWeight": "Target Weight",
       "targetWeightPlaceHolder": "E.g. 5" ,
       "dailyCaloriesNote": "We use Resting Energy Requirement (RER) and factor to calculate daily calories",

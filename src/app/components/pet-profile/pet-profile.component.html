@@ -55,8 +55,8 @@
             <!-- Goal weight -->
             <p>{{'pet-profile.goal' | translate }} :</p>
             <p>
-                {{ pet().goal }}
-                <span>weight</span>
+                {{ `pet-profile.${pet().goal.toLowerCase()}` | translate }}
+                <span>{{'pet-profile.goalSuffix' | translate }}</span>
             </p>
         </div>
     </div>
