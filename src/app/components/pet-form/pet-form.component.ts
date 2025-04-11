@@ -12,7 +12,7 @@ import { createNewPetProfileForm, patchPetProfileForm } from './pet-profile-form
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pet-form',
@@ -35,7 +35,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class PetFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private slidePanelService = inject(SlidePanelService);
-  private translate = inject(TranslateService);
   private cdr = inject(ChangeDetectorRef);
 
   private factorSubscription: Subscription | undefined;
@@ -52,16 +51,6 @@ export class PetFormComponent implements OnInit {
 
   goalSelectOptions = [CommonConstants.MAINTAIN, CommonConstants.LOSE, CommonConstants.GAIN,]
   goalSelection: SELECTION[] = [];
-  
-  // goalSelection: SELECTION[] = [
-  //   { value: CommonConstants.MAINTAIN, viewValue: this.getViewVal(CommonConstants.MAINTAIN) },
-  //   { value: CommonConstants.LOSE, viewValue: this.getViewVal(CommonConstants.LOSE) },
-  //   { value: CommonConstants.GAIN, viewValue: this.getViewVal(CommonConstants.GAIN) },
-  // ]
-
-  private getViewVal(val: string): string {
-    return `pet-profile.${val.toLowerCase()}`
-  }
 
   ngOnInit(): void {
     this.loadGoalSelection();
@@ -87,8 +76,7 @@ export class PetFormComponent implements OnInit {
     this.goalSelection = this.goalSelectOptions.map(val => ({
       value: val,
       viewValue: `pet-profile.${val.toLowerCase()}`
-    })
-    );
+    }));
   } 
 
 

@@ -23,21 +23,6 @@ describe('PetFormComponent', () => {
     canClose: jasmine.createSpy('canClose'),
     getValidationTrigger: jasmine.createSpy('getValidationTrigger').and.returnValue(mockValidationTrigger)
   }
-
-  beforeAll(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        PetFormComponent, 
-        ReactiveFormsModule, 
-        MatNativeDateModule,
-        TranslateModule.forRoot(), 
-        TranslatePipeMock
-      ],
-      providers: [
-        { provide: SlidePanelService, useValue: slidePanelService }
-      ]
-    }).compileComponents();
-  });
   
   const setup = async (
     petData: PetProfile | undefined,
@@ -47,7 +32,9 @@ describe('PetFormComponent', () => {
       imports: [
         PetFormComponent, 
         ReactiveFormsModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        TranslateModule.forRoot(), 
+        TranslatePipeMock
       ],
       providers: [
         { provide: SlidePanelService, useValue: slidePanelService }

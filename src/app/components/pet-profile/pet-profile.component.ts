@@ -16,7 +16,13 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pet-profile',
-  imports: [PetFormComponent, MatIconModule, SlidePanelComponent, CardComponent, TranslateModule],
+  imports: [
+    PetFormComponent, 
+    MatIconModule, 
+    SlidePanelComponent,
+    CardComponent, 
+    TranslateModule
+  ],
   templateUrl: './pet-profile.component.html',
   styleUrl: './pet-profile.component.scss'
 })
