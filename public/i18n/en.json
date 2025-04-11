@@ -1,6 +1,5 @@
 {
     "app": {
-      "hello": "hello {{name}}",
       "title": "Healthy Pet Management"
     },
     "pet-profile": {

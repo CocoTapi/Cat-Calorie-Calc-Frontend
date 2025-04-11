@@ -11,7 +11,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class AppComponent {
   title = 'cat-calorie-calc-frontend';
   pet_id = 0;
-  name = 'Shiori';
 
   constructor(
     private translate: TranslateService

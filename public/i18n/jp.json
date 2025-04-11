@@ -1,6 +1,5 @@
 {
     "app": {
-      "hello": "こんにちは {{name}}",
       "title": "ペット健康管理アプリ"
     },
     "pet-profile": {
