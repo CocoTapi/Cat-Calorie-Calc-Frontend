@@ -75,7 +75,7 @@ export class PetFormComponent implements OnInit {
   private loadGoalSelection(): void{
     this.goalSelection = this.goalSelectOptions.map(val => ({
       value: val,
-      viewValue: `pet-profile.${val.toLowerCase()}`
+      viewValue: `petProfile.${val.toLowerCase()}`
     }));
   } 
 
