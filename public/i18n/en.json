@@ -20,7 +20,8 @@
       "allergies": "Allergies",
       "personalityNote": "{{name}}'s Personality",
       "graphTitleMaintain": "Goal: Maintain Weight",
-      "graphTitleDynamic": "Goal: {{goal}} Weight to {{weight}} {{unit}}"
+      "graphTitleDynamic": "Goal: {{goal}} Weight to {{weight}} {{unit}}",
+      "none": "None"
     },
     "petForm": {
       "errorMessage": "Please correct all highlighted fields before closing the panel.",

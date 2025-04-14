@@ -68,10 +68,10 @@
     </app-card>
 
     <!-- Health Profile for pets -->
-    <div class="petProfile-2">
+    <div class="pet-profile-2">
 
         <!-- Daily calories suggestion amount -->
-        <div class="petProfile-2__calories">
+        <div class="pet-profile-2__calories">
             <h2 class="heading-2">{{'petProfile.dailyCalories' | translate }} :</h2>
             <p>
                 360
@@ -99,7 +99,7 @@
         <!-- Pet's food allergy list -->
         <div class="pet-profile-2__allergies">
             <h2 class="heading-2">{{'petProfile.allergies' | translate }} :</h2>
-            <p>{{ pet().allergies }}</p>
+            <p>{{ pet().allergies? pet().allergies : 'petProfile.none' | translate }}</p>
         </div>
 
         <!-- Pet's personality notes from owner -->

@@ -18,7 +18,8 @@
       "medications": "飲んでいるお薬",
       "noMedication": "なし",
       "allergies": "アレルギー",
-      "personalityNote": "{{name}}さんの性格"
+      "personalityNote": "{{name}}さんの性格",
+      "none": "なし"
     },
     "petForm": {
       "errorMessage": "入力内容に誤りがあります。赤字の部分を確認してください",
