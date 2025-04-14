@@ -20,16 +20,16 @@
         <div class="pet-profile-1__summary">
 
             <!-- Age -->
-            <p>{{'pet-profile.age' | translate }} :</p>
+            <p>{{'petProfile.age' | translate }} :</p>
             <p>
                 @if(age().years > 0) {
                 <span>
                     {{ age().years }}
                     @if(age().years > 1) {
-                        <span>{{'pet-profile.years' | translate }}</span>
+                        <span>{{'petProfile.years' | translate }}</span>
                     }
                     @else {
-                        <span>{{'pet-profile.year' | translate }}</span>
+                        <span>{{'petProfile.year' | translate }}</span>
                     }
                 </span>
                 }
@@ -37,26 +37,26 @@
                 <span>
                     {{ age().months }}
                     @if(age().months > 1) {
-                        <span>{{'pet-profile.months' | translate }}</span>
+                        <span>{{'petProfile.months' | translate }}</span>
                     }
                     @else {
-                        <span>{{'pet-profile.month' | translate }}</span>
+                        <span>{{'petProfile.month' | translate }}</span>
                     }
                 </span>
             </p>
 
             <!-- Weight -->
-            <p>{{'pet-profile.weight' | translate }} :</p>
+            <p>{{'petProfile.weight' | translate }} :</p>
             <p>
                 {{ pet().weight }}
                 <span>{{ pet().weight_unit }}</span>
             </p>
 
             <!-- Goal weight -->
-            <p>{{'pet-profile.goal' | translate }} :</p>
+            <p>{{'petProfile.goal' | translate }} :</p>
             <p>
-                {{ `pet-profile.${pet().goal.toLowerCase()}` | translate }}
-                <span>{{'pet-profile.goalSuffix' | translate }}</span>
+                {{ `petProfile.${pet().goal.toLowerCase()}` | translate }}
+                <span>{{'petProfile.goalSuffix' | translate }}</span>
             </p>
         </div>
     </div>
@@ -68,11 +68,11 @@
     </app-card>
 
     <!-- Health Profile for pets -->
-    <div class="pet-profile-2">
+    <div class="petProfile-2">
 
         <!-- Daily calories suggestion amount -->
-        <div class="pet-profile-2__calories">
-            <h2 class="heading-2">{{'pet-profile.dailyCalories' | translate }} :</h2>
+        <div class="petProfile-2__calories">
+            <h2 class="heading-2">{{'petProfile.dailyCalories' | translate }} :</h2>
             <p>
                 360
                 <span>kcal</span>
@@ -81,7 +81,7 @@
 
         <!-- Pet's taken medicine -->
         <div class="pet-profile-2__medications">
-            <h2 class="heading-2">{{'pet-profile.medications' | translate }} :</h2>
+            <h2 class="heading-2">{{'petProfile.medications' | translate }} :</h2>
             <ul>
                 @if(pet().medications){
                 @for(item of pet().medications; track item.med_id){
@@ -91,21 +91,21 @@
                 </li>
                 }
                 } @else {
-                <li>{{'pet-profile.noMedication' | translate }}</li>
+                <li>{{'petProfile.noMedication' | translate }}</li>
                 }
             </ul>
         </div>
 
         <!-- Pet's food allergy list -->
         <div class="pet-profile-2__allergies">
-            <h2 class="heading-2">{{'pet-profile.allergies' | translate }} :</h2>
+            <h2 class="heading-2">{{'petProfile.allergies' | translate }} :</h2>
             <p>{{ pet().allergies }}</p>
         </div>
 
         <!-- Pet's personality notes from owner -->
         @if (pet().notes){
         <div class="pet-profile-2__notes">
-            <h2 class="heading-2">{{'pet-profile.personalityNote' | translate: {name: pet().name} }} :</h2>
+            <h2 class="heading-2">{{'petProfile.personalityNote' | translate: {name: pet().name} }} :</h2>
             <p class="pet-profile-2__notes__content">{{ pet().notes }}</p>
         </div>
         }

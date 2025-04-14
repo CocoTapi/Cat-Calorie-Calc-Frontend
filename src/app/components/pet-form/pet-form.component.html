@@ -1,27 +1,27 @@
 <form [formGroup]="petProfileForm" class="form">
     <!-- Validation Error Message -->
     <div class="validation-error" *ngIf="showValidationErrors && !petProfileForm.valid">
-        <p>{{'pet-form.errorMessage' | translate }}</p>
+        <p>{{'petForm.errorMessage' | translate }}</p>
     </div>
 
     <!-- Type Selection -->
     <section class="form__species">
         <mat-button-toggle-group aria-label="species" formControlName="species" class="toggle-btn">
-            <mat-button-toggle value="cat">{{'pet-form.cat' | translate }}</mat-button-toggle>
-            <mat-button-toggle value="dog">{{'pet-form.dog' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="cat">{{'petForm.cat' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="dog">{{'petForm.dog' | translate }}</mat-button-toggle>
         </mat-button-toggle-group>
     </section>
 
     <!-- Name Input -->
     <section class="form__name">
         <app-custom-input label="Name" formFieldName="name" type="text"
-            [customFormControl]="getFormControl('name')" placeholder="{{'pet-form.namePlaceHolder' | translate }}" />
+            [customFormControl]="getFormControl('name')" placeholder="{{'petForm.namePlaceHolder' | translate }}" />
     </section>
 
     <!-- Birthday Input -->
     <section class="form__birthday">
         <app-date-picker 
-            label="{{'pet-form.birthdayLabel' | translate }}"
+            label="{{'petForm.birthdayLabel' | translate }}"
             [customFormControl]="getFormControl('birthday')"
         />
     </section>
@@ -30,7 +30,7 @@
     <!-- Weight Input -->
     <section class="form__weight">
         <app-custom-input 
-        label="{{'pet-profile.weight' | translate }}" 
+        label="{{'petProfile.weight' | translate }}" 
         formFieldName="weight" 
         type="text"
         [customFormControl]="getFormControl('weight')" 
@@ -49,33 +49,33 @@
     <!-- Food Allergies Input-->
     <section class="form__allergies">
         <app-custom-input 
-            label="{{'pet-profile.allergies' | translate }}" 
+            label="{{'petProfile.allergies' | translate }}" 
             formFieldName="allergies" 
             type="text"
             [customFormControl]="getFormControl('allergies')" 
-            placeholder="{{'pet-form.allergyPlaceHolder' | translate }}" 
+            placeholder="{{'petForm.allergyPlaceHolder' | translate }}" 
         />
     </section>
 
     <!-- Medication Input -->
     <section class="form__medications">
-        <p class="form__medications__title">{{'pet-profile.medications' | translate }} :</p>
+        <p class="form__medications__title">{{'petProfile.medications' | translate }} :</p>
         <ul formArrayName="medications" class="form__medications__content">
             @for (med of medications.controls; track med; let idx = $index){
             <li [formGroupName]="idx" class="form__medications__content__item">
                 <app-custom-input 
-                    label="{{'pet-form.medName' | translate }}" 
+                    label="{{'petForm.medName' | translate }}" 
                     formFieldName="med_name" 
                     type="text"
                     [customFormControl]="getMedItemControl(idx, 'med_name')" 
-                    placeholder="{{'pet-form.medNamePlaceholder' | translate }}" 
+                    placeholder="{{'petForm.medNamePlaceholder' | translate }}" 
                 />
                 <app-custom-input 
-                    label="{{'pet-form.medDir' | translate }}" 
+                    label="{{'petForm.medDir' | translate }}" 
                     formFieldName="directions" 
                     type="text"
                     [customFormControl]="getMedItemControl(idx, 'directions')" 
-                    placeholder="{{'pet-form.medDirPlaceHolder' | translate }}" 
+                    placeholder="{{'petForm.medDirPlaceHolder' | translate }}" 
                 />
 
                 <button type="button" (click)="removeMedication(idx)" class="btn">
@@ -91,32 +91,32 @@
             [disabled]="isAddDisabled()"
         >
             <mat-icon>add_circle</mat-icon>
-            <span>{{'pet-form.addMedBtnText' | translate }}</span>
+            <span>{{'petForm.addMedBtnText' | translate }}</span>
         </button>
     </section>
 
     <!-- Goal Selection -->
     <section class="form__goal">
-        <label for="goal" class="form__goal__title">{{'pet-form.goalSectionTitle' | translate }} :</label>
+        <label for="goal" class="form__goal__title">{{'petForm.goalSectionTitle' | translate }} :</label>
         <div class="form__goal__content">
             <div class="form__goal__content__target">
                 <app-custom-selection 
-                    label="{{'pet-profile.goal' | translate }}"
+                    label="{{'petProfile.goal' | translate }}"
                     formFieldName="goal"
                     [selectFormControl]="getFormControl('goal')"
                     [selectionArr]="goalSelection"
                 />
-                <p>{{'pet-profile.goalSuffix' | translate }}</p>
+                <p>{{'petProfile.goalSuffix' | translate }}</p>
             </div>
 
             <!-- Target Weight Input -->
             <div class="form__goal__content__weight">
                 <app-custom-input 
-                    label="{{'pet-form.targetWeight' | translate }}" 
+                    label="{{'petForm.targetWeight' | translate }}" 
                     formFieldName="target_weight" 
                     type="text"
                     [customFormControl]="getFormControl('target_weight')" 
-                    placeholder="{{'pet-form.targetWeightPlaceHolder' | translate }}" 
+                    placeholder="{{'petForm.targetWeightPlaceHolder' | translate }}" 
                 />
                 <p>{{ getFormControl('weight_unit').value }}</p>
             </div>
@@ -126,10 +126,10 @@
 
     <!-- Dairy Calories Setting -->
     <section class="form__calories">
-        <p class="form__calories__title">{{'pet-profile.dailyCalories' | translate }} :</p>
+        <p class="form__calories__title">{{'petProfile.dailyCalories' | translate }} :</p>
         <div class="form__calories__content">
             <p>
-                {{'pet-form.dailyCaloriesNote' | translate }}
+                {{'petForm.dailyCaloriesNote' | translate }}
                 <a href="https://vmc.vet.osu.edu/services/companion-animal-nutrition-support-service">
                     <mat-icon>info</mat-icon>
                 </a>
@@ -140,23 +140,23 @@
 
             <!-- Factor Input -->
             <app-custom-input 
-                label="{{'pet-form.factor' | translate }}" 
+                label="{{'petForm.factor' | translate }}" 
                 formFieldName="factor" 
                 type="text"
                 [customFormControl]="getFormControl('factor')" 
-                placeholder="{{'pet-form.factorPlaceHolder' | translate }}" 
+                placeholder="{{'petForm.factorPlaceHolder' | translate }}" 
             />
 
             <!-- Calories Input -->
-            <p>{{'pet-form.caloryInputNote' | translate }}</p>
+            <p>{{'petForm.caloryInputNote' | translate }}</p>
 
             <div class="form__calories__content__daily">
                 <app-custom-input 
-                    label="{{'pet-form.targetCalories' | translate }}" 
+                    label="{{'petForm.targetCalories' | translate }}" 
                     formFieldName="daily_calories" 
                     type="text"
                     [customFormControl]="getFormControl('daily_calories')" 
-                    placeholder="{{'pet-form.targetCaloriesPlaceHolder' | translate }}" 
+                    placeholder="{{'petForm.targetCaloriesPlaceHolder' | translate }}" 
                 />
                 <p>kcal / day</p>
             </div>

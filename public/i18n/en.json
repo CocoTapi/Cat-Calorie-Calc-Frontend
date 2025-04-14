@@ -2,7 +2,7 @@
     "app": {
       "title": "Healthy Pet Management"
     },
-    "pet-profile": {
+    "petProfile": {
       "age": "Age",
       "year": "year",
       "years": "years",
@@ -22,7 +22,7 @@
       "graphTitleMaintain": "Goal: Maintain Weight",
       "graphTitleDynamic": "Goal: {{goal}} Weight to {{weight}} {{unit}}"
     },
-    "pet-form": {
+    "petForm": {
       "errorMessage": "Please correct all highlighted fields before closing the panel.",
       "cat": "Cat",
       "dog": "Dog",
@@ -44,7 +44,7 @@
       "targetCaloriesPlaceHolder": "E.g. 200",
       "caloryInputNote": "Displayed calories are automatically calculated based on the factor and RER."
     },
-    "custom-form": {
+    "customForm": {
       "required": "{{field}} is required"
     }
 }

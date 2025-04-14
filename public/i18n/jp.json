@@ -2,7 +2,7 @@
     "app": {
       "title": "ペット健康管理アプリ"
     },
-    "pet-profile": {
+    "petProfile": {
       "age": "年齢",
       "year": "才",
       "years": "才",
@@ -20,7 +20,7 @@
       "allergies": "アレルギー",
       "personalityNote": "{{name}}さんの性格"
     },
-    "pet-form": {
+    "petForm": {
       "errorMessage": "入力内容に誤りがあります。赤字の部分を確認してください",
       "cat": "猫",
       "dog": "犬",
@@ -42,7 +42,7 @@
       "targetCaloriesPlaceHolder": "例）200",
       "caloryInputNote": "表示されているカロリーは、RERと係数をもとに、自動的に計算されたものです。"
     },
-    "custom-form": {
+    "customForm": {
       "required": "{{field}}を入力してください"
     }
 }
