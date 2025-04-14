@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-date-picker',
@@ -13,7 +14,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    TranslateModule
   ],
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'

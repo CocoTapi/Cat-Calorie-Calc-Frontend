@@ -1,27 +1,27 @@
 <form [formGroup]="petProfileForm" class="form">
     <!-- Validation Error Message -->
     <div class="validation-error" *ngIf="showValidationErrors && !petProfileForm.valid">
-        <p>Please correct all highlighted fields before closing the panel.</p>
+        <p>{{'petForm.errorMessage' | translate }}</p>
     </div>
 
     <!-- Type Selection -->
     <section class="form__species">
         <mat-button-toggle-group aria-label="species" formControlName="species" class="toggle-btn">
-            <mat-button-toggle value="cat">Cat</mat-button-toggle>
-            <mat-button-toggle value="dog">dog</mat-button-toggle>
+            <mat-button-toggle value="cat">{{'petForm.cat' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="dog">{{'petForm.dog' | translate }}</mat-button-toggle>
         </mat-button-toggle-group>
     </section>
 
     <!-- Name Input -->
     <section class="form__name">
         <app-custom-input label="Name" formFieldName="name" type="text"
-            [customFormControl]="getFormControl('name')" placeholder="Pet Name" />
+            [customFormControl]="getFormControl('name')" placeholder="{{'petForm.namePlaceHolder' | translate }}" />
     </section>
 
     <!-- Birthday Input -->
     <section class="form__birthday">
         <app-date-picker 
-            label="Choose a birthday"
+            label="{{'petForm.birthdayLabel' | translate }}"
             [customFormControl]="getFormControl('birthday')"
         />
     </section>
@@ -30,7 +30,7 @@
     <!-- Weight Input -->
     <section class="form__weight">
         <app-custom-input 
-        label="Weight" 
+        label="{{'petProfile.weight' | translate }}" 
         formFieldName="weight" 
         type="text"
         [customFormControl]="getFormControl('weight')" 
@@ -49,33 +49,33 @@
     <!-- Food Allergies Input-->
     <section class="form__allergies">
         <app-custom-input 
-            label="Allergies" 
+            label="{{'petProfile.allergies' | translate }}" 
             formFieldName="allergies" 
             type="text"
             [customFormControl]="getFormControl('allergies')" 
-            placeholder="Ex. milk, wheat" 
+            placeholder="{{'petForm.allergyPlaceHolder' | translate }}" 
         />
     </section>
 
     <!-- Medication Input -->
     <section class="form__medications">
-        <p class="form__medications__title">Medications :</p>
+        <p class="form__medications__title">{{'petProfile.medications' | translate }} :</p>
         <ul formArrayName="medications" class="form__medications__content">
             @for (med of medications.controls; track med; let idx = $index){
             <li [formGroupName]="idx" class="form__medications__content__item">
                 <app-custom-input 
-                    label="Medicine Name" 
+                    label="{{'petForm.medName' | translate }}" 
                     formFieldName="med_name" 
                     type="text"
                     [customFormControl]="getMedItemControl(idx, 'med_name')" 
-                    placeholder="Ex. Atopica" 
+                    placeholder="{{'petForm.medNamePlaceholder' | translate }}" 
                 />
                 <app-custom-input 
-                    label="Directions" 
+                    label="{{'petForm.medDir' | translate }}" 
                     formFieldName="directions" 
                     type="text"
                     [customFormControl]="getMedItemControl(idx, 'directions')" 
-                    placeholder="Ex. 1 pill / day" 
+                    placeholder="{{'petForm.medDirPlaceHolder' | translate }}" 
                 />
 
                 <button type="button" (click)="removeMedication(idx)" class="btn">
@@ -91,32 +91,32 @@
             [disabled]="isAddDisabled()"
         >
             <mat-icon>add_circle</mat-icon>
-            <span>Add Medicine</span>
+            <span>{{'petForm.addMedBtnText' | translate }}</span>
         </button>
     </section>
 
     <!-- Goal Selection -->
     <section class="form__goal">
-        <label for="goal" class="form__goal__title">Weight Management :</label>
+        <label for="goal" class="form__goal__title">{{'petForm.goalSectionTitle' | translate }} :</label>
         <div class="form__goal__content">
             <div class="form__goal__content__target">
                 <app-custom-selection 
-                    label="Goal"
+                    label="{{'petProfile.goal' | translate }}"
                     formFieldName="goal"
                     [selectFormControl]="getFormControl('goal')"
                     [selectionArr]="goalSelection"
                 />
-                <p>weight</p>
+                <p>{{'petProfile.goalSuffix' | translate }}</p>
             </div>
 
             <!-- Target Weight Input -->
             <div class="form__goal__content__weight">
                 <app-custom-input 
-                    label="Target Weight" 
+                    label="{{'petForm.targetWeight' | translate }}" 
                     formFieldName="target_weight" 
                     type="text"
                     [customFormControl]="getFormControl('target_weight')" 
-                    placeholder="Ex. 5" 
+                    placeholder="{{'petForm.targetWeightPlaceHolder' | translate }}" 
                 />
                 <p>{{ getFormControl('weight_unit').value }}</p>
             </div>
@@ -126,41 +126,41 @@
 
     <!-- Dairy Calories Setting -->
     <section class="form__calories">
-        <p class="form__calories__title">Daily Calories :</p>
+        <p class="form__calories__title">{{'petProfile.dailyCalories' | translate }} :</p>
         <div class="form__calories__content">
             <p>
-                We use Resting Energy Requirement (RER) and factor to calculate daily calories
+                {{'petForm.dailyCaloriesNote' | translate }}
                 <a href="https://vmc.vet.osu.edu/services/companion-animal-nutrition-support-service">
                     <mat-icon>info</mat-icon>
                 </a>
             </p>
             
-            <!-- TODO: suggested factor Table -->
-            <p>
-                suggested factor Table
-            </p>
+            <!-- TODO: attach suggested factor Table -->
+          
 
             <!-- Factor Input -->
             <app-custom-input 
-                label="Factor" 
+                label="{{'petForm.factor' | translate }}" 
                 formFieldName="factor" 
                 type="text"
                 [customFormControl]="getFormControl('factor')" 
-                placeholder="Ex. 1.2" 
+                placeholder="{{'petForm.factorPlaceHolder' | translate }}" 
             />
 
             <!-- Calories Input -->
+            <p>{{'petForm.caloryInputNote' | translate }}</p>
+
             <div class="form__calories__content__daily">
-                <!-- <p>Displayed calories are automatically calculated based on the factor.</p> -->
                 <app-custom-input 
-                    label="Target Daily Calories" 
+                    label="{{'petForm.targetCalories' | translate }}" 
                     formFieldName="daily_calories" 
                     type="text"
                     [customFormControl]="getFormControl('daily_calories')" 
-                    placeholder="Ex. 200" 
+                    placeholder="{{'petForm.targetCaloriesPlaceHolder' | translate }}" 
                 />
                 <p>kcal / day</p>
             </div>
+
         </div>
     </section>
 

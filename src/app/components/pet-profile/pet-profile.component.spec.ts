@@ -9,12 +9,15 @@ import { PETS_TEST_DATA, PET_TEST_FORM_DATA } from "../../utils/pets-test-data";
 import { DisplayAge, PetProfile } from "./models/pet-profile.model";
 import { PetProfileComponent } from "./pet-profile.component";
 import { calcMonthYear } from "../../utils/util";
+import { TranslateModule } from "@ngx-translate/core";
+import { TranslatePipeMock } from "../../utils/translatePipeMock";
+
+
 
 describe('PetProfileComponent', () => {
   let component: PetProfileComponent
   let componentRef: ComponentRef<PetProfileComponent>
   let fixture: ComponentFixture<PetProfileComponent>
-  // const undefinedData = undefined as unknown as Pet_Profile;
 
   // Shared mock service with a spy that we override per test
   const petProfileService = {
@@ -24,7 +27,11 @@ describe('PetProfileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PetProfileComponent],
+      imports: [
+        PetProfileComponent,
+        TranslateModule.forRoot(), 
+        TranslatePipeMock
+      ],
       providers: [
         { provide: PetProfileService, useValue: petProfileService },
       ],
@@ -32,9 +39,9 @@ describe('PetProfileComponent', () => {
     }).compileComponents()
 
     fixture = TestBed.createComponent(PetProfileComponent)
-
     component = fixture.componentInstance;
     componentRef = fixture.componentRef;
+
   })
 
   // setup pet profile data

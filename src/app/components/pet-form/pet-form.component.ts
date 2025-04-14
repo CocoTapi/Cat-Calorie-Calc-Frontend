@@ -12,6 +12,7 @@ import { createNewPetProfileForm, patchPetProfileForm } from './pet-profile-form
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pet-form',
@@ -24,7 +25,8 @@ import { PetProfile, MedItemType } from '../pet-profile/models/pet-profile.model
     CustomInputComponent,
     CustomSelectionComponent,
     DatePickerComponent,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
   templateUrl: './pet-form.component.html',
   styleUrl: './pet-form.component.scss',
@@ -47,25 +49,36 @@ export class PetFormComponent implements OnInit {
   petProfileForm!: FormGroup;
   showValidationErrors = false;
 
-  // Selection options for goal dropdown
-  goalSelection: SELECTION[] = [
-    { value: CommonConstants.MAINTAIN, viewValue: 'Maintain' },
-    { value: CommonConstants.LOSE, viewValue: 'Lose' },
-    { value: CommonConstants.GAIN, viewValue: 'Gain' },
-  ]
+  goalSelectOptions = [CommonConstants.MAINTAIN, CommonConstants.LOSE, CommonConstants.GAIN,]
+  goalSelection: SELECTION[] = [];
 
   ngOnInit(): void {
+    this.loadGoalSelection();
+     
     // Setup initial form values and form
-
     this.petProfileForm = createNewPetProfileForm()
 
     if (this.pet) patchPetProfileForm(this.petProfileForm, this.pet)
+
     this.emitFormDataValidity();
     this.setupSubscriptions();
 
     // Register canClose callback to validate form when closing panel
     this.registerPanelCloseValidation();
   }
+
+  // TODO: default goal isn't displayed before user click
+
+  /**
+   * Register goal dropdown options 
+   */
+  private loadGoalSelection(): void{
+    this.goalSelection = this.goalSelectOptions.map(val => ({
+      value: val,
+      viewValue: `petProfile.${val.toLowerCase()}`
+    }));
+  } 
+
 
   /**
    * Registers the validation callback for panel closing

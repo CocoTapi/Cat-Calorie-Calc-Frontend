@@ -1,0 +1,51 @@
+{
+    "app": {
+      "title": "Healthy Pet Management"
+    },
+    "petProfile": {
+      "age": "Age",
+      "year": "year",
+      "years": "years",
+      "month": "month",
+      "months": "months",
+      "weight": "Weight",
+      "goal": "Goal",
+      "maintain": "Maintain",
+      "lose": "Lose",
+      "gain": "Gain",
+      "goalSuffix": "weight",
+      "dailyCalories": "Daily Calories",
+      "medications": "Medications",
+      "noMedication": "None",
+      "allergies": "Allergies",
+      "personalityNote": "{{name}}'s Personality",
+      "graphTitleMaintain": "Goal: Maintain Weight",
+      "graphTitleDynamic": "Goal: {{goal}} Weight to {{weight}} {{unit}}",
+      "none": "None"
+    },
+    "petForm": {
+      "errorMessage": "Please correct all highlighted fields before closing the panel.",
+      "cat": "Cat",
+      "dog": "Dog",
+      "namePlaceHolder": "Pet name",
+      "birthdayLabel": "Choose a birthday",
+      "allergyPlaceHolder": "E.g. milk, wheat...",
+      "medName": "Medicine Name",
+      "medNamePlaceholder": "E.g. Atopica",
+      "medDir": "Directions",
+      "medDirPlaceHolder" : "E.g. 1 pill / day",
+      "addMedBtnText": "Add Medicine",
+      "goalSectionTitle": "Weight Management",
+      "targetWeight": "Target Weight",
+      "targetWeightPlaceHolder": "E.g. 5" ,
+      "dailyCaloriesNote": "We use Resting Energy Requirement (RER) and factor to calculate daily calories",
+      "factor": "Factor",
+      "factorPlaceHolder": "E.g. 1.2",
+      "targetCalories": "Target Daily Calories",
+      "targetCaloriesPlaceHolder": "E.g. 200",
+      "caloryInputNote": "Displayed calories are automatically calculated based on the factor and RER."
+    },
+    "customForm": {
+      "required": "{{field}} is required"
+    }
+}

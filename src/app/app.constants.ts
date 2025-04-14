@@ -47,6 +47,16 @@ export abstract class CommonConstants {
     static readonly LOSE: string = 'Lose';
     static readonly GAIN: string = 'Gain';
 
+    // Language Translate 
+    static readonly LANGUAGE_FILE_PATH: string = '/i18n/';
+    static readonly LANGUAGE_FILE_EXTENSION: string = '.json';
+
+    // Language tyoe 
+    static readonly EN: string = 'en';
+    static readonly JP: string = 'jp';
+
+
+
 }
 
 export const UNIT_TYPES = {

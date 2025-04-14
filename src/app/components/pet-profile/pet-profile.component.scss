@@ -73,6 +73,8 @@
 
         &:last-child {
             margin-bottom: 0;
+            list-style-position: inside; // bullet aligns with text
+            padding-left: 0; // remove default padding
         }
     } 
 
