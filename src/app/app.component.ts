@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonConstants } from './app.constants';
+import { FeedComponent } from './components/feed/feed.component';
 
 @Component({
   selector: 'app-root',
-  imports: [PetProfileComponent, TranslateModule],
+  imports: [TranslateModule, FeedComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

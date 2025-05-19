@@ -1,0 +1,34 @@
+<div class="feedPage">
+    <h1>{{ petName }}</h1>
+    <h2>{{today | date:'mediumDate' }}</h2>
+    
+    <!-- TODO: current status component-->
+    <!-- <app-card>
+        <app-current-feed-status />
+    </app-card> -->
+    
+    <!-- Feeding Detail -->
+    <app-card>
+        <!-- Already eaten food -->
+        <app-calorie-counter 
+            title='Today, {{petName}} already ate ...'
+        />
+
+        <!-- Food that will be fed -->
+        <app-calorie-counter 
+            title='Today, {{petName}} will eat ...'
+        />
+
+        <p>
+            Requires {{ requiredCalories }} more kcal
+        </p>
+
+        <h2>Total: {{ totalCalories }} kcal</h2>
+    </app-card>
+
+    <!-- Food Selection -->
+    <h2>Add Food / Treats</h2>
+    
+
+</div>
+
