@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { CurrentFeedStatusComponent } from './current-feed-status/current-feed-status.component';
 import { CardComponent } from "../../ui/card/card.component";
 import { CalorieCounterComponent } from './calorie-counter/calorie-counter.component';
+import { FoodBoxComponent } from "../../ui/food-box/food-box.component";
 
 @Component({
   selector: 'app-feed',
-  imports: [DatePipe, CurrentFeedStatusComponent, CardComponent, CalorieCounterComponent],
+  imports: [DatePipe, CardComponent, CalorieCounterComponent, FoodBoxComponent],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.scss'
 })

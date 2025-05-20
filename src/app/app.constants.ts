@@ -51,11 +51,18 @@ export abstract class CommonConstants {
     static readonly LANGUAGE_FILE_PATH: string = '/i18n/';
     static readonly LANGUAGE_FILE_EXTENSION: string = '.json';
 
-    // Language tyoe 
+    // Language type 
     static readonly EN: string = 'en';
     static readonly JP: string = 'jp';
 
+    
+    // food type
+    static readonly FOOD: string = 'food';
+    static readonly TREAT: string = 'treat';
 
+    // food icon name
+    static readonly FOOD_ICON: string = 'grain';
+    static readonly TREAT_ICON: string = 'icecream';
 
 }
 

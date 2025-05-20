@@ -1,8 +1,10 @@
+export type FoodType = 'food' | 'treat';
+
 interface Food {
     food_id: string,
     user_id: string,
     food_name: string,
-    food_type: 'food' | 'treat',
+    food_type: FoodType,
     net_wt: number,
     net_unit: 'lb' | 'kg' | 'oz',
     expiration_date: Date,
