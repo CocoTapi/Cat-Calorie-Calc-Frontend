@@ -1,14 +1,20 @@
 <div class="feedPage">
-    <h1>{{ petName }}</h1>
-    <h2>{{today | date:'mediumDate' }}</h2>
-    
+    <div class="feedPage__topLabel">
+        <div class="feedPage__topLabel__nameGroup">
+            <h2>{{ petName }}</h2>
+        </div>
+        <h3 class="feedPage__topLabel__date">{{today | date:'mediumDate' }}</h3>
+    </div>
+   
+
     <!-- TODO: current status component-->
-    <!-- <app-card>
+    <app-card class="feedPage__currentStatus">
         <app-current-feed-status />
-    </app-card> -->
-    
+    </app-card>
+
+
     <!-- Feeding Detail -->
-    <app-card>
+    <app-card class="feedPage__feedingDetail">
         <!-- Already eaten food -->
         <app-calorie-counter 
             title='Today, {{petName}} already ate ...'
@@ -25,13 +31,21 @@
 
         <h2>Total: {{ totalCalories }} kcal</h2>
     </app-card>
+ 
+    
+    
 
     <!-- Food Selection -->
-    <h2>Add Food / Treats</h2>
-    <ul>
-        <li><app-food-box name="Churu" foodType="treat"/></li>
-        <li><app-food-box name="Purina One" foodType="food"/></li>
-    </ul>
-
+    <div class="feedPage__foodOption">
+        <h2 class="feedPage__foodOption__title">Add Food / Treats</h2>
+        <ul class="feedPage__foodOption__list">
+            <li><app-food-box name="Churu" foodType="treat"/></li>
+            <li><app-food-box name="Purina One" foodType="food"/></li>
+            <li><app-food-box name="Purina One" foodType="food"/></li>
+            <li><app-food-box name="Purina One" foodType="food"/></li>
+        </ul>
+    
+    </div>
+    
 </div>
 

@@ -1,0 +1,45 @@
+.feedPage {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    margin: 0 auto; /* Remove any extra vertical margin */
+    padding: 1rem 0; 
+    overflow-y: auto;
+    max-height: 100vh;
+    flex: 1; 
+
+    &__topLabel {
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+        align-items: center;
+
+        margin-bottom: 1.5rem;
+
+        &__nameGroup {
+            display: flex;
+            gap: 1rem;
+        }
+    }
+
+    &__currentStatus, &__feedingDetail {
+        margin-bottom: 1rem;
+    }
+
+   &__foodOption {
+        margin-top: 1rem;
+
+        &__title {
+            margin-bottom: 1rem;
+        }
+
+        &__list {
+            display: flex;
+            flex-wrap: wrap ;
+            list-style: none;
+            gap: .7rem;
+        }
+    
+   }
+
+}
