@@ -21,12 +21,20 @@ describe('FoodBoxComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use food icon by default when foodType is not TREAT', () => {
-    component.name = 'Cat Food';
-    component.foodType = 'food'; 
+  it('should use dry food icon', () => {
+    component.name = 'Purina One';
+    component.foodType = 'dryFood'; 
     fixture.detectChanges();
 
-    expect(component.icon).toBe(CommonConstants.FOOD_ICON);
+    expect(component.icon).toBe(CommonConstants.DRY_FOOD_ICON);
+  });
+
+  it('should use wet food icon', () => {
+    component.name = 'Grilled Salmon';
+    component.foodType = 'wetFood'; 
+    fixture.detectChanges();
+
+    expect(component.icon).toBe(CommonConstants.WET_FOOD_ICON);
   });
 
   it('should use treat icon when foodType is treat', () => {

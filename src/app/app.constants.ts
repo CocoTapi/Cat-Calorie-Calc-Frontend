@@ -57,11 +57,13 @@ export abstract class CommonConstants {
 
     
     // food type
-    static readonly FOOD: string = 'food';
+    static readonly DRY_FOOD: string = 'dryFood';
+    static readonly WET_FOOD: string = 'wetFood';
     static readonly TREAT: string = 'treat';
 
     // food icon name
-    static readonly FOOD_ICON: string = 'grain';
+    static readonly DRY_FOOD_ICON: string = 'grain';                   
+    static readonly WET_FOOD_ICON: string = 'water_drop';                   
     static readonly TREAT_ICON: string = 'icecream';
 
 }

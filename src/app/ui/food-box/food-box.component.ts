@@ -13,11 +13,13 @@ export class FoodBoxComponent implements OnInit {
   @Input({ required: true }) name!: string;
   @Input({ required: true }) foodType!: FoodType;
 
-  icon: string = CommonConstants.FOOD_ICON;
+  icon: string = CommonConstants.DRY_FOOD_ICON;
 
   ngOnInit() {
     if (this.foodType === CommonConstants.TREAT) {
       this.icon = CommonConstants.TREAT_ICON;
+    } else if (this.foodType === CommonConstants.WET_FOOD) {
+      this.icon = CommonConstants.WET_FOOD_ICON;
     }
   }
 
